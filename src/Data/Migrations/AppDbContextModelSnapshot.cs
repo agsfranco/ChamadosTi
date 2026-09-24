@@ -22,10 +22,495 @@ namespace ChamadosTi.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("ChamadosTi.Models.AuditoriaTicket", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Log")
+                        .IsRequired()
+                        .HasMaxLength(-1)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RegistradoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("AuditoriasTickets", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("PrazoResolucaoSla")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categorias", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.DadoTecnico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int?>("EspecialidadeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nivel")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EspecialidadeId");
+
+                    b.ToTable("DadosTecnicos", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Especialidade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Especialidades", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Comentario")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExcluidoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MarcaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("SetorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarcaId");
+
+                    b.HasIndex("SetorId");
+
+                    b.HasIndex("TipoId");
+
+                    b.ToTable("Itens", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.ItemTicket", b =>
+                {
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Comentario")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.HasKey("ItemId", "TicketId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("ItensTickets", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Marca", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Marcas", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Prioridade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TempoResolucaoPadrao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TempoRespostaPadrao")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Prioridades", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Setor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Setores", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("Codigo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Status", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comentario")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("DataAbertura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataFechamento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PrazoResolucaoSLA")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PrazoRespostaSLA")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PrioridadeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SetorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsuarioTecnicoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.HasIndex("PrioridadeId");
+
+                    b.HasIndex("SetorId");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioTecnicoId");
+
+                    b.ToTable("Tickets", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Tipo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Comentario")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tipos", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DadoTecnicoId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("EhTecnico")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SetorId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DadoTecnicoId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("SetorId");
+
+                    b.ToTable("Usuarios", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -49,7 +534,7 @@ namespace ChamadosTi.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,9 +548,8 @@ namespace ChamadosTi.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -74,72 +558,7 @@ namespace ChamadosTi.Data.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -153,9 +572,8 @@ namespace ChamadosTi.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -164,7 +582,7 @@ namespace ChamadosTi.Data.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
@@ -177,9 +595,8 @@ namespace ChamadosTi.Data.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -188,13 +605,13 @@ namespace ChamadosTi.Data.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -203,10 +620,10 @@ namespace ChamadosTi.Data.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
@@ -224,55 +641,199 @@ namespace ChamadosTi.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("ChamadosTi.Models.AuditoriaTicket", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("ChamadosTi.Models.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.DadoTecnico", b =>
+                {
+                    b.HasOne("ChamadosTi.Models.Especialidade", "Especialidades")
+                        .WithMany()
+                        .HasForeignKey("EspecialidadeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Especialidades");
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Item", b =>
+                {
+                    b.HasOne("ChamadosTi.Models.Marca", "Marcas")
+                        .WithMany()
+                        .HasForeignKey("MarcaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Setor", "Setores")
+                        .WithMany()
+                        .HasForeignKey("SetorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ChamadosTi.Models.Tipo", "Tipos")
+                        .WithMany()
+                        .HasForeignKey("TipoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Marcas");
+
+                    b.Navigation("Setores");
+
+                    b.Navigation("Tipos");
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.ItemTicket", b =>
+                {
+                    b.HasOne("ChamadosTi.Models.Item", "Item")
+                        .WithMany("ItensTickets")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Ticket", "Ticket")
+                        .WithMany("ItensTickets")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Ticket", b =>
+                {
+                    b.HasOne("ChamadosTi.Models.Categoria", "Categorias")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Prioridade", "Prioridades")
+                        .WithMany()
+                        .HasForeignKey("PrioridadeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Setor", "Setores")
+                        .WithMany()
+                        .HasForeignKey("SetorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Usuario", "Usuarios")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Usuario", "UsuariosTecnicos")
+                        .WithMany()
+                        .HasForeignKey("UsuarioTecnicoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Categorias");
+
+                    b.Navigation("Prioridades");
+
+                    b.Navigation("Setores");
+
+                    b.Navigation("Status");
+
+                    b.Navigation("Usuarios");
+
+                    b.Navigation("UsuariosTecnicos");
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Usuario", b =>
+                {
+                    b.HasOne("ChamadosTi.Models.DadoTecnico", "DadosTecnicos")
+                        .WithMany()
+                        .HasForeignKey("DadoTecnicoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ChamadosTi.Models.Setor", "Setores")
+                        .WithMany()
+                        .HasForeignKey("SetorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DadosTecnicos");
+
+                    b.Navigation("Setores");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("ChamadosTi.Models.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("ChamadosTi.Models.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("ChamadosTi.Models.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("ChamadosTi.Models.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Item", b =>
+                {
+                    b.Navigation("ItensTickets");
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Ticket", b =>
+                {
+                    b.Navigation("ItensTickets");
                 });
 #pragma warning restore 612, 618
         }

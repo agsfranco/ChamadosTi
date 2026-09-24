@@ -1,4 +1,5 @@
 using ChamadosTi.Data;
+using ChamadosTi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +23,14 @@ builder.Services.AddHsts( options =>
     options.IncludeSubDomains = true;
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<Usuario>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
-}).AddEntityFrameworkStores<AppDbContext>();
+}).AddRoles<IdentityRole<int>>().AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
+
+app.UseStaticFiles();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -37,9 +40,15 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
+
+app.MapRazorPages();
 
 app.Run();
