@@ -1,26 +1,11 @@
 ```mermaid
 erDiagram
-    %% Tabela Base do ASP.NET Identity (Mantida no padrão do framework)
-    AspNetUsers {
-        string Id PK
-        string UserName
-        string Email
-        string PasswordHash
-    }
-
-    %% Usuario Comum (Herda de AspNetUsers)
-    Usuarios {
-        string Id PK, FK
-        int SetorId FK
-        bit EhTecnico
+    %% Setor da Empresa
+    Setores {
+        int Id PK
         string Nome
-    }
-
-    %% Dados Tecnicos
-    DadosTecnicos {
-        string Id PK, FK
-        int EspecialidadeId FK
-        string Nivel
+        string Descricao
+        bit Ativo
     }
 
     %% Especialidade: Redes, Banco de Dados
@@ -31,12 +16,37 @@ erDiagram
         bit Ativo
     }
 
-    %% Prioridade e Prazos Configurados
+    %% Dados Tecnicos
+    DadosTecnicos {
+        int Id PK, FK
+        int EspecialidadesId FK
+        string Nivel
+        bit Ativo
+    }
+
+    %% Tabela Base do ASP.NET Identity (Mantida no padrão do framework)
+    AspNetUsers {
+        int Id PK
+        string UserName
+        string Email
+        string PasswordHash
+    }
+
+    %% Usuario Comum (Herda de AspNetUsers)
+    Usuarios {
+    int Id PK, FK
+        int SetoresId FK
+        int DadosTecnicosId FK
+        bit EhTecnico
+        string Nome
+    }
+
+    %% Prioridade e Prazos Configurados: Normal, Urgente
     Prioridades {
         int Id PK
         string Nome
-        time TempoRespostaPadrao
-        time TempoResolucaoPadrao
+        int TempoRespostaPadrao
+        int TempoResolucaoPadrao
         bit Ativo
     }
 
@@ -45,20 +55,12 @@ erDiagram
         int Id PK
         string Nome
         string Descricao
-        time ConfiguracaoSLA
-        bit Ativo
-    }
-
-    %% Setor da Empresa
-    Setores {
-        int Id PK
-        string Nome
-        string Descricao
+        int PrazoResolucaoSLA
         bit Ativo
     }
 
     %% Notebook, PC, Roteador
-    TipoAtivos {
+    Tipos {
         int Id PK
         string Nome
         string Comentario
@@ -66,25 +68,27 @@ erDiagram
     }
 
     %% Dell, Acer, Samsung, Genérico
-    MarcasAtivos {
+    Marcas {
         int Id PK
         string Nome
         bit Ativo
     }
 
     %% Ativos
-    Ativos {
+    Itens {
         int Id PK
-        int TipoAtivoId FK
-        int MarcasAtivoId FK
-        int SetorId FK
+        int TiposId FK
+        int MarcasId FK
+        int SetoresId FK
         string Nome
         string Comentario
+        DateTime CriadoEm
+        DateTime ExcluidoEm
         bit Ativo
     }
 
     %% Aberto, Em Atendimento, Pendente, Resolvido
-    TicketStatus {
+    Status {
         int Id PK
         int Codigo
         string Nome
@@ -94,37 +98,40 @@ erDiagram
     %% Ordem de Serviço / Chamado
     Tickets {
         int Id PK
-        string UsuarioId FK
-        string UsuarioTecnicoId FK
-        int SetorId FK
-        int CategoriaId FK
-        int PrioridadeId FK
-        int TicketStatusId FK
+        string UsuariosId FK
+        string UsuariosTecnicosId FK
+        int SetoresId FK
+        int CategoriasId FK
+        int PrioridadesId FK
+        int StatusId FK
         datetime DataAbertura
         datetime DataFechamento
         datetime PrazoRespostaSLA
         datetime PrazoResolucaoSLA
         string Titulo
-        string Descricao        
+        string Comentario 
+        bit Ativo       
     }
 
-    AtivosTickets {
-        int AtivoId
-        int TicketId
+    ItensTickets {
+        int ItensId FK
+        int TicketsId FK
         string Comentario
+        bit Ativo
     }
 
     %% Auditoria / Historico
-    AuditoriasTicket {
+    AuditoriasTickets {
         int Id PK
-        int TicketId FK
-        string TextoLog
+        int TicketsId FK
+        string Log
         datetime RegistradoEm
+        bit Ativo
     }
 
     %% Relacionamentos de Heranca (1 para 0..1)
     AspNetUsers ||--o| Usuarios : "herdado_por"
-    Usuarios ||--o| DadosTecnicos : "contem"
+    DadosTecnicos o|--o{ Usuarios : "contem"
 
     %% Demais Relacionamentos
     Setores ||--o{ Usuarios : "possui"
@@ -134,11 +141,11 @@ erDiagram
     Categorias ||--o{ Tickets : "categoriza"
     Prioridades ||--o{ Tickets : "prioriza"
     Setores ||--o{ Tickets : "origina"
-    TicketStatus ||--o{ Tickets : "rastreia"
-    Tickets ||--o{ AuditoriasTicket : "geria"
-    TipoAtivos ||--o{ Ativos : "possui"
-    MarcasAtivos ||--o{ Ativos : "possui"
-    Setores ||--o{ Ativos : "possui"
-    Tickets ||--o{ AtivosTickets : "esta"
-    Ativos ||--o{ AtivosTickets : "esta"
+    Status ||--o{ Tickets : "rastreia"
+    Tickets ||--o{ AuditoriasTickets : "geria"
+    Tipos ||--o{ Itens : "possui"
+    Marcas ||--o{ Itens : "possui"
+    Setores o|--o{ Itens : "possui"
+    Tickets ||--o{ ItensTickets : "esta"
+    Itens ||--o{ ItensTickets : "esta"
 ```
