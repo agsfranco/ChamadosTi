@@ -34,7 +34,8 @@ erDiagram
 
     %% Usuario Comum (Herda de AspNetUsers)
     Usuarios {
-    int Id PK, FK
+        int Id PK
+        string AspNetUserId FK
         int SetoresId FK
         int DadosTecnicosId FK
         bit EhTecnico
@@ -129,11 +130,9 @@ erDiagram
         bit Ativo
     }
 
-    %% Relacionamentos de Heranca (1 para 0..1)
-    AspNetUsers ||--o| Usuarios : "herdado_por"
-    DadosTecnicos o|--o{ Usuarios : "contem"
-
     %% Demais Relacionamentos
+    AspNetUsers ||--o| Usuarios : "pertence"
+    DadosTecnicos o|--o{ Usuarios : "contem"    
     Setores ||--o{ Usuarios : "possui"
     Usuarios ||--o{ Tickets : "cria"
     Usuarios ||--o{ Tickets : "atribuido_a"

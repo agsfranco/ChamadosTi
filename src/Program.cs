@@ -40,10 +40,10 @@ builder.Services.AddHsts( options =>
     options.IncludeSubDomains = true;
 });
 
-builder.Services.AddDefaultIdentity<Usuario>(options =>
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
-}).AddRoles<IdentityRole<int>>().AddEntityFrameworkStores<AppDbContext>();
+    options.SignIn.RequireConfirmedAccount = true;
+}).AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
 

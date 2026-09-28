@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace ChamadosTi.Data
 {
-    public class AppDbContext : IdentityDbContext<Usuario, IdentityRole<int>, int>
+    public class AppDbContext : IdentityDbContext
     {
         public DbSet<Setor> Setores { get; set; }
         public DbSet<Especialidade> Especialidades { get; set; }
@@ -78,6 +78,10 @@ namespace ChamadosTi.Data
             builder.Entity<Usuario>(p=>
             {
                 p.ToTable("Usuarios");
+                p.HasOne(u => u.AspNetUser)          
+                .WithOne()                           
+                .HasForeignKey<Usuario>(u => u.AspNetUserId)
+                .IsRequired();
 
                 p.HasOne(u => u.Setores)
                  .WithMany()
