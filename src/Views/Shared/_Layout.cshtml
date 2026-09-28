@@ -24,19 +24,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Menu1</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu1"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Menu2</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu2"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Menu3</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu3"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Menu4</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">Dashboard</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu4"]</a>
                         </li>
                     </ul>
                     <div class="d-flex align-items-center">
@@ -54,7 +51,7 @@
     </div>
     <footer class="d-flex justify-content-between align-items-center p-3 bg-light border-top">
         <div>
-            <span class="text-muted">© 2026 Chamados TI</span>
+            <span class="text-muted">@Localizer["Span_Copyright"]</span>
         </div>
         <div>
             <ul class="nav">

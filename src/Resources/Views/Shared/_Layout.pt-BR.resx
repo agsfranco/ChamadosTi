@@ -121,4 +121,24 @@
     <value>Chamados</value>
     <comment/>
   </data>
+  <data name="Navbar_Menu1" xml:space="preserve">
+    <value>Página 1</value>
+    <comment/>
+  </data>
+  <data name="Navbar_Menu2" xml:space="preserve">
+    <value>Página 2</value>
+    <comment/>
+  </data>
+  <data name="Navbar_Menu3" xml:space="preserve">
+    <value>Página 3</value>
+    <comment/>
+  </data>
+  <data name="Navbar_Menu4" xml:space="preserve">
+    <value>Página 4</value>
+    <comment/>
+  </data>
+  <data name="Span_Copyright" xml:space="preserve">
+    <value>© 2026 Chamados TI</value>
+    <comment/>
+  </data>
 </root>
