@@ -58,7 +58,8 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseRequestLocalization();
+var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(localizationOptions.Value);
 
 app.UseAuthentication();
 app.UseAuthorization();

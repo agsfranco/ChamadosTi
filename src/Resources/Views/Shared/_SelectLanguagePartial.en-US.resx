@@ -117,12 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Idioma:" xml:space="preserve">
-    <value>Language:</value>
+  <data name="Div_Select" xml:space="preserve">
+    <value>Select preferred language</value>
     <comment/>
   </data>
-  <data name="Provedor da cultura do request:" xml:space="preserve">
-    <value>Request culture provider:</value>
+  <data name="Span_Idioma" xml:space="preserve">
+    <value>Language:</value>
     <comment/>
   </data>
 </root>

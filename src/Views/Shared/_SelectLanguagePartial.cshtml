@@ -11,12 +11,12 @@
     var requestCultureName = @requestCulture?.RequestCulture.UICulture.Name ?? "en-US";
 }
 
-<div title="@Localizer["Provedor da cultura do request:"] @requestCulture?.Provider?.GetType().Name">
+<div title="@Localizer["Div_Select"]">
     <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" 
           method="post" class="d-flex align-items-center gap-2" role="form">
         
         <!-- Texto explicativo discreto (opcional) -->
-        <span class="text-muted small">@Localizer["Idioma:"]</span>
+        <span class="text-muted small">@Localizer["Span_Idioma"]</span>
         
         <!-- Select customizado e compacto do Bootstrap 5 -->
         <select name="culture" onchange="this.form.submit();"
