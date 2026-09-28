@@ -1,27 +1,36 @@
-@using ChamadosTi.Models
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<Usuario> SignInManager
-@inject UserManager<Usuario> UserManager
-
-<ul class="navbar-nav">
+<ul class="navbar-nav align-items-center gap-2">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Olá @User.Identity?.Name!</a>
+    <!-- Saudacao ao Usuario -->
+    <li class="nav-item me-2">
+        <a class="nav-link fw-semibold text-dark p-0" asp-area="Identity" asp-page="/Account/Manage/Index" title="Gerenciar Conta">
+            Ola, <span class="text-primary">@User.Identity?.Name!</span>
+        </a>
     </li>
+    
+    <!-- Botao Sair (Dentro do Form) -->
     <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Sair</button>
+        <form class="d-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="btn btn-outline-danger btn-sm px-3">
+                Sair
+            </button>
         </form>
     </li>
 }
 else
 {
+    <!-- Link de Cadastro (Estilo Link/Texto) -->
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Registrar-se</a>
+        <a class="nav-link text-dark fw-medium px-2" asp-area="Identity" asp-page="/Account/Register">
+            Criar conta
+        </a>
     </li>
+    
+    <!-- Botao Entrar (Destaque Principal) -->
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Entrar</a>
+        <a class="btn btn-primary btn-sm px-3" asp-area="Identity" asp-page="/Account/Login">
+            Entrar
+        </a>
     </li>
 }
 </ul>
