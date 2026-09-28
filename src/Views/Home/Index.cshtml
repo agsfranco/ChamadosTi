@@ -1,26 +1,16 @@
-@{
-    ViewData["Title"] = "Página Principal";
-    ViewData["Subtitle"] = "Uma breve descrição ou subtítulo para a página (Opcional)";
-}
-
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <!-- Titulo e Subtitulo da Pagina com linha divisoria -->
 <div class="row mb-4">
     <div class="col-12">
-        <h1 class="display-6 fw-bold text-dark mb-1">@ViewData["Title"]</h1>
-        @if (ViewData["Subtitle"] != null)
-        {
-            <p class="text-muted fs-6 mb-0">@ViewData["Subtitle"]</p>
-        }
+        <h1 class="display-6 fw-bold text-dark mb-1">@Localizer["Title"]</h1>
+        <p class="text-muted fs-6 mb-0">@Localizer["Subtitle"]</p>
         <hr class="mt-2 mb-0">
     </div>
 </div>
-
 <!-- Cartao que envelopa o conteudo específico da View -->
 <div class="card shadow-sm border-light">
     <div class="card-body p-4">
-        
-        <!-- DIGITE OU COLE O CONTEÚDO ESPECÍFICO DA SUA PÁGINA AQUI -->
-        <p>Este é o espaço onde entrarão suas tabelas, formulários ou relatórios.</p>
-
+        <p>@Localizer["p_Conteudo"]</p>
     </div>
 </div>
