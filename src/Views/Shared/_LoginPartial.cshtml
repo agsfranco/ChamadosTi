@@ -3,8 +3,8 @@
 {
     <!-- Saudacao ao Usuario -->
     <li class="nav-item me-2">
-        <a class="nav-link fw-semibold text-dark p-0" asp-area="Identity" asp-page="/Account/Manage/Index" title="Gerenciar Conta">
-            Ola, <span class="text-primary">@User.Identity?.Name!</span>
+        <a class="nav-link fw-semibold text-dark p-0" asp-area="Identity" asp-page="/Account/Manage/Index" title="@Localizer["Title"]">
+            @Localizer["a_Greeting"], <span class="text-primary">@User.Identity?.Name!</span>
         </a>
     </li>
     
@@ -12,7 +12,7 @@
     <li class="nav-item">
         <form class="d-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
             <button type="submit" class="btn btn-outline-danger btn-sm px-3">
-                Sair
+                @Localizer["button_Sair"]
             </button>
         </form>
     </li>
@@ -22,14 +22,14 @@ else
     <!-- Link de Cadastro (Estilo Link/Texto) -->
     <li class="nav-item">
         <a class="nav-link text-dark fw-medium px-2" asp-area="Identity" asp-page="/Account/Register">
-            Criar conta
+            @Localizer["a_CriarConta"]
         </a>
     </li>
     
     <!-- Botao Entrar (Destaque Principal) -->
     <li class="nav-item">
         <a class="btn btn-primary btn-sm px-3" asp-area="Identity" asp-page="/Account/Login">
-            Entrar
+            @Localizer["a_Entrar"]
         </a>
     </li>
 }
