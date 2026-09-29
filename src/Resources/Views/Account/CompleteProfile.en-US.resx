@@ -122,7 +122,7 @@
     <comment/>
   </data>
   <data name="CompleteProfile_Instructions" xml:space="preserve">
-    <value>Please fill in the information below to enable your access to the ticketing system.</value>
+    <value>Please fill in the information below.</value>
     <comment/>
   </data>
   <data name="Name_Label" xml:space="preserve">
@@ -139,6 +139,10 @@
   </data>
   <data name="Button_SaveProfile" xml:space="preserve">
     <value>Finish Registration</value>
+    <comment/>
+  </data>
+  <data name="Button_ChangePasswordLink" xml:space="preserve">
+    <value>Update Password</value>
     <comment/>
   </data>
 </root>

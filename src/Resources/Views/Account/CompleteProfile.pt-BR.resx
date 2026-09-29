@@ -122,7 +122,7 @@
     <comment/>
   </data>
   <data name="CompleteProfile_Instructions" xml:space="preserve">
-    <value>Por favor, preencha as informações abaixo para liberar o seu acesso ao sistema de chamados.</value>
+    <value>Por favor, preencha as informações abaixo.</value>
     <comment/>
   </data>
   <data name="Name_Label" xml:space="preserve">
@@ -139,6 +139,10 @@
   </data>
   <data name="Button_SaveProfile" xml:space="preserve">
     <value>Finalizar Cadastro</value>
+    <comment/>
+  </data>
+  <data name="Button_ChangePasswordLink" xml:space="preserve">
+    <value>Alterar a Senha</value>
     <comment/>
   </data>
 </root>
