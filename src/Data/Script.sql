@@ -1,0 +1,4 @@
+  INSERT INTO SETORES (NOME,DESCRICAO) VALUES ('TI','Infraestrutura de Ti');
+  INSERT INTO SETORES (NOME,DESCRICAO) VALUES ('RH','Resursos Humanos');
+  INSERT INTO SETORES (NOME,DESCRICAO) VALUES ('Compras','Compras Gerais');
+  INSERT INTO SETORES (NOME,DESCRICAO) VALUES ('Almoxarifado','Almoxarifado Geral');

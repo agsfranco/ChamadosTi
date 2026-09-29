@@ -1,0 +1,44 @@
+@model ChamadosTi.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = Localizer["Register"];
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="border rounded p-4 shadow-sm bg-white">
+            <h2 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h2>
+            
+            <form asp-action="Register" method="post">
+                @Html.AntiForgeryToken()
+
+                
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" class="form-control" autocomplete="username" placeholder="name@example.com" aria-required="true" />
+                    <label asp-for="Email">@Localizer["Email"]</label>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" placeholder="Password" aria-required="true" />
+                    <label asp-for="Password">@Localizer["Password"]</label>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirm Password" aria-required="true" />
+                    <label asp-for="ConfirmPassword">@Localizer["Confirm password"]</label>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="w-100 btn btn-lg btn-primary mb-2">@Localizer["Register"]</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

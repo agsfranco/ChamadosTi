@@ -1,16 +1,23 @@
+@using Microsoft.AspNetCore.Identity
+@using ChamadosTi.Data
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject AppDbContext _context
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
 <ul class="navbar-nav align-items-center gap-2">
 @if (SignInManager.IsSignedIn(User))
 {
-    <!-- Saudacao ao Usuario -->
     <li class="nav-item me-2">
-        <a class="nav-link fw-semibold text-dark p-0" asp-area="Identity" asp-page="/Account/Manage/Index" title="@Localizer["Title"]">
+        <li class="nav-item me-2">
+        <a class="nav-link fw-semibold text-dark p-0" asp-controller="Account" asp-action="CompleteProfile">
             @Localizer["a_Greeting"], <span class="text-primary">@User.Identity?.Name!</span>
         </a>
     </li>
-    
-    <!-- Botao Sair (Dentro do Form) -->
+
+    </li>
     <li class="nav-item">
-        <form class="d-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <form class="d-inline" asp-controller="Account" asp-action="Logout" method="post">
             <button type="submit" class="btn btn-outline-danger btn-sm px-3">
                 @Localizer["button_Sair"]
             </button>
@@ -19,16 +26,13 @@
 }
 else
 {
-    <!-- Link de Cadastro (Estilo Link/Texto) -->
     <li class="nav-item">
-        <a class="nav-link text-dark fw-medium px-2" asp-area="Identity" asp-page="/Account/Register">
+        <a class="nav-link text-dark fw-medium px-2" asp-controller="Account" asp-action="Register">
             @Localizer["a_CriarConta"]
         </a>
     </li>
-    
-    <!-- Botao Entrar (Destaque Principal) -->
     <li class="nav-item">
-        <a class="btn btn-primary btn-sm px-3" asp-area="Identity" asp-page="/Account/Login">
+        <a class="btn btn-primary btn-sm px-3" asp-controller="Account" asp-action="Login">
             @Localizer["a_Entrar"]
         </a>
     </li>

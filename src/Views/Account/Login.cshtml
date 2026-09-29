@@ -1,0 +1,54 @@
+@model ChamadosTi.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = Localizer["Log in"];
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="border rounded p-4 shadow-sm bg-white">
+            <h2 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h2>
+            
+            <form asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <!-- Campo Email -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" class="form-control" autocomplete="username" placeholder="name@example.com" aria-required="true" />
+                    <label asp-for="Email">@Localizer["Email"]</label>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <!-- Campo Senha -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Password" class="form-control" autocomplete="current-password" placeholder="Password" aria-required="true" />
+                    <label asp-for="Password">@Localizer["Password"]</label>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <!-- ADICIONADO AQUI: Link Esqueci Minha Senha -->
+                <div class="mb-3 text-end">
+                    <a asp-controller="Account" asp-action="ForgotPassword" class="text-decoration-none small">
+                        @Localizer["Forgot your password?"]
+                    </a>
+                </div>
+
+                <!-- Lembrar-me -->
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="RememberMe" />
+                    <label class="form-check-label text-muted" asp-for="RememberMe">
+                        @Localizer["Remember me?"]
+                    </label>
+                </div>
+
+                <button type="submit" class="w-100 btn btn-lg btn-primary mb-2">@Localizer["Log in"]</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

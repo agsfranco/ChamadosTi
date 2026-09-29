@@ -1,7 +1,7 @@
-using System.Globalization;
 using ChamadosTi.Data;
-using ChamadosTi.Models;
+using ChamadosTi.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -40,10 +40,23 @@ builder.Services.AddHsts( options =>
     options.IncludeSubDomains = true;
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddIdentityCore<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
-}).AddEntityFrameworkStores<AppDbContext>();
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddApiEndpoints()
+.AddErrorDescriber<LocalizedIdentityErrorDescriber>();
+
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddCookie(IdentityConstants.ApplicationScheme, options =>
+    {
+        options.LoginPath = "/Account/Login"; 
+    });
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
@@ -64,11 +77,11 @@ app.UseRequestLocalization(localizationOptions.Value);
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapGroup("/api/auth").MapIdentityApi<IdentityUser>();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
-
-app.MapRazorPages();
 
 app.Run();

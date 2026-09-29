@@ -1,20 +1,17 @@
-﻿@{
-    ViewData["Title"] = @Localizer["Title"];
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@Localizer["Title"]</title>
     <link rel="icon" type="image/png" href="~/favicon.png">
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
 </head>
-
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom mb-3 shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand fw-bold text-dark" asp-controller="Home" asp-action="Index">
                     @Localizer["Title"]
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -24,45 +21,49 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu1"]</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu1"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu2"]</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu2"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu3"]</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu3"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu4"]</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">@Localizer["Navbar_Menu4"]</a>
                         </li>
                     </ul>
                     <div class="d-flex align-items-center">
+                        <!-- Chama a partial de login aqui -->
                         <partial name="_LoginPartial" />
                     </div>
-
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
+            <!-- Linha crucial restaurada aqui -->
             @RenderBody()
         </main>
     </div>
-    <footer class="d-flex justify-content-between align-items-center p-3 bg-light border-top">
+
+    <footer class="d-flex justify-content-between align-items-center p-3 bg-light border-top mt-auto">
         <div>
             <span class="text-muted">@Localizer["Span_Copyright"]</span>
         </div>
         <div>
             <ul class="nav">
                 <li class="nav-item">
-                    <a href="#" class="nav-link link-dark px-2">
+                    <span class="nav-link link-dark px-2">
                         <partial name="_SelectLanguagePartial" />
-                    </a>
+                    </span>
                 </li>
             </ul>
         </div>
     </footer>
+
     <environment include="Development">
         <script src="~/lib/jquery/jquery.js"></script>
         <script src="~/lib/bootstrap/js/bootstrap.bundle.js"></script>
@@ -73,5 +74,4 @@
     </environment>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>

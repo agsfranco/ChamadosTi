@@ -125,7 +125,7 @@
     <value>Hello</value>
     <comment/>
   </data>
-  <data name="Button_Sair" xml:space="preserve">
+  <data name="button_Sair" xml:space="preserve">
     <value>Exit</value>
     <comment/>
   </data>

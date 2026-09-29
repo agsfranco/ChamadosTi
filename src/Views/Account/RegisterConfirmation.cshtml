@@ -1,0 +1,11 @@
+@{ ViewData["Title"] = Localizer["Title"]; }
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center bg-white border rounded p-4 shadow-sm">
+        <h2>@ViewData["Title"]</h2>
+        <p class="mt-3">
+            @Localizer["Message_Part1"] <strong>@ViewBag.Email</strong>. @Localizer["Message_Part2"]
+        </p>
+    </div>
+</div>
+

@@ -1,0 +1,50 @@
+@model ChamadosTi.ViewModels.CompleteProfileViewModel
+
+@{
+    ViewData["Title"] = Localizer["CompleteProfile_Title"];
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="border rounded p-4 shadow-sm bg-white">
+            <h2 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h2>
+            <p class="text-muted small text-center mb-4">@Localizer["CompleteProfile_Instructions"]</p>
+            
+            <form asp-controller="Account" asp-action="CompleteProfile" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <!-- Campo Nome -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Nome" class="form-control" placeholder="Seu nome" aria-required="true" />
+                    <label asp-for="Nome">@Localizer["Name_Label"]</label>
+                    <span asp-validation-for="Nome" class="text-danger small"></span>
+                </div>
+
+                <!-- Campo Setor anterior ... -->
+                <div class="mb-4">
+                    <label asp-for="SetorId" class="form-label text-muted small px-2">@Localizer["Setor_Label"]</label>
+                    <select asp-for="SetorId" class="form-select" asp-items="@(new SelectList(ViewBag.Setores, "Id", "Nome"))">
+                        <option value="">@Localizer["Select_Setor_Placeholder"]</option>
+                    </select>
+                    <span asp-validation-for="SetorId" class="text-danger small"></span>
+                </div>
+
+                <!-- ADICIONADO AQUI: Link seguro para redefinir senha estando logado -->
+                <div class="mb-4 text-center">
+                    <a asp-controller="Account" asp-action="GenerateResetTokenForLoggedUser" class="btn btn-outline-secondary btn-sm w-100">
+                        @Localizer["Button_ChangePasswordLink"]
+                    </a>
+                </div>
+
+                <!-- Botão de Envio (Finalizar Cadastro / Salvar) -->
+                <button type="submit" class="w-100 btn btn-lg btn-primary mb-2">@Localizer["Button_SaveProfile"]</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
