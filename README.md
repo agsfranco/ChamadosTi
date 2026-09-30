@@ -4,7 +4,7 @@
 
 **Tecnologias/Ferramentas utilizadas**
 1. Entity Framework
-1. Identity
+1. Identity API
 1. Libman
 1. FluentAPI
 1. Bootstrap

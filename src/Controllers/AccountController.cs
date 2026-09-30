@@ -1,6 +1,6 @@
 using ChamadosTi.Data;
 using ChamadosTi.Models;
-using ChamadosTi.ViewModels;
+using ChamadosTi.ViewModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

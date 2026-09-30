@@ -67,7 +67,6 @@ namespace ChamadosTi.Data
                         .HasDefaultValue(true);
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -97,7 +96,7 @@ namespace ChamadosTi.Data
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
-                    b.Property<int?>("EspecialidadeId")
+                    b.Property<int>("EspecialidadeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nivel")
@@ -601,12 +600,10 @@ namespace ChamadosTi.Data
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -643,12 +640,10 @@ namespace ChamadosTi.Data
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -674,7 +669,8 @@ namespace ChamadosTi.Data
                     b.HasOne("ChamadosTi.Models.Especialidade", "Especialidades")
                         .WithMany()
                         .HasForeignKey("EspecialidadeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Especialidades");
                 });

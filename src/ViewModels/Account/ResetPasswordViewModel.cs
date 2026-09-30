@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ChamadosTi.ViewModels
+namespace ChamadosTi.ViewModels.Account
 {
-    public class RegisterViewModel
+    public class ResetPasswordViewModel
     {
         [Required(ErrorMessage = "The Email field is required.")]
         [EmailAddress(ErrorMessage = "The Email field is not a valid e-mail address.")]
@@ -15,10 +15,12 @@ namespace ChamadosTi.ViewModels
         [Display(Name = "Password")]
         public string Password { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "The Confirm password field is required.")] // <-- Garanta esta linha
+        [Required(ErrorMessage = "The Confirm password field is required.")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        public string Code { get; set; } = string.Empty;
     }
 }

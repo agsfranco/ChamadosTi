@@ -2,6 +2,7 @@ using ChamadosTi.Models;
 using ChamadosTi.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -46,12 +47,8 @@ namespace ChamadosTi.Data
                 p.ToTable("Setores");
                 p.HasKey(s => s.Id);
 
-                p.Property(s => s.Nome)
-                 .HasMaxLength(100)
-                 .IsRequired();
-                
-                p.Property(s => s.Descricao)
-                 .HasMaxLength(500);
+                p.Property(s => s.Nome).HasMaxLength(100).IsRequired();
+                p.Property(s => s.Descricao).HasMaxLength(500);
             });
             
             builder.Entity<Especialidade>(p=>
@@ -70,7 +67,8 @@ namespace ChamadosTi.Data
 
                 p.HasOne(d => d.Especialidades)
                  .WithMany()
-                 .HasForeignKey(d => d.EspecialidadeId);
+                 .HasForeignKey(d => d.EspecialidadeId)
+                 .IsRequired();
 
                 p.Property(d => d.Nivel).HasMaxLength(2).IsRequired();
             });
@@ -78,20 +76,23 @@ namespace ChamadosTi.Data
             builder.Entity<Usuario>(p=>
             {
                 p.ToTable("Usuarios");
+                p.HasKey(u => u.Id);
+
                 p.HasOne(u => u.AspNetUser)          
-                .WithOne()                           
-                .HasForeignKey<Usuario>(u => u.AspNetUserId)
-                .IsRequired();
+                 .WithOne()                           
+                 .HasForeignKey<Usuario>(u => u.AspNetUserId)
+                 .IsRequired();
 
                 p.HasOne(u => u.Setores)
                  .WithMany()
-                 .HasForeignKey(u => u.SetorId);
+                 .HasForeignKey(u => u.SetorId)
+                 .IsRequired();
 
                 p.HasOne(u => u.DadosTecnicos)
                  .WithMany()
                  .HasForeignKey(u => u.DadoTecnicoId);
 
-                p.Property(u => u.Nome).HasMaxLength(100).IsRequired();
+                p.Property(u => u.Nome).HasMaxLength(100).IsRequired(); 
             });
             
             builder.Entity<Prioridade>(p=>
@@ -108,7 +109,7 @@ namespace ChamadosTi.Data
                 p.HasKey(c => c.Id);
 
                 p.Property(c => c.Nome).HasMaxLength(100).IsRequired();
-                p.Property(c => c.Descricao).HasMaxLength(500).IsRequired();
+                p.Property(c => c.Descricao).HasMaxLength(500);
             });
             
             builder.Entity<Tipo>(p=>
@@ -135,11 +136,11 @@ namespace ChamadosTi.Data
 
                 p.HasOne(i => i.Tipos)
                  .WithMany()
-                 .HasForeignKey(i => i.TipoId);
+                 .HasForeignKey(i => i.TipoId).IsRequired();
                 
                 p.HasOne(i => i.Marcas)
                  .WithMany()
-                 .HasForeignKey(i => i.MarcaId);
+                 .HasForeignKey(i => i.MarcaId).IsRequired();
                 
                 p.HasOne(i => i.Setores)
                  .WithMany()

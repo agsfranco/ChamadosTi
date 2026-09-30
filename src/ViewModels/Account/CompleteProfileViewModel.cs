@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ChamadosTi.ViewModels
+namespace ChamadosTi.ViewModels.Account
 {
     public class CompleteProfileViewModel
     {
