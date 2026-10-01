@@ -101,8 +101,8 @@ namespace ChamadosTi.Data
 
                     b.Property<string>("Nivel")
                         .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("nvarchar(2)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 

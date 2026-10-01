@@ -1,0 +1,34 @@
+@model ChamadosTi.ViewModels.DadoTecnico.DadoTecnicoViewModel
+@{ ViewData["Title"] = Localizer["DadosTecnicos_Create_Title"]; }
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="border rounded p-4 shadow-sm bg-white">
+            <h2 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h2>
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                
+                <div class="form-floating mb-3">
+                    <input asp-for="Nivel" class="form-control" placeholder="Ex: N1, N2" aria-required="true" />
+                    <label asp-for="Nivel">@Localizer["Label_Nivel"]</label>
+                    <span asp-validation-for="Nivel" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="EspecialidadeId" class="form-label text-muted small px-2">@Localizer["Label_Especialidade"]</label>
+                    <select asp-for="EspecialidadeId" class="form-select form-select-lg text-secondary fs-6" 
+                            asp-items="@(new SelectList(ViewBag.Especialidades, "Id", "Nome"))">
+                        <option value="">@Localizer["Select_Placeholder"]</option>
+                    </select>
+                    <span asp-validation-for="EspecialidadeId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">@Localizer["Button_Save"]</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["Button_Cancel"]</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

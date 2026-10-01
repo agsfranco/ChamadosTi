@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="DadosTecnicos_Update_Title" xml:space="preserve"><value>Edit Technical Level</value></data>
+  <data name="Label_Nivel" xml:space="preserve"><value>Technical Level</value></data>
+  <data name="Label_Especialidade" xml:space="preserve"><value>Primary Specialty</value></data>
+  <data name="Select_Placeholder" xml:space="preserve"><value>-- Choose a specialty --</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Save Changes</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+</root>

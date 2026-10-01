@@ -70,7 +70,7 @@ namespace ChamadosTi.Data
                  .HasForeignKey(d => d.EspecialidadeId)
                  .IsRequired();
 
-                p.Property(d => d.Nivel).HasMaxLength(2).IsRequired();
+                p.Property(d => d.Nivel).HasMaxLength(100).IsRequired();
             });
             
             builder.Entity<Usuario>(p=>
