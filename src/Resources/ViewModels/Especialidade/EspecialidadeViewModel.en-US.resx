@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="CampoObrigatorio" xml:space="preserve"><value>This field is required.</value></data>
+  <data name="MinMax" xml:space="preserve"><value>The length must be between {2} and {1} characters.</value></data>
+</root>

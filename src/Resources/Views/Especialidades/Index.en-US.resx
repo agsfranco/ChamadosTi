@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Especialidades_Index_Title" xml:space="preserve"><value>Registered Specialties</value></data>
+  <data name="Especialidades_Create_Title" xml:space="preserve"><value>New Specialty</value></data>
+  <data name="Especialidades_Update_Title" xml:space="preserve"><value>Edit Specialty</value></data>
+  <data name="Especialidades_Delete_Title" xml:space="preserve"><value>Deactivate Specialty</value></data>
+  <data name="Table_Nome" xml:space="preserve"><value>Specialty</value></data>
+  <data name="Table_Descricao" xml:space="preserve"><value>Description</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Actions</value></data>
+  <data name="No_Records_Found" xml:space="preserve"><value>No active specialties found.</value></data>
+  <data name="Delete_Confirmation_Message" xml:space="preserve"><value>Are you sure you want to deactivate the specialty</value></data>
+  <data name="Label_Nome" xml:space="preserve"><value>Specialty Name</value></data>
+  <data name="Label_Descricao" xml:space="preserve"><value>Detailed Description</value></data>
+  <data name="Button_NewEspecialidade" xml:space="preserve"><value>Add Specialty</value></data>
+  <data name="Button_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Deactivate</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Save Changes</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Button_ConfirmDelete" xml:space="preserve"><value>Confirm Deactivation</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>View deactivated records</value></data>
+  <data name="Badge_Deactivated" xml:space="preserve"><value>Inactive</value></data>
+  <data name="Button_Activate" xml:space="preserve"><value>Activate</value></data>
+</root>

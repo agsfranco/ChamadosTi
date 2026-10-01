@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Especialidades_Index_Title" xml:space="preserve"><value>Especialidades Cadastradas</value></data>
+  <data name="Especialidades_Create_Title" xml:space="preserve"><value>Nova Especialidade</value></data>
+  <data name="Especialidades_Update_Title" xml:space="preserve"><value>Editar Especialidade</value></data>
+  <data name="Especialidades_Delete_Title" xml:space="preserve"><value>Inativar Especialidade</value></data>
+  <data name="Table_Nome" xml:space="preserve"><value>Especialidade</value></data>
+  <data name="Table_Descricao" xml:space="preserve"><value>Descrição</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Ações</value></data>
+  <data name="No_Records_Found" xml:space="preserve"><value>Nenhuma especialidade ativa encontrada.</value></data>
+  <data name="Delete_Confirmation_Message" xml:space="preserve"><value>Tem certeza que deseja inativar a especialidade</value></data>
+  <data name="Label_Nome" xml:space="preserve"><value>Nome da Especialidade</value></data>
+  <data name="Label_Descricao" xml:space="preserve"><value>Descrição Detalhada</value></data>
+  <data name="Button_NewEspecialidade" xml:space="preserve"><value>Adicionar Especialidade</value></data>
+  <data name="Button_Edit" xml:space="preserve"><value>Editar</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Inativar</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Salvar Alterações</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Button_ConfirmDelete" xml:space="preserve"><value>Confirmar Inativação</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>Visualizar registros inativos</value></data>
+  <data name="Badge_Deactivated" xml:space="preserve"><value>Inativo</value></data>
+  <data name="Button_Activate" xml:space="preserve"><value>Ativar</value></data>
+</root>
