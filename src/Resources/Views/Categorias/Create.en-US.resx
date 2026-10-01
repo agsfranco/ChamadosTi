@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Categorias_Create_Title" xml:space="preserve"><value>New Category</value></data>
+  <data name="Label_Nome" xml:space="preserve"><value>Category Name (e.g., Slow Internet, Mouse Replacement)</value></data>
+  <data name="Label_Especialidade" xml:space="preserve"><value>Responsible Specialty (Automatic Routing)</value></data>
+  <data name="Select_Placeholder" xml:space="preserve"><value>-- Choose a technical specialty --</value></data>
+  <data name="Label_Descricao" xml:space="preserve"><value>Short Description about the Category</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Save Category</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+</root>

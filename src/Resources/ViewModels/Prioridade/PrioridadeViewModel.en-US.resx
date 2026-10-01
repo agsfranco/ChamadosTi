@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="CampoObrigatorio" xml:space="preserve"><value>This field is required.</value></data>
+  <data name="MinMax" xml:space="preserve"><value>The name must be between {2} and {1} characters long.</value></data>
+  <data name="MinMaxValores" xml:space="preserve"><value>The timeframe must be between {1} and {2} hours.</value></data>
+  
+  <data name="Nome" xml:space="preserve"><value>Priority Name</value></data>
+  <data name="TempoResposta" xml:space="preserve"><value>Default Response Time (SLA in Hours)</value></data>
+  <data name="TempoResolucao" xml:space="preserve"><value>Default Resolution Time (SLA in Hours)</value></data>
+</root>

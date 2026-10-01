@@ -1,0 +1,39 @@
+@model ChamadosTi.ViewModels.Prioridade.PrioridadeViewModel
+@{ ViewData["Title"] = Localizer["Prioridades_Update_Title"]; }
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="border rounded p-4 shadow-sm bg-white">
+            <h2 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h2>
+            <form asp-action="Update" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Nome" class="form-control" placeholder="Nome" aria-required="true" />
+                    <label asp-for="Nome">@Localizer["Label_Nome"]</label>
+                    <span asp-validation-for="Nome" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="TempoRespostaPadrao" type="number" class="form-control" placeholder="Resposta" aria-required="true" />
+                    <label asp-for="TempoRespostaPadrao">@Localizer["Label_TempoResposta"]</label>
+                    <span asp-validation-for="TempoRespostaPadrao" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="TempoResolucaoPadrao" type="number" class="form-control" placeholder="Resolução" aria-required="true" />
+                    <label asp-for="TempoResolucaoPadrao">@Localizer["Label_TempoResolucao"]</label>
+                    <span asp-validation-for="TempoResolucaoPadrao" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">@Localizer["Button_Save"]</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["Button_Cancel"]</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Prioridades_Index_Title" xml:space="preserve"><value>Prioridades de Atendimento</value></data>
+  <data name="Table_Nome" xml:space="preserve"><value>Prioridade</value></data>
+  <data name="Table_TempoResposta" xml:space="preserve"><value>Tempo de Resposta</value></data>
+  <data name="Table_TempoResolucao" xml:space="preserve"><value>Tempo de Resolução</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Ações</value></data>
+  <data name="No_Records_Found" xml:space="preserve"><value>Nenhuma prioridade ativa encontrada no sistema.</value></data>
+  <data name="Button_NewPrioridade" xml:space="preserve"><value>Adicionar Prioridade</value></data>
+  <data name="Button_Edit" xml:space="preserve"><value>Editar</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Inativar</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>Visualizar registros inativos</value></data>
+  <data name="Badge_Deactivated" xml:space="preserve"><value>Inativa</value></data>
+  <data name="Button_Activate" xml:space="preserve"><value>Ativar</value></data>
+  <data name="Text_Hours" xml:space="preserve"><value>horas</value></data>
+</root>

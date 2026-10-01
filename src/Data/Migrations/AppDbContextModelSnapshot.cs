@@ -70,15 +70,17 @@ namespace ChamadosTi.Data
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int?>("EspecialidadeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("PrazoResolucaoSla")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EspecialidadeId");
 
                     b.ToTable("Categorias", (string)null);
                 });
@@ -96,7 +98,7 @@ namespace ChamadosTi.Data
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
-                    b.Property<int>("EspecialidadeId")
+                    b.Property<int?>("EspecialidadeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nivel")
@@ -664,13 +666,22 @@ namespace ChamadosTi.Data
                     b.Navigation("Ticket");
                 });
 
+            modelBuilder.Entity("ChamadosTi.Models.Categoria", b =>
+                {
+                    b.HasOne("ChamadosTi.Models.Especialidade", "Especialidades")
+                        .WithMany()
+                        .HasForeignKey("EspecialidadeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Especialidades");
+                });
+
             modelBuilder.Entity("ChamadosTi.Models.DadoTecnico", b =>
                 {
                     b.HasOne("ChamadosTi.Models.Especialidade", "Especialidades")
                         .WithMany()
                         .HasForeignKey("EspecialidadeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Especialidades");
                 });

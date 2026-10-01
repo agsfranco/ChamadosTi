@@ -54,9 +54,9 @@ erDiagram
     %% Categoria do Chamado: Redes, Hardware, Acessos
     Categorias {
         int Id PK
+        int EspecialidadesId FK
         string Nome
         string Descricao
-        int PrazoResolucaoSLA
         bit Ativo
     }
 
@@ -137,6 +137,7 @@ erDiagram
     Usuarios ||--o{ Tickets : "cria"
     Usuarios ||--o{ Tickets : "atribuido_a"
     Especialidades ||--o{ DadosTecnicos : "qualifica"
+    Especialidades ||--o{ Categorias : "qualifica"
     Categorias ||--o{ Tickets : "categoriza"
     Prioridades ||--o{ Tickets : "prioriza"
     Setores ||--o{ Tickets : "origina"

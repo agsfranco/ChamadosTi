@@ -1,0 +1,71 @@
+@model IEnumerable<ChamadosTi.Models.Categoria>
+@{ ViewData["Title"] = Localizer["Categorias_Index_Title"]; }
+
+<div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+    <h2>@ViewData["Title"]</h2>
+    <a asp-action="Create" class="btn btn-primary">@Localizer["Button_NewCategoria"]</a>
+</div>
+
+<div class="mb-4">
+    <form asp-action="Index" method="get" class="d-inline-block">
+        <div class="form-check form-switch bg-white border rounded py-2 pe-3 ps-5 shadow-sm d-inline-flex align-items-center">
+            <input class="form-check-input" type="checkbox" id="chkExibirInativos" name="exibirInativos" value="true"
+                   @(ViewBag.ExibirInativos ? "checked" : "") onchange="this.form.submit()" style="cursor: pointer;" />
+            <label class="form-check-label text-secondary fw-medium ms-2" for="chkExibirInativos" style="cursor: pointer;">
+                @Localizer["Checkbox_ShowDeactivated"]
+            </label>
+        </div>
+    </form>
+</div>
+
+<div class="card shadow-sm bg-white rounded border">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" class="px-4">@Localizer["Table_Nome"]</th>
+                    <th scope="col">@Localizer["Table_Especialidade"]</th>
+                    <th scope="col">@Localizer["Table_Descricao"]</th>
+                    <th scope="col" class="text-end px-4">@Localizer["Table_Acoes"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="4" class="text-center text-muted py-4">@Localizer["No_Records_Found"]</td></tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr class="@(!item.Ativo ? "table-light text-muted opacity-75" : "")">
+                        <td class="fw-medium px-4">
+                            @item.Nome
+                            @if (!item.Ativo)
+                            {
+                                <span class="badge bg-secondary text-white ms-2 small">@Localizer["Badge_Deactivated"]</span>
+                            }
+                        </td>
+                        <!-- Tratamento contra nulos usando a checagem segura ?. -->
+                        <td>@(item.Especialidades?.Nome ?? "N/A")</td>
+                        <td>@item.Descricao</td>
+                        <td class="text-end px-4">
+                            @if (item.Ativo)
+                            {
+                                <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">@Localizer["Button_Edit"]</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">@Localizer["Button_Delete"]</a>
+                            }
+                            else
+                            {
+                                <form asp-action="Ativar" asp-route-id="@item.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-success" style="cursor: pointer;">
+                                        <i class="bi bi-arrow-counterclockwise"></i> @Localizer["Button_Activate"]
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

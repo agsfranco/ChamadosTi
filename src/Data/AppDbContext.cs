@@ -67,8 +67,7 @@ namespace ChamadosTi.Data
 
                 p.HasOne(d => d.Especialidades)
                  .WithMany()
-                 .HasForeignKey(d => d.EspecialidadeId)
-                 .IsRequired();
+                 .HasForeignKey(d => d.EspecialidadeId);
 
                 p.Property(d => d.Nivel).HasMaxLength(100).IsRequired();
             });
@@ -107,6 +106,10 @@ namespace ChamadosTi.Data
             {
                 p.ToTable("Categorias");
                 p.HasKey(c => c.Id);
+
+                p.HasOne(d => d.Especialidades)
+                 .WithMany()
+                 .HasForeignKey(d => d.EspecialidadeId);
 
                 p.Property(c => c.Nome).HasMaxLength(100).IsRequired();
                 p.Property(c => c.Descricao).HasMaxLength(500);

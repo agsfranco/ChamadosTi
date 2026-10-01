@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Prioridades_Update_Title" xml:space="preserve"><value>Editar Prioridade</value></data>
+  <data name="Label_Nome" xml:space="preserve"><value>Nome da Prioridade</value></data>
+  <data name="Label_TempoResposta" xml:space="preserve"><value>Tempo de Resposta Padrão (SLA - em horas)</value></data>
+  <data name="Label_TempoResolucao" xml:space="preserve"><value>Tempo de Resolução Padrão (SLA - em horas)</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Salvar Alterações</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+</root>

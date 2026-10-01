@@ -8,7 +8,7 @@ namespace ChamadosTi.Models
         public int? EspecialidadeId { get; set; }
         public string Nivel { get; set; } = null!;
         public bool Ativo { get; set; } = true;
-        public virtual Especialidade Especialidades { get; set; } = null!;
+        public virtual Especialidade? Especialidades { get; set; }
 
     }
 }
