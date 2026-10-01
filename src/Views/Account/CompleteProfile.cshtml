@@ -15,15 +15,13 @@
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
-                <!-- Campo Nome -->
                 <div class="form-floating mb-3">
                     <input asp-for="Nome" class="form-control" placeholder="Seu nome" aria-required="true" />
                     <label asp-for="Nome">@Localizer["Name_Label"]</label>
                     <span asp-validation-for="Nome" class="text-danger small"></span>
                 </div>
 
-                <!-- Campo Setor anterior ... -->
-                <div class="mb-4">
+                <div class="mb-3">
                     <label asp-for="SetorId" class="form-label text-muted small px-2">@Localizer["Setor_Label"]</label>
                     <select asp-for="SetorId" class="form-select" asp-items="@(new SelectList(ViewBag.Setores, "Id", "Nome"))">
                         <option value="">@Localizer["Select_Setor_Placeholder"]</option>
@@ -31,14 +29,31 @@
                     <span asp-validation-for="SetorId" class="text-danger small"></span>
                 </div>
 
-                <!-- ADICIONADO AQUI: Link seguro para redefinir senha estando logado -->
+                @if (ViewBag.PermitirMudarStatusTecnico == true)
+                {
+                    <div class="form-check form-switch bg-light border rounded p-3 mb-3 shadow-sm d-flex align-items-center justify-content-between">
+                        <label class="form-check-label text-secondary fw-semibold ms-2" for="chkEhTecnico">
+                            @Localizer["Checkbox_EhTecnico"]
+                        </label>
+                        <input class="form-check-input me-1" type="checkbox" id="chkEhTecnico" asp-for="EhTecnico" style="cursor: pointer;" />
+                    </div>
+
+                    <div id="divDadoTecnico" class="mb-4 d-none">
+                        <label asp-for="DadoTecnicoId" class="form-label text-muted small px-2">@Localizer["Label_DadoTecnico"]</label>
+                        <select id="selectDadoTecnico" asp-for="DadoTecnicoId" class="form-select" 
+                                asp-items="@(new SelectList(ViewBag.DadosTecnicos, "Id", "DescricaoFormatada"))">
+                            <option value="">@Localizer["Select_DadoTecnico_Placeholder"]</option>
+                        </select>
+                        <span asp-validation-for="DadoTecnicoId" class="text-danger small"></span>
+                    </div>
+                }
+
                 <div class="mb-4 text-center">
                     <a asp-controller="Account" asp-action="GenerateResetTokenForLoggedUser" class="btn btn-outline-secondary btn-sm w-100">
                         @Localizer["Button_ChangePasswordLink"]
                     </a>
                 </div>
 
-                <!-- Botão de Envio (Finalizar Cadastro / Salvar) -->
                 <button type="submit" class="w-100 btn btn-lg btn-primary mb-2">@Localizer["Button_SaveProfile"]</button>
             </form>
         </div>
@@ -47,4 +62,29 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const chkEhTecnico = document.getElementById("chkEhTecnico");
+            const divDadoTecnico = document.getElementById("divDadoTecnico");
+            const selectDadoTecnico = document.getElementById("selectDadoTecnico");
+
+            if (chkEhTecnico && divDadoTecnico) {
+                function alternarExibicao() {
+                    if (chkEhTecnico.checked) {
+                        divDadoTecnico.classList.remove("d-none");
+                    } else {
+                        divDadoTecnico.classList.add("d-none");
+                        if (selectDadoTecnico) {
+                            selectDadoTecnico.value = "";
+                        }
+                    }
+                }
+
+                alternarExibicao();
+
+                chkEhTecnico.addEventListener("change", alternarExibicao);
+            }
+        });
+    </script>
 }

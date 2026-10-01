@@ -12,5 +12,11 @@ namespace ChamadosTi.ViewModels.Account
         [Required(ErrorMessage = "CampoObrigatorio")]
         [Display(Name = "Setor")]
         public int? SetorId { get; set; }
+
+        // Novos campos adicionados para o fluxo de técnico
+        public bool EhTecnico { get; set; }
+
+        [Display(Name = "DadoTecnico")]
+        public int? DadoTecnicoId { get; set; }
     }
 }

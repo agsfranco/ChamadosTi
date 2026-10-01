@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -238,35 +239,46 @@ namespace ChamadosTi.Controllers
             return View();
         }
 
-        // GET: Account/CompleteProfile
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> CompleteProfile()
         {
             var identityUserId = _userManager.GetUserId(User);
-            ViewBag.Setores = _context.Setores.ToList();
+            
+            ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();
+            
+            ViewBag.DadosTecnicos = _context.DadosTecnicos
+            .Include(d => d.Especialidades)
+            .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
+            .ThenBy(d => d.Nivel)
+            .Select(d => new {
+                Id = d.Id,
+                DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel
+            }).ToList();
 
-            // Busca se o usuário já existe na tabela complementar
+            // Verifica se o usuário pode gerenciar o próprio status de técnico
+            // Só permitimos se ele for o primeiro usuário do sistema ou se ele mesmo já for um técnico editando seu perfil
+            var totalUsuarios = _context.Usuarios.Count();
             var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
+            
+            ViewBag.PermitirMudarStatusTecnico = totalUsuarios == 1 || (usuarioExistente != null && usuarioExistente.EhTecnico);
 
-            // Se NÃO existir, abre a tela com os campos vazios (Criação)
             if (usuarioExistente == null)
             {
                 return View(new CompleteProfileViewModel());
             }
 
-            // Se JÁ existir, popula a ViewModel com os dados do banco (Edição)
             var model = new CompleteProfileViewModel
             {
                 Nome = usuarioExistente.Nome,
-                SetorId = usuarioExistente.SetorId
+                SetorId = usuarioExistente.SetorId,
+                EhTecnico = usuarioExistente.EhTecnico,
+                DadoTecnicoId = usuarioExistente.DadoTecnicoId
             };
 
             return View(model);
         }
 
-
-        // POST: Account/CompleteProfile
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -274,24 +286,45 @@ namespace ChamadosTi.Controllers
         {
             var identityUserId = _userManager.GetUserId(User);
 
+            if (string.IsNullOrEmpty(identityUserId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Setores = _context.Setores.ToList();
+                ViewBag.DadosTecnicos = _context.DadosTecnicos.Include(d => d.Especialidades)
+                    .Select(d => new { Id = d.Id, DescricaoFormatada = d.Nivel + " - " + (d.Especialidades != null ? d.Especialidades.Nome : "") }).ToList();
+                
+                var total = _context.Usuarios.Count();
+                var atual = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
+                ViewBag.PermitirMudarStatusTecnico = total == 0 || (atual != null && atual.EhTecnico);
+                
                 return View(model);
             }
 
-            // Busca se o registro já existe no banco
             var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
+            var totalUsuariosSistema = _context.Usuarios.Count();
+
+            // Se o usuário desmarcou o checkbox ou não preencheu, limpa a FK
+            if (!model.EhTecnico)
+            {
+                model.DadoTecnicoId = null;
+            }
 
             if (usuarioExistente == null)
             {
-                // MODO CRIAÇÃO: Cria um novo registro se for o primeiro login
+                // Se for o primeiro usuário absoluto, ele pode se auto-promover, senão força false
+                bool definirComoTecnico = totalUsuariosSistema == 0 ? model.EhTecnico : false;
+
                 var novoUsuario = new Usuario
                 {
-                    AspNetUserId = identityUserId!,
+                    AspNetUserId = identityUserId,
                     Nome = model.Nome,
-                    SetorId = model.SetorId!.Value, // Usamos !.Value pois agora é int? na ViewModel
-                    EhTecnico = false,
+                    SetorId = model.SetorId!.Value,
+                    EhTecnico = definirComoTecnico,
+                    DadoTecnicoId = definirComoTecnico ? model.DadoTecnicoId : null,
                     Ativo = true
                 };
 
@@ -299,9 +332,15 @@ namespace ChamadosTi.Controllers
             }
             else
             {
-                // MODO EDIÇÃO: Atualiza os dados existentes
                 usuarioExistente.Nome = model.Nome;
                 usuarioExistente.SetorId = model.SetorId!.Value;
+                
+                // Só aplica a alteração do checkbox de técnico se a ViewBag deu permissão legítima
+                if (totalUsuariosSistema == 1 || usuarioExistente.EhTecnico)
+                {
+                    usuarioExistente.EhTecnico = model.EhTecnico;
+                    usuarioExistente.DadoTecnicoId = model.DadoTecnicoId;
+                }
 
                 _context.Usuarios.Update(usuarioExistente);
             }
