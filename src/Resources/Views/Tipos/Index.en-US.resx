@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Tipos_Index_Title" xml:space="preserve"><value>Equipment Types</value></data>
+  <data name="Table_Nome" xml:space="preserve"><value>Equipment</value></data>
+  <data name="Table_Comentario" xml:space="preserve"><value>Comments / Notes</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Actions</value></data>
+  <data name="No_Records_Found" xml:space="preserve"><value>No active equipment types found.</value></data>
+  <data name="Button_NewTipo" xml:space="preserve"><value>Add Type</value></data>
+  <data name="Button_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Deactivate</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>View deactivated records</value></data>
+  <data name="Badge_Deactivated" xml:space="preserve"><value>Inactive</value></data>
+  <data name="Button_Activate" xml:space="preserve"><value>Activate</value></data>
+</root>
