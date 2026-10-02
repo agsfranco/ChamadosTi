@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Itens_Index_Title" xml:space="preserve"><value>Items / Asset Inventory</value></data>
+  <data name="Table_Nome" xml:space="preserve"><value>Item / Asset</value></data>
+  <data name="Table_Tipo" xml:space="preserve"><value>Equipment Type</value></data>
+  <data name="Table_Marca" xml:space="preserve"><value>Brand</value></data>
+  <data name="Table_Setor" xml:space="preserve"><value>Allocation (Sector)</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Actions</value></data>
+  <data name="No_Records_Found" xml:space="preserve"><value>No items or assets found.</value></data>
+  <data name="Button_NewItem" xml:space="preserve"><value>Add New Item</value></data>
+  <data name="Button_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Deactivate</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>View deactivated items</value></data>
+  <data name="Badge_Deactivated" xml:space="preserve"><value>Inactive</value></data>
+  <data name="Button_Activate" xml:space="preserve"><value>Activate</value></data>
+</root>

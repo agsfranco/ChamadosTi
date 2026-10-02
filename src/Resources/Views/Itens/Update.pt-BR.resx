@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Itens_Update_Title" xml:space="preserve"><value>Editar Dados do Item</value></data>
+  <data name="Label_Nome" xml:space="preserve"><value>Nome ou Identificação do Item</value></data>
+  <data name="Label_Tipo" xml:space="preserve"><value>Tipo de Equipamento</value></data>
+  <data name="Select_Tipo_Placeholder" xml:space="preserve"><value>-- Selecione um Tipo --</value></data>
+  <data name="Label_Marca" xml:space="preserve"><value>Marca do Fabricante</value></data>
+  <data name="Select_Marca_Placeholder" xml:space="preserve"><value>-- Selecione uma Marca --</value></data>
+  <data name="Label_Setor" xml:space="preserve"><value>Setor Alocado (Opcional)</value></data>
+  <data name="Select_Setor_Placeholder" xml:space="preserve"><value>-- Item em Estoque / Sem Setor --</value></data>
+  <data name="Label_Comentario" xml:space="preserve"><value>Observações ou Comentários Extras</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Salvar Alterações</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+</root>

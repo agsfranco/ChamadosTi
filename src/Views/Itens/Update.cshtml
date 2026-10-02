@@ -1,0 +1,55 @@
+@model ChamadosTi.ViewModels.Item.ItemViewModel
+@{ ViewData["Title"] = Localizer["Itens_Update_Title"]; }
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="border rounded p-4 shadow-sm bg-white">
+            <h2 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h2>
+            <form asp-action="Update" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Nome" class="form-control" placeholder="Nome" aria-required="true" />
+                    <label asp-for="Nome">@Localizer["Label_Nome"]</label>
+                    <span asp-validation-for="Nome" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="TipoId" class="form-label text-muted small px-2">@Localizer["Label_Tipo"]</label>
+                    <select asp-for="TipoId" class="form-select" asp-items="@(new SelectList(ViewBag.Tipos, "Id", "Nome"))">
+                        <option value="">@Localizer["Select_Tipo_Placeholder"]</option>
+                    </select>
+                    <span asp-validation-for="TipoId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MarcaId" class="form-label text-muted small px-2">@Localizer["Label_Marca"]</label>
+                    <select asp-for="MarcaId" class="form-select" asp-items="@(new SelectList(ViewBag.Marcas, "Id", "Nome"))">
+                        <option value="">@Localizer["Select_Marca_Placeholder"]</option>
+                    </select>
+                    <span asp-validation-for="MarcaId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SetorId" class="form-label text-muted small px-2">@Localizer["Label_Setor"]</label>
+                    <select asp-for="SetorId" class="form-select" asp-items="@(new SelectList(ViewBag.Setores, "Id", "Nome"))">
+                        <option value="">@Localizer["Select_Setor_Placeholder"]</option>
+                    </select>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <textarea asp-for="Comentario" class="form-control" placeholder="Comentário" style="height: 100px;"></textarea>
+                    <label asp-for="Comentario">@Localizer["Label_Comentario"]</label>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">@Localizer["Button_Save"]</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["Button_Cancel"]</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Itens_Create_Title" xml:space="preserve"><value>Register Item / Asset</value></data>
+  <data name="Label_Nome" xml:space="preserve"><value>Item Name or ID (e.g., Developer Laptop 01)</value></data>
+  <data name="Label_Tipo" xml:space="preserve"><value>Equipment Type</value></data>
+  <data name="Select_Tipo_Placeholder" xml:space="preserve"><value>-- Select a Type --</value></data>
+  <data name="Label_Marca" xml:space="preserve"><value>Manufacturer Brand</value></data>
+  <data name="Select_Marca_Placeholder" xml:space="preserve"><value>-- Select a Brand --</value></data>
+  <data name="Label_Setor" xml:space="preserve"><value>Allocated Sector (Optional)</value></data>
+  <data name="Select_Setor_Placeholder" xml:space="preserve"><value>-- In Stock / No Sector --</value></data>
+  <data name="Label_Comentario" xml:space="preserve"><value>Additional Comments or Remarks</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Save Item</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+</root>
