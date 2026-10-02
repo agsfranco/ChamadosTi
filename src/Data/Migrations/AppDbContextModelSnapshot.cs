@@ -299,11 +299,6 @@ namespace ChamadosTi.Data
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Ativo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
                     b.Property<int>("Codigo")
                         .HasColumnType("int");
 
@@ -315,6 +310,38 @@ namespace ChamadosTi.Data
                     b.HasKey("Id");
 
                     b.ToTable("Status", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Codigo = 1,
+                            Nome = "Status_Aberto"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Codigo = 2,
+                            Nome = "Status_EmAtendimento"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Codigo = 3,
+                            Nome = "Status_Pendente"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Codigo = 4,
+                            Nome = "Status_Resolvido"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Codigo = 5,
+                            Nome = "Status_Fechado"
+                        });
                 });
 
             modelBuilder.Entity("ChamadosTi.Models.Ticket", b =>

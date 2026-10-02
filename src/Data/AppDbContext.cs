@@ -222,6 +222,15 @@ namespace ChamadosTi.Data
                 p.Property(at => at.Log).HasMaxLength(-1);
             });
 
+            builder.Entity<Status>().HasData(
+                new Status { Id = 1, Codigo = (int)TicketStatusEnum.Aberto, Nome = "Status_Aberto" },
+                new Status { Id = 2, Codigo = (int)TicketStatusEnum.EmAtendimento, Nome = "Status_EmAtendimento" },
+                new Status { Id = 3, Codigo = (int)TicketStatusEnum.Pendente, Nome = "Status_Pendente" },
+                new Status { Id = 4, Codigo = (int)TicketStatusEnum.Resolvido, Nome = "Status_Resolvido" },
+                new Status { Id = 5, Codigo = (int)TicketStatusEnum.Fechado, Nome = "Status_Fechado" }
+            );
+
+
             AplicaSoftDelete(builder);
         }
     
