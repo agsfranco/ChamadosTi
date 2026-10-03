@@ -11,4 +11,11 @@ namespace ChamadosTi.Models
         public bool Ativo { get; set; } = true;
         public virtual Ticket Ticket { get; set; } = null!;
     }
+
+    public class LogAuditoriaTicket
+    {
+        public string Acao { get; set; } = string.Empty;
+        public string Usuario { get; set; } = string.Empty;
+        public Dictionary<string, string>? CamposModificados { get; set; }
+    }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Tickets_Create_Title" xml:space="preserve"><value>Abrir Novo Chamado de TI</value></data>
+  <data name="Tickets_Create_Instructions" xml:space="preserve"><value>Por favor, descreva o seu problema de forma clara. Nossa equipe responderá respeitando os prazos acordados de SLA.</value></data>
+  <data name="Label_Titulo" xml:space="preserve"><value>Resumo do Problema (Título)</value></data>
+  <data name="Label_Categoria" xml:space="preserve"><value>Selecione a Categoria Relacionada</value></data>
+  <data name="Select_Categoria_Placeholder" xml:space="preserve"><value>-- Escolha uma Categoria --</value></data>
+  <data name="Label_ItensAfetados" xml:space="preserve"><value>Equipamentos / Ativos Afetados (Opcional)</value></data>
+  <data name="HelpText_MultipleSelection" xml:space="preserve"><value>Segure a tecla CTRL (ou Command no Mac) para selecionar mais de um equipamento.</value></data>
+  <data name="Label_Comentario" xml:space="preserve"><value>Explique detalhadamente o que está acontecendo</value></data>
+  <data name="Button_OpenTicket" xml:space="preserve"><value>Registrar e Abrir Chamado</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+</root>

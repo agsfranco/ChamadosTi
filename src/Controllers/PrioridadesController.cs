@@ -31,14 +31,14 @@ namespace ChamadosTi.Controllers
                 prioridades = _context.Prioridades
                     .IgnoreQueryFilters()
                     .Where(p => !p.Ativo)
-                    .OrderBy(p => p.Nome)
+                    .OrderBy(p => p.Id)
                     .ToList();
             }
             else
             {
                 // Filtro global traz apenas os ativos ordenados por nome
                 prioridades = _context.Prioridades
-                    .OrderBy(p => p.Nome)
+                    .OrderBy(p => p.Id)
                     .ToList();
             }
 
