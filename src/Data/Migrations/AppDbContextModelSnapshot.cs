@@ -140,6 +140,67 @@ namespace ChamadosTi.Data
                     b.ToTable("Especialidades", (string)null);
                 });
 
+            modelBuilder.Entity("ChamadosTi.Models.Feriado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateOnly>("Dia")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Feriados", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Horario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeOnly>("AlmocoFim")
+                        .HasColumnType("time");
+
+                    b.Property<TimeOnly>("AlmocoInicio")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("DiaDaSemana")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<TimeOnly>("JornadaFim")
+                        .HasColumnType("time");
+
+                    b.Property<TimeOnly>("JornadaInicio")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Horarios", (string)null);
+                });
+
             modelBuilder.Entity("ChamadosTi.Models.Item", b =>
                 {
                     b.Property<int>("Id")
@@ -289,6 +350,26 @@ namespace ChamadosTi.Data
                     b.HasKey("Id");
 
                     b.ToTable("Setores", (string)null);
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.SetorHorario", b =>
+                {
+                    b.Property<int>("SetorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HorarioId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.HasKey("SetorId", "HorarioId");
+
+                    b.HasIndex("HorarioId");
+
+                    b.ToTable("SetoresHorarios", (string)null);
                 });
 
             modelBuilder.Entity("ChamadosTi.Models.Status", b =>
@@ -758,6 +839,25 @@ namespace ChamadosTi.Data
                     b.Navigation("Ticket");
                 });
 
+            modelBuilder.Entity("ChamadosTi.Models.SetorHorario", b =>
+                {
+                    b.HasOne("ChamadosTi.Models.Horario", "Horario")
+                        .WithMany("SetoresHorarios")
+                        .HasForeignKey("HorarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChamadosTi.Models.Setor", "Setor")
+                        .WithMany("SetoresHorarios")
+                        .HasForeignKey("SetorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Horario");
+
+                    b.Navigation("Setor");
+                });
+
             modelBuilder.Entity("ChamadosTi.Models.Ticket", b =>
                 {
                     b.HasOne("ChamadosTi.Models.Categoria", "Categorias")
@@ -885,9 +985,19 @@ namespace ChamadosTi.Data
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ChamadosTi.Models.Horario", b =>
+                {
+                    b.Navigation("SetoresHorarios");
+                });
+
             modelBuilder.Entity("ChamadosTi.Models.Item", b =>
                 {
                     b.Navigation("ItensTickets");
+                });
+
+            modelBuilder.Entity("ChamadosTi.Models.Setor", b =>
+                {
+                    b.Navigation("SetoresHorarios");
                 });
 
             modelBuilder.Entity("ChamadosTi.Models.Ticket", b =>

@@ -1,10 +1,35 @@
 ```mermaid
 erDiagram
+    %% Feriados
+    Feriados {
+        int id PK
+        string Nome
+        dateonly Dia
+        bit Ativo
+    }
+
+    %% horários de funcionamento dos Setores
+    Horarios {
+        int id PK
+        string DiaDaSemana
+        timeonly JornadaInicio
+        timeonly JornadaFim
+        timeonly AlmocoInicio
+        timeonly AlmocoFim
+        bit Ativo
+    }
+
     %% Setor da Empresa
     Setores {
-        int Id PK
+        int Id PK      
         string Nome
         string Descricao
+        bit Ativo
+    }
+
+    SetoresHorarios {
+        int SetorId PK, FK
+        int HorarioId PK, FK
         bit Ativo
     }
 
@@ -130,7 +155,9 @@ erDiagram
         bit Ativo
     }
 
-    %% Demais Relacionamentos
+    %% Relacionamentos
+    Setores || -- o{ SetoresHorarios : "possui"
+    Horarios || -- o{ SetoresHorarios : "esta"
     AspNetUsers ||--o| Usuarios : "pertence"
     DadosTecnicos o|--o{ Usuarios : "contem"    
     Setores ||--o{ Usuarios : "possui"

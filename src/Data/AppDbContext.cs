@@ -42,6 +42,22 @@ namespace ChamadosTi.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Feriado>(p=>
+            {
+                p.ToTable("Feriados");
+                p.HasKey(f => f.Id);
+
+                p.Property(f => f.Nome).HasMaxLength(100).IsRequired();
+            });
+
+            builder.Entity<Horario>(p=>
+            {
+                p.ToTable("Horarios");
+                p.HasKey(h => h.Id);
+
+                p.Property(h => h.DiaDaSemana).HasMaxLength(100).IsRequired();
+            });
+
             builder.Entity<Setor>(p=>
             {
                 p.ToTable("Setores");
@@ -49,6 +65,20 @@ namespace ChamadosTi.Data
 
                 p.Property(s => s.Nome).HasMaxLength(100).IsRequired();
                 p.Property(s => s.Descricao).HasMaxLength(500);
+            });
+
+            builder.Entity<SetorHorario>(p=>
+            {
+               p.ToTable("SetoresHorarios");
+               p.HasKey(x=> new{ x.SetorId, x.HorarioId });
+
+               p.HasOne(x => x.Setor)
+                .WithMany(x => x.SetoresHorarios)
+                .HasForeignKey(x => x.SetorId);
+
+               p.HasOne(x => x.Horario)
+                .WithMany(x => x.SetoresHorarios)
+                .HasForeignKey(x => x.HorarioId); 
             });
             
             builder.Entity<Especialidade>(p=>
