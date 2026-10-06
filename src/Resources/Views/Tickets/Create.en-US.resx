@@ -12,4 +12,8 @@
   <data name="Label_Comentario" xml:space="preserve"><value>Explain in detail what is happening</value></data>
   <data name="Button_OpenTicket" xml:space="preserve"><value>Register and Open Ticket</value></data>
   <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Log_AberturaChamado" xml:space="preserve"><value>Ticket Created</value></data>
+  <data name="Log_StatusInicial" xml:space="preserve"><value>Initial Status</value></data>
+  <data name="Log_PrazoResposta" xml:space="preserve"><value>First Response SLA</value></data>
+  <data name="Log_PrazoResolucao" xml:space="preserve"><value>Estimated Resolution SLA</value></data>
 </root>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Horarios_Index_Title" xml:space="preserve"><value>Horários de Funcionamento</value></data>
+  <data name="Table_DiaDaSemana" xml:space="preserve"><value>Dia da Semana</value></data>
+  <data name="Table_Jornada" xml:space="preserve"><value>Expediente</value></data>
+  <data name="Table_Almoco" xml:space="preserve"><value>Intervalo (Almoço)</value></data>
+  <data name="Table_Setores" xml:space="preserve"><value>Setores Vinculados</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Ações</value></data>
+  <data name="No_Records_Found" xml:space="preserve"><value>Nenhum turno de funcionamento ativo cadastrado.</value></data>
+  <data name="Button_NewHorario" xml:space="preserve"><value>Adicionar Turno</value></data>
+  <data name="Button_Edit" xml:space="preserve"><value>Editar</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Inativar</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>Visualizar turnos inativos</value></data>
+  <data name="Badge_Deactivated" xml:space="preserve"><value>Inativo</value></data>
+  <data name="Button_Activate" xml:space="preserve"><value>Ativar</value></data>
+  <data name="1_Segunda" xml:space="preserve"><value>Segunda-Feira</value></data>
+  <data name="2_Terca" xml:space="preserve"><value>Terça-Feira</value></data>
+  <data name="3_Quarta" xml:space="preserve"><value>Quarta-Feira</value></data>
+  <data name="4_Quinta" xml:space="preserve"><value>Quinta-Feira</value></data>
+  <data name="5_Sexta" xml:space="preserve"><value>Sexta-Feira</value></data>
+  <data name="6_Sabado" xml:space="preserve"><value>Sábado</value></data>
+  <data name="7_Domingo" xml:space="preserve"><value>Domingo</value></data>
+</root>

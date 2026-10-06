@@ -12,4 +12,8 @@
   <data name="Label_Comentario" xml:space="preserve"><value>Explique detalhadamente o que está acontecendo</value></data>
   <data name="Button_OpenTicket" xml:space="preserve"><value>Registrar e Abrir Chamado</value></data>
   <data name="Button_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Log_AberturaChamado" xml:space="preserve"><value>Abertura do Chamado</value></data>
+  <data name="Log_StatusInicial" xml:space="preserve"><value>Status Inicial</value></data>
+  <data name="Log_PrazoResposta" xml:space="preserve"><value>SLA de Resposta Inicial</value></data>
+  <data name="Log_PrazoResolucao" xml:space="preserve"><value>SLA de Resolução Estimado</value></data>
 </root>

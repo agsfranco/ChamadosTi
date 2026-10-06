@@ -174,10 +174,10 @@ namespace ChamadosTi.Data
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeOnly>("AlmocoFim")
+                    b.Property<TimeOnly?>("AlmocoFim")
                         .HasColumnType("time");
 
-                    b.Property<TimeOnly>("AlmocoInicio")
+                    b.Property<TimeOnly?>("AlmocoInicio")
                         .HasColumnType("time");
 
                     b.Property<bool>("Ativo")

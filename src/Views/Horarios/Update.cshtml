@@ -1,0 +1,69 @@
+@model ChamadosTi.ViewModels.Horario.HorarioViewModel
+@{ ViewData["Title"] = Localizer["Horarios_Update_Title"]; }
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="border rounded p-4 shadow-sm bg-white">
+            <h2 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h2>
+            <form asp-action="Update" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="DiaDaSemana" class="form-label text-muted small px-2">@Localizer["Label_DiaDaSemana"]</label>
+                    <select asp-for="DiaDaSemana" class="form-select">
+                        <option value="">@Localizer["Select_Dia_Placeholder"]</option>
+                        <option value="1_Segunda">Segunda-Feira</option>
+                        <option value="2_Terca">Terça-Feira</option>
+                        <option value="3_Quarta">Quarta-Feira</option>
+                        <option value="4_Quinta">Quinta-Feira</option>
+                        <option value="5_Sexta">Sexta-Feira</option>
+                        <option value="6_Sabado">Sábado</option>
+                        <option value="7_Domingo">Domingo</option>
+                    </select>
+                    <span asp-validation-for="DiaDaSemana" class="text-danger small"></span>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label asp-for="JornadaInicio" class="form-label text-muted small px-2">@Localizer["Label_JornadaInicio"]</label>
+                        <input asp-for="JornadaInicio" type="time" class="form-control" />
+                        <span asp-validation-for="JornadaInicio" class="text-danger small"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="JornadaFim" class="form-label text-muted small px-2">@Localizer["Label_JornadaFim"]</label>
+                        <input asp-for="JornadaFim" type="time" class="form-control" />
+                        <span asp-validation-for="JornadaFim" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label asp-for="AlmocoInicio" class="form-label text-muted small px-2">@Localizer["Label_AlmocoInicio"]</label>
+                        <input asp-for="AlmocoInicio" type="time" class="form-control" />
+                        <span asp-validation-for="AlmocoInicio" class="text-danger small"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="AlmocoFim" class="form-label text-muted small px-2">@Localizer["Label_AlmocoFim"]</label>
+                        <input asp-for="AlmocoFim" type="time" class="form-control" />
+                        <span asp-validation-for="AlmocoFim" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="SetoresIdsSelecionados" class="form-label text-muted small px-2">@Localizer["Label_SetoresVinculados"]</label>
+                    <select asp-for="SetoresIdsSelecionados" class="form-select" multiple style="height: 120px;"
+                            asp-items="@(new SelectList(ViewBag.Setores, "Id", "Nome"))">
+                    </select>
+                    <div class="form-text small text-muted px-2">@Localizer["HelpText_MultipleSetores"]</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">@Localizer["Button_Save"]</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["Button_Cancel"]</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
