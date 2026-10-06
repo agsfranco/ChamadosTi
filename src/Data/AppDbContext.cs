@@ -23,6 +23,10 @@ namespace ChamadosTi.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<ItemTicket> ItensTickets { get; set; }
         public DbSet<AuditoriaTicket> AuditoriasTickets { get; set; }
+        public DbSet<Feriado> Feriados { get; set; }
+        public DbSet<Horario> Horarios { get; set; }
+        public DbSet<SetorHorario> SetoresHorarios { get; set; }
+
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
