@@ -26,13 +26,14 @@
                     <th scope="col" class="px-4">@Localizer["Table_Nome"]</th>
                     <th scope="col">@Localizer["Table_TempoResposta"]</th>
                     <th scope="col">@Localizer["Table_TempoResolucao"]</th>
+                    <th scope="col" class="text-center">@Localizer["Table_Padrao"]</th>
                     <th scope="col" class="text-end px-4">@Localizer["Table_Acoes"]</th>
                 </tr>
             </thead>
             <tbody>
                 @if (!Model.Any())
                 {
-                    <tr><td colspan="4" class="text-center text-muted py-4">@Localizer["No_Records_Found"]</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-4">@Localizer["No_Records_Found"]</td></tr>
                 }
                 @foreach (var item in Model)
                 {
@@ -46,6 +47,21 @@
                         </td>
                         <td>@item.TempoRespostaPadrao @Localizer["Text_Hours"]</td>
                         <td>@item.TempoResolucaoPadrao @Localizer["Text_Hours"]</td>
+                        <td class="text-center">
+                            @if (item.Padrao)
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1.5 rounded-pill fw-semibold">
+                                    <i class="bi bi-check-circle-fill me-1"></i> @Localizer["Text_Sim"]
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 rounded-pill">
+                                    <i class="bi bi-dash-circle me-1"></i> @Localizer["Text_Nao"]
+                                </span>
+                            }
+                        </td>
+
                         <td class="text-end px-4">
                             @if (item.Ativo)
                             {

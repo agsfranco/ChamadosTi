@@ -8,4 +8,5 @@
   <data name="Label_TempoResolucao" xml:space="preserve"><value>Tempo de Resolução Padrão (SLA - em horas)</value></data>
   <data name="Button_Save" xml:space="preserve"><value>Salvar Alterações</value></data>
   <data name="Button_Cancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="Padrao" xml:space="preserve"><value>Padrão</value></data>
 </root>

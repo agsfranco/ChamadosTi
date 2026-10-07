@@ -15,10 +15,10 @@ namespace ChamadosTi.Controllers
     public class TicketsController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly UserManager _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<TicketsController> _localizer;
 
-        public TicketsController(AppDbContext context, UserManager userManager, IStringLocalizer<TicketsController> localizer)
+        public TicketsController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer)
         {
             _context = context;
             _userManager = userManager;

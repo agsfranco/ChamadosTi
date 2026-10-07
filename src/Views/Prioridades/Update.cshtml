@@ -28,6 +28,12 @@
                     <span asp-validation-for="TempoResolucaoPadrao" class="text-danger small"></span>
                 </div>
 
+                <div class="form-check form-switch mb-4">
+                    <input asp-for="Padrao" type="checkbox" class="form-check-input" role="switch" id="Padrao" />
+                    <label asp-for="Padrao" class="form-check-label" for="Padrao">@Localizer["Padrao"]</label>
+                    <span asp-validation-for="Padrao" class="text-danger small d-block"></span>
+                </div>
+
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100">@Localizer["Button_Save"]</button>
                     <a asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["Button_Cancel"]</a>

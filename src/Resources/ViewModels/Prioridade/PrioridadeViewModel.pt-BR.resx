@@ -12,4 +12,5 @@
   <data name="Nome" xml:space="preserve"><value>Nome da Prioridade</value></data>
   <data name="TempoResposta" xml:space="preserve"><value>Tempo de Resposta Padrão (SLA em Horas)</value></data>
   <data name="TempoResolucao" xml:space="preserve"><value>Tempo de Resolução Padrão (SLA em Horas)</value></data>
+  <data name="Padrao" xml:space="preserve"><value>Prioridade Padrão</value></data>
 </root>

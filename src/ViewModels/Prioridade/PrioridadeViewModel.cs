@@ -20,6 +20,9 @@ namespace ChamadosTi.ViewModels.Prioridade
         [Range(1, 720, ErrorMessage = "MinMaxValores")]
         [Display(Name = "TempoResolucao")]
         public int TempoResolucaoPadrao { get; set; }
+        
+        [Display(Name = "Padrao")]
+        public bool Padrao { get; set; }
 
         public bool Ativo { get; set; } = true;
     }

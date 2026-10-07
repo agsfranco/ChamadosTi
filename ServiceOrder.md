@@ -73,6 +73,7 @@ erDiagram
         string Nome
         int TempoRespostaPadrao
         int TempoResolucaoPadrao
+        bit Padrao
         bit Ativo
     }
 

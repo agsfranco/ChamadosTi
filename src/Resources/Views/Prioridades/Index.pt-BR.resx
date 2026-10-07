@@ -15,4 +15,7 @@
   <data name="Badge_Deactivated" xml:space="preserve"><value>Inativa</value></data>
   <data name="Button_Activate" xml:space="preserve"><value>Ativar</value></data>
   <data name="Text_Hours" xml:space="preserve"><value>horas</value></data>
+  <data name="Table_Padrao" xml:space="preserve"><value>Padrão</value></data>
+  <data name="Text_Sim" xml:space="preserve"><value>Sim</value></data>
+  <data name="Text_Nao" xml:space="preserve"><value>Não</value></data>
 </root>

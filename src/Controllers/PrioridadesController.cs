@@ -31,14 +31,14 @@ namespace ChamadosTi.Controllers
                 prioridades = _context.Prioridades
                     .IgnoreQueryFilters()
                     .Where(p => !p.Ativo)
-                    .OrderBy(p => p.Id)
+                    .OrderBy(p => p.Nome)
                     .ToList();
             }
             else
             {
                 // Filtro global traz apenas os ativos ordenados por nome
                 prioridades = _context.Prioridades
-                    .OrderBy(p => p.Id)
+                    .OrderBy(p => p.Nome)
                     .ToList();
             }
 
@@ -58,11 +58,20 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
+            var jaExistePadrao = _context.Prioridades.Any(x => x.Id != model.Id && x.Padrao && x.Ativo);
+            if (jaExistePadrao)
+            {
+                ModelState.AddModelError("Padrao", _localizer["Error_PadraoJaExistente"]);
+                ViewBag.Prioridade = model;
+                return View(model);
+            }
+
             var novaPrioridade = new Prioridade
             {
                 Nome = model.Nome,
                 TempoRespostaPadrao = model.TempoRespostaPadrao,
                 TempoResolucaoPadrao = model.TempoResolucaoPadrao,
+                Padrao = model.Padrao,
                 Ativo = true
             };
 
@@ -82,7 +91,8 @@ namespace ChamadosTi.Controllers
                 Id = prioridade.Id,
                 Nome = prioridade.Nome,
                 TempoRespostaPadrao = prioridade.TempoRespostaPadrao,
-                TempoResolucaoPadrao = prioridade.TempoResolucaoPadrao
+                TempoResolucaoPadrao = prioridade.TempoResolucaoPadrao,
+                Padrao = prioridade.Padrao
             };
 
             return View(model);
@@ -94,12 +104,21 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
+            var jaExistePadrao = _context.Prioridades.Any(x => x.Id != model.Id && x.Padrao && x.Ativo);
+            if (jaExistePadrao)
+            {
+                ModelState.AddModelError("Padrao", _localizer["Error_PadraoJaExistente"]);
+                ViewBag.Prioridade = model;
+                return View(model);
+            }            
+
             var prioridade = _context.Prioridades.Find(model.Id);
             if (prioridade == null) return NotFound();
 
             prioridade.Nome = model.Nome;
             prioridade.TempoRespostaPadrao = model.TempoRespostaPadrao;
             prioridade.TempoResolucaoPadrao = model.TempoResolucaoPadrao;
+            prioridade.Padrao = model.Padrao;
 
             _context.Prioridades.Update(prioridade);
             await _context.SaveChangesAsync();

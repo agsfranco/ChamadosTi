@@ -8,6 +8,7 @@ namespace ChamadosTi.Models
         public string Nome { get; set; } = null!;
         public int TempoRespostaPadrao { get; set; }
         public int TempoResolucaoPadrao { get; set; }
+        public bool Padrao { get; set; }
         public bool Ativo { get; set; } = true;
     }
 

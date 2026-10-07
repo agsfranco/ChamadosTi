@@ -8,4 +8,5 @@
   <data name="Label_TempoResolucao" xml:space="preserve"><value>Default Resolution Time (SLA - in hours)</value></data>
   <data name="Button_Save" xml:space="preserve"><value>Save Priority</value></data>
   <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Padrao" xml:space="preserve"><value>Default</value></data>
 </root>
