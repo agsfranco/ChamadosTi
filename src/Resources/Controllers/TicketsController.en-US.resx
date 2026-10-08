@@ -10,4 +10,6 @@
   <data name="Success_ChamadoAssumido" xml:space="preserve"><value>You have successfully taken ownership of this ticket!</value></data>
   <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve"><value>This ticket has already been taken by another analyst or is already closed.</value></data>
   <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>The 'In Progress' status was not found in the system database.</value></data>
+  <data name="Error_ComentarioVazio" xml:space="preserve"><value>Cannot send an empty comment.</value></data>
+  <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Your message has been successfully published and recorded in the history!</value></data>
 </root>

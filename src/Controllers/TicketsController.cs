@@ -166,7 +166,7 @@ namespace ChamadosTi.Controllers
             });
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Tickets");
         }
 
         // GET: Tickets/Details/5
@@ -299,6 +299,55 @@ namespace ChamadosTi.Controllers
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoAssumido"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AdicionarComentario(int ticketId, string mensagemTexto)
+        {
+            var usuarioLogado = GetUsuario();
+            if (usuarioLogado is null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (string.IsNullOrWhiteSpace(mensagemTexto))
+            {
+                TempData["ErrorMessage"] = _localizer["Error_ComentarioVazio"].Value;
+                return RedirectToAction(nameof(Details), new { id = ticketId });
+            }
+
+            var ticketExiste = _context.Tickets.Any(t => t.Id == ticketId);
+            if (!ticketExiste)
+            {
+                return NotFound();
+            }
+
+            var dataRegistroUtc = DateTime.UtcNow;
+
+            var dadosLog = new LogAuditoriaTicket
+            {
+                Acao = "Log_NovaInteracao",
+                Usuario = usuarioLogado.Nome,
+                Mensagem = mensagemTexto.Trim(),
+                CamposModificados = null
+            };
+
+            string jsonString = JsonSerializer.Serialize(dadosLog);
+
+            var novoComentarioAuditoria = new AuditoriaTicket
+            {
+                TicketId = ticketId,
+                Log = jsonString,
+                RegistradoEm = dataRegistroUtc,
+                Ativo = true
+            };
+
+            _context.AuditoriasTickets.Add(novoComentarioAuditoria);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = _localizer["Success_ComentarioAdicionado"].Value;
+            return RedirectToAction(nameof(Details), new { id = ticketId });
         }
 
         private Usuario? GetUsuario()

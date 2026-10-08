@@ -38,4 +38,10 @@
   <data name="Log_StatusAlterado" xml:space="preserve"><value>Status Alterado para</value></data>
   <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Analista Vinculado</value></data>
   <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
+  <data name="Details_SecaoAdicionarComentario" xml:space="preserve"><value>Adicionar Nova Interação</value></data>
+  <data name="Details_PlaceholderComentario" xml:space="preserve"><value>Digite aqui sua mensagem ou atualização sobre o andamento do chamado...</value></data>
+  <data name="Details_BotaoEnviarComentario" xml:space="preserve"><value>Enviar Mensagem</value></data>
+  <data name="Error_ComentarioVazio" xml:space="preserve"><value>Não é possível enviar um comentário em branco.</value></data>
+  <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Sua mensagem foi publicada e registrada no histórico com sucesso!</value></data>
+  <data name="Log_NovaInteracao" xml:space="preserve"><value>Nova Mensagem / Interação</value></data>
 </root>

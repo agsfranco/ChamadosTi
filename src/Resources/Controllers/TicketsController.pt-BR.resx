@@ -10,5 +10,7 @@
   <data name="Success_ChamadoAssumido" xml:space="preserve"><value>Você assumiu o atendimento deste chamado com sucesso!</value></data>
   <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve"><value>Este chamado já foi assumido por outro analista ou já se encontra encerrado.</value></data>
   <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>O status 'Em Atendimento' não foi localizado na base do sistema.</value></data>
+  <data name="Error_ComentarioVazio" xml:space="preserve"><value>Não é possível enviar um comentário em branco.</value></data>
+  <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Sua mensagem foi publicada e registrada no histórico com sucesso!</value></data>
 </root>
 

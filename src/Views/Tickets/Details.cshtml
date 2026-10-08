@@ -84,11 +84,13 @@
                     {
                         var log = logsDecodificados[i];
                         var original = auditoriasOriginais?[i];
-
+                        bool ehComentario = log.Acao == "Log_NovaInteracao";
+                    
                         <div class="mb-4 position-relative">
-                            <div class="position-absolute start-0 translate-middle bg-primary rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" 
-                                 style="width: 24px; height: 24px; left: -25px !important; top: 12px;">
-                                <i class="bi bi-check-circle-fill small"></i>
+                            <!-- Ícone dinâmico: Balão de diálogo se for comentário, Check de sistema se for ação técnica -->
+                            <div class="position-absolute start-0 translate-middle rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" 
+                                style="width: 24px; height: 24px; left: -25px !important; top: 12px; bg-color: var(--bs-primary); background-color: @(ehComentario ? "#6c757d" : "#0d6efd");">
+                                <i class="bi @(ehComentario ? "bi-chat-text-fill" : "bi-check-circle-fill") small"></i>
                             </div>
                             
                             <div class="p-3 bg-light rounded border border-light-subtle shadow-sm ms-2">
@@ -100,6 +102,15 @@
                                 </div>
                                 <div class="text-secondary small mb-2">@Localizer["Log_ExecutedBy"]: <strong>@log.Usuario</strong></div>
                                 
+                                <!-- SE FOR COMENTÁRIO: Exibe a mensagem digitada formatada com quebra de linhas -->
+                                @if (ehComentario && !string.IsNullOrEmpty(log.Mensagem))
+                                {
+                                    <div class="bg-white p-2 rounded border text-dark small mt-2 shadow-sm border-start border-1 border-secondary" style="white-space: pre-line;">
+                                        @log.Mensagem
+                                    </div>
+                                }
+
+                                <!-- SE FOR ALTERAÇÃO TÉCNICA: Exibe a tabela de propriedades modificadas -->
                                 @if (log.CamposModificados != null && log.CamposModificados.Any())
                                 {
                                     <div class="border-top pt-2 mt-2 bg-white p-2 rounded border">
@@ -123,6 +134,26 @@
                 <p class="text-muted small mb-0">@Localizer["Details_SemHistorico"]</p>
             }
         </div>
+        <!-- Formulário para envio de novas Interações / Comentários -->
+        <div class="card shadow-sm border rounded bg-white p-4 mt-4">
+            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoAdicionarComentario"]</h5>
+            <form asp-action="AdicionarComentario" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ticketId" value="@Model.Id" />
+                
+                <div class="mb-3">
+                    <textarea name="mensagemTexto" class="form-control small" rows="3" 
+                            placeholder="@Localizer["Details_PlaceholderComentario"]" required style="resize: none;"></textarea>
+                </div>
+                
+                <div class="text-end">
+                    <button type="submit" class="btn btn-sm btn-primary px-4 shadow-sm">
+                        <i class="bi bi-send-fill me-1"></i> @Localizer["Details_BotaoEnviarComentario"]
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
 
     <!-- COLUNA DA DIREITA: Painel Lateral de Metadados e Acordo de SLA -->

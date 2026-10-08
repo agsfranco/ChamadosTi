@@ -17,5 +17,6 @@ namespace ChamadosTi.Models
         public string Acao { get; set; } = string.Empty;
         public string Usuario { get; set; } = string.Empty;
         public Dictionary<string, string>? CamposModificados { get; set; }
+        public string? Mensagem { get; set; }
     }
 }
