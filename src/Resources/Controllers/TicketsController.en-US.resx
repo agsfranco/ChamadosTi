@@ -21,4 +21,8 @@
   <data name="Success_ChamadoRetomado" xml:space="preserve"><value>Support resumed successfully! The SLA tracker has been reactivated.</value></data>
   <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Ticket Support Resumed</value></data>
   <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>Source Ticket ID</value></data>
+  <data name="Error_StatusInvalidoParaCancelar" xml:space="preserve"><value>Cannot cancel tickets that have already been resolved or closed.</value></data>
+  <data name="Success_ChamadoCancelado" xml:space="preserve"><value>The ticket was successfully cancelled and removed from the active queue.</value></data>
+  <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Ticket Cancelled by User</value></data>
+  <data name="Error_JustificativaObrigatoria" xml:space="preserve"><value>Providing a justification summary is mandatory to cancel the ticket.</value></data>
 </root>

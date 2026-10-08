@@ -59,4 +59,13 @@
   <data name="Log_ChamadoPendente" xml:space="preserve"><value>Support Paused / Suspended</value></data>
   <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Ticket Support Resumed</value></data>
   <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Ticket Solved / Resolved</value></data>
+  <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancel this Ticket</value></data>
+  <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve"><value>Are you absolutely sure you want to cancel this ticket? This action cannot be undone.</value></data>
+  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Details_ModalCancelarTitulo" xml:space="preserve"><value>Confirm Ticket Cancellation</value></data>
+  <data name="Details_ModalCancelarInstrucao" xml:space="preserve"><value>You are about to abort this ticket. A justification statement is mandatory to audit the closing sequence.</value></data>
+  <data name="Details_LabelJustificativa" xml:space="preserve"><value>Cancellation Justification</value></data>
+  <data name="Details_PlaceholderJustificativa" xml:space="preserve"><value>Briefly explain why this ticket is being cancelled...</value></data>
+  <data name="Details_ModalBotaoFechar" xml:space="preserve"><value>Go Back</value></data>
+  <data name="Details_ModalBotaoConfirmar" xml:space="preserve"><value>Confirm Cancellation</value></data>
 </root>

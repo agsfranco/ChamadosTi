@@ -10,8 +10,10 @@
         2 => "bg-primary",
         3 => "bg-warning text-dark",
         4 => "bg-success",
+        6 => "bg-danger",
         _ => "bg-secondary"
     };
+
 }
 
 @if (TempData["SuccessMessage"] != null)
@@ -291,6 +293,50 @@
                             <i class="bi bi-check-all"></i> @Localizer["Details_BotaoResolvido"]
                         </button>
                     </form>
+                }
+
+                @if (Model.Status.Codigo < (int)ChamadosTi.Models.TicketStatusEnum.Resolvido)
+                {
+                    <div class="mt-3 pt-2 border-top">
+                        <button type="button" class="btn btn-sm btn-outline-danger w-100 shadow-sm fw-semibold py-2" 
+                                data-bs-toggle="modal" data-bs-target="#modalCancelarTicket">
+                            <i class="bi bi-x-circle-fill"></i> @Localizer["Details_BotaoCancelar"]
+                        </button>
+                    </div>
+
+                    <!-- JANELA MODAL -->
+                    <div class="modal fade" id="modalCancelarTicket" database-backdrop="static" tabindex="-1" aria-labelledby="modalCancelarLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-lg">
+                                <div class="modal-header bg-danger text-white py-3">
+                                    <h5 class="modal-title fw-bold small" id="modalCancelarLabel">
+                                        <i class="bi bi-exclamation-octagon-fill me-2"></i>@Localizer["Details_ModalCancelarTitulo"]
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form asp-action="Cancelar" asp-route-id="@Model.Id" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <div class="modal-body p-4">
+                                        <p class="text-muted small mb-3">@Localizer["Details_ModalCancelarInstrucao"]</p>
+                                        
+                                        <div class="mb-0">
+                                            <label class="text-muted small fw-medium mb-1">@Localizer["Details_LabelJustificativa"]</label>
+                                            <textarea name="justificativaTexto" class="form-control small" rows="3" 
+                                                    placeholder="@Localizer["Details_PlaceholderJustificativa"]" required style="resize: none;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light p-3 border-top d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">
+                                            @Localizer["Details_ModalBotaoFechar"]
+                                        </button>
+                                        <button type="submit" class="btn btn-sm btn-danger px-4 fw-medium shadow-sm">
+                                            <i class="bi bi-x-circle-fill me-1"></i>@Localizer["Details_ModalBotaoConfirmar"]
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 }
             </div>
             

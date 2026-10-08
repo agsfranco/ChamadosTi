@@ -25,4 +25,7 @@
   <data name="Tickets_Index_SlaNoPrazo" xml:space="preserve"><value>Chamado dentro do prazo regulamentar de atendimento.</value></data>
   <data name="Tickets_Index_SlaAlerta" xml:space="preserve"><value>Atenção! Este chamado expira em menos de 24 horas.</value></data>
   <data name="Tickets_Index_SlaVencido" xml:space="preserve"><value>Crítico! Este chamado ultrapassou o limite do acordo de SLA.</value></data>
+  <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancelar este Chamado</value></data>
+  <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve"><value>Tem certeza absoluta de que deseja cancelar este chamado? Esta ação não poderá ser desfeita.</value></data>
+  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelado</value></data>
 </root>

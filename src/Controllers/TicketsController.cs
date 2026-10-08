@@ -491,6 +491,58 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cancelar(int id, string justificativaTexto)
+        {
+            var usuarioLogado = GetUsuario();
+            if (usuarioLogado is null) return RedirectToAction("Login", "Account");
+
+            // Validação de segurança: Impede o envio de justificativa vazia
+            if (string.IsNullOrWhiteSpace(justificativaTexto))
+            {
+                TempData["ErrorMessage"] = _localizer["Error_JustificativaObrigatoria"].Value;
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
+
+            var ticket = _context.Tickets.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
+            if (ticket == null) return NotFound();
+
+            if (ticket.Status.Codigo >= (int)TicketStatusEnum.Resolvido)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaCancelar"].Value;
+                return RedirectToAction(nameof(Details), new { id = ticket.Id });
+            }
+
+            var statusCancelado = _context.Status.FirstOrDefault(s => s.Codigo == (int)TicketStatusEnum.Cancelado);
+            if (statusCancelado == null) return NotFound();
+
+            ticket.StatusId = statusCancelado.Id;
+            ticket.DataFechamento = DateTime.UtcNow; 
+            _context.Tickets.Update(ticket);
+
+            // Gravação Sênior: A justificativa é acoplada na propriedade 'Mensagem' do JSON de Auditoria
+            var dadosLog = new LogAuditoriaTicket
+            {
+                Acao = "Log_ChamadoCancelado",
+                Usuario = usuarioLogado.Nome,
+                Mensagem = justificativaTexto.Trim(), // Salva a justificativa na linha do tempo
+                CamposModificados = new Dictionary<string, string> { { "Log_StatusAlterado", "Status_Cancelado" } }
+            };
+
+            _context.AuditoriasTickets.Add(new AuditoriaTicket
+            {
+                TicketId = ticket.Id,
+                Log = JsonSerializer.Serialize(dadosLog),
+                RegistradoEm = DateTime.UtcNow,
+                Ativo = true
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = _localizer["Success_ChamadoCancelado"].Value;
+            return RedirectToAction(nameof(Details), new { id = ticket.Id });
+        }
+
         private Usuario? GetUsuario()
         {
             var identityUserId = _userManager.GetUserId(User);

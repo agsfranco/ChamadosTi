@@ -25,4 +25,7 @@
   <data name="Tickets_Index_SlaNoPrazo" xml:space="preserve"><value>Ticket within the regular support deadline.</value></data>
   <data name="Tickets_Index_SlaAlerta" xml:space="preserve"><value>Warning! This ticket expires in less than 24 hours.</value></data>
   <data name="Tickets_Index_SlaVencido" xml:space="preserve"><value>Critical! This ticket has breached the SLA agreement limit.</value></data>
+  <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancel this Ticket</value></data>
+  <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve"><value>Are you absolutely sure you want to cancel this ticket? This action cannot be undone.</value></data>
+  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelled</value></data>
 </root>

@@ -6,6 +6,7 @@ namespace ChamadosTi.Models
         EmAtendimento = 2,
         Pendente = 3,
         Resolvido = 4,
-        Fechado = 5
+        Fechado = 5,
+        Cancelado = 6
     }
 }

@@ -21,5 +21,9 @@
   <data name="Success_ChamadoRetomado" xml:space="preserve"><value>Atendimento retomado com sucesso! O cronômetro de SLA foi reativado.</value></data>
   <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Atendimento do Chamado Retomado</value></data>
   <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>ID do Ticket de Origem</value></data>
+  <data name="Error_StatusInvalidoParaCancelar" xml:space="preserve"><value>Não é possível cancelar chamados que já foram solucionados ou encerrados.</value></data>
+  <data name="Success_ChamadoCancelado" xml:space="preserve"><value>O chamado foi cancelado com sucesso e retirado da fila operacional.</value></data>
+  <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Chamado Cancelado pelo Usuário</value></data>
+  <data name="Error_JustificativaObrigatoria" xml:space="preserve"><value>O preenchimento da justificativa é obrigatório para realizar o cancelamento do chamado.</value></data>
 </root>
 
