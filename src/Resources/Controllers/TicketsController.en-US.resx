@@ -20,4 +20,5 @@
   <data name="Error_ParecerObrigatorio" xml:space="preserve"><value>Providing a technical resolution summary is mandatory to resolve the ticket.</value></data>
   <data name="Success_ChamadoRetomado" xml:space="preserve"><value>Support resumed successfully! The SLA tracker has been reactivated.</value></data>
   <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Ticket Support Resumed</value></data>
+  <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>Source Ticket ID</value></data>
 </root>

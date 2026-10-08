@@ -40,9 +40,8 @@ namespace ChamadosTi.Controllers
             return View(tickets);
         }
 
-        // GET: Tickets/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int? origemId = null)
         {
             var usuarioSistema = GetUsuario();
             if (usuarioSistema is null)
@@ -53,13 +52,14 @@ namespace ChamadosTi.Controllers
             ViewBag.Categorias = _context.Categorias.OrderBy(c => c.Nome).ToList();
             MontaListaItens(usuarioSistema.SetorId);
 
+            ViewBag.TicketOrigemId = origemId;
+
             return View(new TicketCreateViewModel());
         }
 
-        // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TicketCreateViewModel model)
+        public async Task<IActionResult> Create(TicketCreateViewModel model, int? ticketOrigemId)
         {
             var usuarioSistema = GetUsuario();
             if (usuarioSistema is null)
@@ -71,6 +71,7 @@ namespace ChamadosTi.Controllers
             {
                 ViewBag.Categorias = _context.Categorias.OrderBy(c => c.Nome).ToList();
                 MontaListaItens(usuarioSistema.SetorId);
+                ViewBag.TicketOrigemId = ticketOrigemId;
                 return View(model);
             }
 
@@ -104,9 +105,9 @@ namespace ChamadosTi.Controllers
             int setorSlaId = setorTiDoSistema != null ? setorTiDoSistema.Id : usuarioSistema.SetorId;
 
             var horariosSetores = _context.SetoresHorarios
-                .Include(sh => sh.Horario)
-                .Where(sh => sh.SetorId == setorSlaId)
-                .Select(sh => sh.Horario)
+                .Include(s => s.Horario)
+                .Where(s => s.SetorId == setorSlaId)
+                .Select(s => s.Horario)
                 .ToList();
 
             var prazoRespostaUtc = SlaCalculator.CalcularPrazoSlaReal(todosFeriados, horariosSetores, dataAberturaUtc, prioridadePadrao.TempoRespostaPadrao);
@@ -124,7 +125,8 @@ namespace ChamadosTi.Controllers
                 PrazoResolucaoSLA = prazoResolucaoUtc,
                 Titulo = model.Titulo,
                 Comentario = model.Comentario,
-                Ativo = true
+                Ativo = true,
+                TicketOrigemId = ticketOrigemId 
             };
 
             _context.Tickets.Add(novoTicket);
@@ -143,16 +145,23 @@ namespace ChamadosTi.Controllers
                 }
             }
 
+            var dicionarioCampos = new Dictionary<string, string>
+            {
+                { "Log_StatusInicial", "Status_Aberto" },
+                { "Log_PrazoResposta", prazoRespostaUtc.ToString("g") },
+                { "Log_PrazoResolucao", prazoResolucaoUtc.ToString("g") }
+            };
+
+            if (ticketOrigemId != null)
+            {
+                dicionarioCampos.Add("Log_DerivadoDoTicket", ticketOrigemId.Value.ToString());
+            }
+
             var dadosLog = new LogAuditoriaTicket
             {
                 Acao = "Log_AberturaChamado",
                 Usuario = usuarioSistema.Nome,
-                CamposModificados = new Dictionary<string, string>
-                {
-                    { "Log_StatusInicial", "Status_Aberto" },
-                    { "Log_PrazoResposta", prazoRespostaUtc.ToString("g") },
-                    { "Log_PrazoResolucao", prazoResolucaoUtc.ToString("g") }
-                }
+                CamposModificados = dicionarioCampos
             };
 
             string jsonString = JsonSerializer.Serialize(dadosLog);
@@ -168,8 +177,7 @@ namespace ChamadosTi.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Tickets");
         }
-
-        // GET: Tickets/Details/5
+        
         [HttpGet]
         public IActionResult Details(int id)
         {
@@ -235,7 +243,6 @@ namespace ChamadosTi.Controllers
             return View(ticket);
         }
 
-        // POST: Tickets/Assumir/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assumir(int id)
@@ -350,7 +357,6 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticketId });
         }
 
-        // POST: Tickets/MoverParaPendente/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaPendente(int id)
@@ -393,7 +399,6 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
-        // POST: Tickets/RetomarAtendimento/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RetomarAtendimento(int id)
@@ -404,7 +409,6 @@ namespace ChamadosTi.Controllers
             var ticket = _context.Tickets.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
             if (ticket == null) return NotFound();
 
-            // Regra: Só pode retomar se estiver atualmente como Pendente
             if (ticket.Status.Codigo != (int)TicketStatusEnum.Pendente)
             {
                 TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaTramitar"].Value;
@@ -437,7 +441,6 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
-        // POST: Tickets/MoverParaResolvido/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaResolvido(int id, string solucaoTexto)
@@ -445,7 +448,6 @@ namespace ChamadosTi.Controllers
             var tecnicoSistema = GetUsuario();
             if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
 
-            // Validação do Parecer Técnico: impede envio de texto em branco no encerramento
             if (string.IsNullOrWhiteSpace(solucaoTexto))
             {
                 TempData["ErrorMessage"] = _localizer["Error_ParecerObrigatorio"].Value;
@@ -468,7 +470,6 @@ namespace ChamadosTi.Controllers
             ticket.DataFechamento = DateTime.UtcNow; 
             _context.Tickets.Update(ticket);
 
-            // O Parecer entra na propriedade 'Mensagem' do JSON, integrando-se nativamente à linha do tempo
             var dadosLog = new LogAuditoriaTicket
             {
                 Acao = "Log_ChamadoResolvido",

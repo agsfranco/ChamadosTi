@@ -16,10 +16,13 @@
   <data name="Button_NewTicket" xml:space="preserve"><value>Abrir Novo Chamado</value></data>
   <data name="Button_Details" xml:space="preserve"><value>Visualizar Detalhes</value></data>
   
-  <!-- Traduções das chaves do Seeding de Status caso a Index precise ler diretamente -->
   <data name="Status_Aberto" xml:space="preserve"><value>Aberto</value></data>
   <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
   <data name="Status_Pendente" xml:space="preserve"><value>Pendente (Aguardando)</value></data>
   <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
   <data name="Status_Fechado" xml:space="preserve"><value>Fechado / Concluído</value></data>
+  <data name="Tickets_Index_TooltipOrigem" xml:space="preserve"><value>Chamado derivado de uma reincidência técnica</value></data>
+  <data name="Tickets_Index_SlaNoPrazo" xml:space="preserve"><value>Chamado dentro do prazo regulamentar de atendimento.</value></data>
+  <data name="Tickets_Index_SlaAlerta" xml:space="preserve"><value>Atenção! Este chamado expira em menos de 24 horas.</value></data>
+  <data name="Tickets_Index_SlaVencido" xml:space="preserve"><value>Crítico! Este chamado ultrapassou o limite do acordo de SLA.</value></data>
 </root>

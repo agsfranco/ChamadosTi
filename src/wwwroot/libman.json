@@ -17,6 +17,16 @@
     {
       "library": "jquery-validate@1.22.1",
       "destination": "lib/jquery-validate"
+    },
+    {
+      "provider": "unpkg",
+      "library": "bootstrap-icons@1.11.3",
+      "destination": "./lib/bootstrap-icons",
+      "files": [
+        "font/bootstrap-icons.min.css",
+        "font/fonts/bootstrap-icons.woff",
+        "font/fonts/bootstrap-icons.woff2"
+      ]
     }
   ]
 }

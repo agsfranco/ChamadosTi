@@ -53,4 +53,10 @@
   <data name="Details_BotaoRetomar" xml:space="preserve"><value>Resume Support</value></data>
   <data name="Status_Pendente" xml:space="preserve"><value>Pending</value></data>
   <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
+  <data name="Details_LinkTicketOrigem" xml:space="preserve"><value>Derived from Ticket</value></data>
+  <data name="Details_LabelAcoesEncerradas" xml:space="preserve"><value>History / New Demands</value></data>
+  <data name="Details_BotaoGerarVinculado" xml:space="preserve"><value>Open Linked Ticket</value></data>
+  <data name="Log_ChamadoPendente" xml:space="preserve"><value>Support Paused / Suspended</value></data>
+  <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Ticket Support Resumed</value></data>
+  <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Ticket Solved / Resolved</value></data>
 </root>

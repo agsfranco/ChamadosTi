@@ -53,4 +53,10 @@
   <data name="Details_BotaoRetomar" xml:space="preserve"><value>Retomar Atendimento</value></data>
   <data name="Status_Pendente" xml:space="preserve"><value>Pendente</value></data>
   <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
+  <data name="Details_LinkTicketOrigem" xml:space="preserve"><value>Derivado do Chamado</value></data>
+  <data name="Details_LabelAcoesEncerradas" xml:space="preserve"><value>Histórico / Novas Demandas</value></data>
+  <data name="Details_BotaoGerarVinculado" xml:space="preserve"><value>Abrir Chamado Vinculado</value></data>
+  <data name="Log_ChamadoPendente" xml:space="preserve"><value>Atendimento Suspenso / Pausado</value></data>
+  <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Atendimento do Chamado Retomado</value></data>
+  <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Chamado Solucionado / Resolvido</value></data>  
 </root>

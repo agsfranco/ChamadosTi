@@ -9,16 +9,17 @@
 
             <form asp-controller="Tickets" asp-action="Create" method="post">
                 @Html.AntiForgeryToken()
+                
+                <input type="hidden" name="ticketOrigemId" value="@ViewBag.TicketOrigemId" />
+
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
-                <!-- Assunto / Título -->
                 <div class="form-floating mb-3">
                     <input asp-for="Titulo" class="form-control" placeholder="Título" aria-required="true" />
                     <label asp-for="Titulo">@Localizer["Label_Titulo"]</label>
                     <span asp-validation-for="Titulo" class="text-danger small"></span>
                 </div>
 
-                <!-- Categoria do Problema -->
                 <div class="mb-3">
                     <label asp-for="CategoriaId" class="form-label text-muted small px-2">@Localizer["Label_Categoria"]</label>
                     <select asp-for="CategoriaId" class="form-select" asp-items="@(new SelectList(ViewBag.Categorias, "Id", "Nome"))">
@@ -27,13 +28,11 @@
                     <span asp-validation-for="CategoriaId" class="text-danger small"></span>
                 </div>
 
-                <!-- Seleção Múltipla de Equipamentos / Ativos Afetados -->
                 <div class="mb-3">
                     <label asp-for="ItensIdsSelecionados" class="form-label text-muted small px-2">@Localizer["Label_ItensAfetados"]</label>
                     
                     @if (ViewBag.Itens != null && ((System.Collections.IEnumerable)ViewBag.Itens).Cast<object>().Any())
                     {
-                        <!-- Se houver itens, mostra a caixa de seleção múltipla normal -->
                         <select asp-for="ItensIdsSelecionados" class="form-select" multiple style="height: 120px;"
                                 asp-items="@(new SelectList(ViewBag.Itens, "Id", "TextOpcional"))">
                         </select>
@@ -41,7 +40,6 @@
                     }
                     else
                     {
-                        <!-- Se a lista estiver vazia, exibe um aviso institucional amigável -->
                         <div class="alert alert-light border text-muted small p-3 rounded shadow-sm mb-0">
                             <i class="bi bi-info-circle-fill text-secondary me-2"></i>
                             @Localizer["Message_NoAssetsInSector"]
@@ -49,17 +47,15 @@
                     }
                 </div>
 
-                <!-- Descrição Detalhada / Comentário Inicial -->
                 <div class="form-floating mb-4">
                     <textarea asp-for="Comentario" class="form-control" placeholder="Descrição" style="height: 150px;"></textarea>
                     <label asp-for="Comentario">@Localizer["Label_Comentario"]</label>
                     <span asp-validation-for="Comentario" class="text-danger small"></span>
                 </div>
 
-                <!-- Botões de Ação -->
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100">@Localizer["Button_OpenTicket"]</button>
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["Button_Cancel"]</a>
+                    <a asp-controller="Tickets" asp-action="Index" class="btn btn-outline-secondary w-100">@Localizer["Button_Cancel"]</a>
                 </div>
             </form>
         </div>

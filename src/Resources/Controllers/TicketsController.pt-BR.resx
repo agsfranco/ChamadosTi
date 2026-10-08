@@ -20,5 +20,6 @@
   <data name="Error_ParecerObrigatorio" xml:space="preserve"><value>O preenchimento do parecer técnico com a solução dada é obrigatório para encerrar o chamado.</value></data>
   <data name="Success_ChamadoRetomado" xml:space="preserve"><value>Atendimento retomado com sucesso! O cronômetro de SLA foi reativado.</value></data>
   <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Atendimento do Chamado Retomado</value></data>
+  <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>ID do Ticket de Origem</value></data>
 </root>
 

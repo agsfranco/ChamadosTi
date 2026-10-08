@@ -34,6 +34,16 @@
     <a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-3">
         <i class="bi bi-arrow-left"></i> @Localizer["Details_BotaoVoltar"]
     </a>
+
+    @if (Model.TicketOrigemId != null)
+    {
+        <div class="mb-3">
+            <a asp-action="Details" asp-route-id="@Model.TicketOrigemId" class="badge bg-light text-primary border border-primary-subtle text-decoration-none p-2 fs-7 shadow-sm">
+                <i class="bi bi-link-45deg"></i> @Localizer["Details_LinkTicketOrigem"] #@Model.TicketOrigemId
+            </a>
+        </div>
+    }
+
     <div class="d-flex justify-content-between align-items-center">
         <h2>#@Model.Id - @Model.Titulo</h2>
         <span class="badge @classeCorStatusDetails fs-6 px-3 py-2">@Localizer[Model.Status.Nome]</span>
@@ -112,7 +122,7 @@
                                 <div class="text-secondary small mb-2">@Localizer["Log_ExecutedBy"]: <strong>@log.Usuario</strong></div>
                                 
                                 <!-- SE FOR COMENTÁRIO: Exibe a mensagem digitada formatada com quebra de linhas -->
-                                @if (ehComentario && !string.IsNullOrEmpty(log.Mensagem))
+                                @if (!string.IsNullOrEmpty(log.Mensagem))
                                 {
                                     <div class="bg-white p-2 rounded border text-dark small mt-2 shadow-sm border-start border-1 border-secondary" style="white-space: pre-line;">
                                         @log.Mensagem
@@ -283,6 +293,16 @@
                     </form>
                 }
             </div>
+            
+            @if (Model.Status.Codigo >= (int)ChamadosTi.Models.TicketStatusEnum.Resolvido)
+            {
+                <div class="mt-4 pt-3 border-top">
+                    <label class="text-muted small d-block mb-2">@Localizer["Details_LabelAcoesEncerradas"]</label>
+                    <a asp-action="Create" asp-route-origemId="@Model.Id" class="btn btn-sm btn-outline-primary w-100 shadow-sm fw-semibold py-2">
+                        <i class="bi bi-box-arrow-up-right"></i> @Localizer["Details_BotaoGerarVinculado"]
+                    </a>
+                </div>
+            }
         </div>
     </div>
 </div>

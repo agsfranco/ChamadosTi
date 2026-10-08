@@ -27,10 +27,21 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td class="px-4">
-                            <div class="fw-bold text-dark">#@item.Id - @item.Titulo</div>
+                    <td class="px-4">
+                        <div class="fw-bold text-dark">#@item.Id - @item.Titulo</div>
+                        <div class="d-flex flex-wrap align-items-center gap-2 mt-1">
                             <span class="text-muted small">@item.Categorias.Nome (@item.Prioridades.Nome)</span>
-                        </td>
+                            @if (item.TicketOrigemId != null)
+                            {
+                                <a asp-action="Details" asp-route-id="@item.TicketOrigemId" 
+                                class="badge bg-light text-secondary border border-secondary-subtle text-decoration-none py-1 px-2 small shadow-sm opacity-85"
+                                title="@Localizer["Tickets_Index_TooltipOrigem"]" style="font-size: 0.75rem;">
+                                    <i class="bi bi-link-45deg"></i> #@item.TicketOrigemId
+                                </a>
+                            }
+                        </div>
+                    </td>
+
                         <td class="fw-medium text-secondary">@item.Usuarios.Nome</td>
                         <td>
                             @{
@@ -44,16 +55,40 @@
                                     _ => "bg-secondary"      // Qualquer outro ou Fechado (Cinza)
                                 };
                             }
-                            <!-- Renderiza o badge com a cor dinâmica e o texto internacionalizado -->
                             <span class="badge @classeCorStatus fw-bold px-3 py-2 fs-7 shadow-sm">
                                 @Localizer[item.Status.Nome]
                             </span>
                         </td>
                         <td class="text-secondary small">@item.DataAbertura.ToLocalTime().ToString("g")</td>
                         <td>
-                            <!-- Exibe o prazo limite convertido para o horário local -->
-                            <div class="fw-medium text-danger small">
-                                <i class="bi bi-clock-history"></i> @item.PrazoResolucaoSLA.ToLocalTime().ToString("g")
+                            @{
+                                var agoraUtc = DateTime.UtcNow;
+                                var prazoUtc = item.PrazoResolucaoSLA;
+                                
+                                TimeSpan tempoRestante = prazoUtc - agoraUtc;
+
+                                string classeCorSla = "text-secondary"; // Padrão neutro para chamados dentro do prazo seguro
+                                string iconeSla = "bi-clock";           // Ícone padrão de relógio
+                                string tituloTooltip = Localizer["Tickets_Index_SlaNoPrazo"].Value;
+
+                                if (tempoRestante.TotalMinutes < 0)
+                                {
+                                    // CRÍTICO: O prazo já estourou!
+                                    classeCorSla = "text-danger fw-bold";
+                                    iconeSla = "bi-exclamation-octagon-fill";
+                                    tituloTooltip = Localizer["Tickets_Index_SlaVencido"].Value;
+                                }
+                                else if (tempoRestante.TotalDays <= 1)
+                                {
+                                    // ATENÇÃO: Falta menos de 24 horas (1 dia) para vencer
+                                    classeCorSla = "text-warning fw-bold";
+                                    iconeSla = "bi-exclamation-triangle-fill";
+                                    tituloTooltip = Localizer["Tickets_Index_SlaAlerta"].Value;
+                                }
+                            }
+                            <div class="@classeCorSla small d-inline-flex align-items-center gap-1" title="@tituloTooltip">
+                                <i class="bi @iconeSla"></i>
+                                <span>@item.PrazoResolucaoSLA.ToLocalTime().ToString("g")</span>
                             </div>
                         </td>
                         <td class="text-end px-4">
