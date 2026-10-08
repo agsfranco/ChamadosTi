@@ -16,5 +16,7 @@
   <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>Visualizar registros inativos</value></data>
   <data name="Badge_Deactivated" xml:space="preserve"><value>Inativo</value></data>
   <data name="Button_Activate" xml:space="preserve"><value>Ativar</value></data>
-
+  <data name="Table_Ti" xml:space="preserve"><value>Suporte</value></data>
+  <data name="Text_Sim" xml:space="preserve"><value>Sim</value></data>
+  <data name="Text_Nao" xml:space="preserve"><value>Não</value></data>
 </root>

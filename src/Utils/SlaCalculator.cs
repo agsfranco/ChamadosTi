@@ -1,5 +1,7 @@
-using ChamadosTi.Data;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ChamadosTi.Models;
 
 namespace ChamadosTi.Utils
 {
@@ -7,72 +9,64 @@ namespace ChamadosTi.Utils
     {
         /// <summary>
         /// Calcula a data de vencimento do SLA (em formato UTC) considerando feriados, 
-        /// fins de semana e o horário de expediente/almoço específico do setor.
+        /// fins de semana e o horário de expediente/almoço específico do setor de TI.
+        /// Retorna o Prazo também em formato UTC.
         /// </summary>
-        public static DateTime CalcularPrazoSlaReal(AppDbContext context, int setorId, DateTime dataAberturaUtc, int horasPrazo)
+        public static DateTime CalcularPrazoSlaReal(List<DateOnly> todosFeriados,
+                                                    List<Horario> horariosSetores,
+                                                    DateTime dataAberturaUtc, 
+                                                    int horasPrazo)
         {
             // Converte a data de abertura UTC para o fuso local do servidor para bater com as tabelas de horários (TimeOnly/DateOnly)
             DateTime dataAberturaLocal = dataAberturaUtc.ToLocalTime();
-            int minutosRestantes = horasPrazo * 60; // Converte o prazo de horas para minutos para cálculo cirúrgico
+            int minutosRestantes = horasPrazo * 60;
 
-            // Cache em memória para ganho de performance (evita abrir conexões repetidas ao banco dentro do loop)
-            var todosFeriados = context.Feriados.Select(f => f.Dia).ToList();
-            
-            // Busca todos os turnos cadastrados para o setor do chamado
-            var horariosSetor = context.SetoresHorarios
-                .Include(sh => sh.Horario)
-                .Where(sh => sh.SetorId == setorId)
-                .Select(sh => sh.Horario)
-                .ToList();
-
-            // Loop minuto a minuto para consumir o prazo da TI apenas em momentos úteis
-            while (minutosRestantes > 0)
+            while (minutosRestantes > 0) 
             {
-                DateOnly dataApenas = DateOnly.FromDateTime(dataAberturaLocal);
                 TimeOnly horaApenas = TimeOnly.FromDateTime(dataAberturaLocal);
 
-                // 1. CHECAGEM DE DIAS ÚTEIS: Se for Sábado ou Domingo, avança o dia inteiro
+                // 1. CHECAGEM DE FINS DE SEMANA: Se for Sábado ou Domingo, avança para a meia-noite do próximo dia
                 if (dataAberturaLocal.DayOfWeek == DayOfWeek.Saturday || dataAberturaLocal.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    dataAberturaLocal = dataAberturaLocal.Date.AddDays(1); // Vai para a meia-noite do próximo dia
+                    dataAberturaLocal = dataAberturaLocal.Date.AddDays(1);
                     continue;
                 }
 
-                // 2. CHECAGEM DE FERIADOS: Se a data constar na tabela de feriados, pula o dia inteiro
-                if (todosFeriados.Contains(dataApenas))
+                // 2. CHECAGEM DE FERIADOS: Se a data atual constar na lista de feriados passados por parâmetro, pula o dia
+                if (todosFeriados.Any(x => x == DateOnly.FromDateTime(dataAberturaLocal)))
                 {
-                    dataAberturaLocal = dataAberturaLocal.Date.AddDays(1); // Vai para a meia-noite do próximo dia
+                    dataAberturaLocal = dataAberturaLocal.Date.AddDays(1);
                     continue;
                 }
 
-                // Mapeia o DayOfWeek do C# para a string de chave com prefixo numérico salva no seu banco
+                // Mapeia o DayOfWeek do C# para a chave string ordenada do banco
                 string chaveDiaSemana = ObterChaveDiaSemana(dataAberturaLocal.DayOfWeek);
 
-                // Busca o expediente correspondente àquele dia da semana para o setor
-                var expedienteHoje = horariosSetor.FirstOrDefault(h => h.DiaDaSemana == chaveDiaSemana);
+                // Busca o expediente correspondente àquele dia da semana para o setor de TI
+                var expedienteHoje = horariosSetores.FirstOrDefault(h => h.DiaDaSemana == chaveDiaSemana);
 
-                // Se o setor não tiver nenhum horário cadastrado para este dia útil, assume-se que não há expediente (pausa o SLA)
+                // Se a TI não tiver nenhum horário cadastrado para este dia útil, assume-se que não há expediente (pausa o SLA)
                 if (expedienteHoje == null)
                 {
                     dataAberturaLocal = dataAberturaLocal.Date.AddDays(1);
                     continue;
                 }
 
-                // 3. CHECAGEM DE EXPEDIENTE: Se o relógio estiver antes da abertura ou após o fechamento, avança o tempo
+                // 3. CHECAGEM DE EXPEDIENTE: Se o relógio estiver antes da abertura, pula para o início da jornada
                 if (horaApenas < expedienteHoje.JornadaInicio)
                 {
-                    // Força o relógio a saltar direto para o horário de abertura do setor hoje
                     dataAberturaLocal = dataAberturaLocal.Date.Add(expedienteHoje.JornadaInicio.ToTimeSpan());
                     continue;
                 }
+                
+                // Se o relógio estiver após o fechamento, joga o relógio para a meia-noite do próximo dia
                 if (horaApenas >= expedienteHoje.JornadaFim)
                 {
-                    // Força o relógio a ir para a meia-noite do próximo dia para reiniciar as validações
                     dataAberturaLocal = dataAberturaLocal.Date.AddDays(1);
                     continue;
                 }
 
-                // 4. CHECAGEM DE INTERVALO (ALMOÇO): Se o relógio cair dentro da janela de almoço, pula para o fim do intervalo
+                // 4. CHECAGEM DE INTERVALO (ALMOÇO): Se cair dentro da janela de almoço, extrai o .Value de forma segura e avança
                 if (horaApenas >= expedienteHoje.AlmocoInicio && horaApenas < expedienteHoje.AlmocoFim)
                 {
                     dataAberturaLocal = dataAberturaLocal.Date.Add(expedienteHoje.AlmocoFim.Value.ToTimeSpan());
@@ -84,12 +78,12 @@ namespace ChamadosTi.Utils
                 minutosRestantes--;
             }
 
-            // Converte o resultado local de volta para UTC antes de persistir com segurança no banco de dados
+            // Converte o resultado local de volta para UTC antes de retornar para persistência segura no banco
             return dataAberturaLocal.ToUniversalTime();
         }
 
         /// <summary>
-        /// Método auxiliar para converter o enum DayOfWeek na chave string ordenada do banco de dados.
+        /// Método auxiliar estático para converter o enum DayOfWeek na chave string ordenada do banco de dados.
         /// </summary>
         private static string ObterChaveDiaSemana(DayOfWeek dia)
         {

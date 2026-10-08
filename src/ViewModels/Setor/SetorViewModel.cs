@@ -15,6 +15,9 @@ namespace ChamadosTi.ViewModels.Setor
         [Display(Name = "Descricao")]
         public string? Descricao { get; set; }
 
+        [Display(Name = "Ti")]
+        public bool Ti { get; set; }
+
         public bool Ativo { get; set; } = true;
     }
 }

@@ -25,63 +25,92 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
+        // GET: Tickets
+        public IActionResult Index()
+        {
+            var tickets = _context.Tickets
+                .Include(t => t.Status)
+                .Include(t => t.Prioridades)
+                .Include(t => t.Categorias)
+                .Include(t => t.Usuarios) 
+                .Include(t => t.UsuariosTecnicos) 
+                .OrderByDescending(t => t.DataAbertura) 
+                .ToList();
+
+            return View(tickets);
+        }
+
+        // GET: Tickets/Create
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Categorias = _context.Categorias.OrderBy(c => c.Nome).ToList();
-            ViewBag.Itens = _context.Itens.Include(i => i.Tipos).OrderBy(i => i.Nome).ToList();
-            return View(new TicketCreateViewModel());
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TicketCreateViewModel model)
-        {
-            var identityUserId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(identityUserId))
+            var usuarioSistema = GetUsuario();
+            if (usuarioSistema is null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            var usuarioSistema = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
-            if (usuarioSistema == null)
+            ViewBag.Categorias = _context.Categorias.OrderBy(c => c.Nome).ToList();
+            MontaListaItens(usuarioSistema.SetorId);
+
+            return View(new TicketCreateViewModel());
+        }
+
+        // POST: Tickets/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(TicketCreateViewModel model)
+        {
+            var usuarioSistema = GetUsuario();
+            if (usuarioSistema is null)
             {
-                return RedirectToAction("CompleteProfile", "Account");
+                return RedirectToAction("Login", "Account");
             }
 
             if (!ModelState.IsValid)
             {
                 ViewBag.Categorias = _context.Categorias.OrderBy(c => c.Nome).ToList();
-                ViewBag.Itens = _context.Itens.Include(i => i.Tipos).OrderBy(i => i.Nome).ToList();
+                MontaListaItens(usuarioSistema.SetorId);
                 return View(model);
             }
 
-            var prioridadePadrao = _context.Prioridades.FirstOrDefault(p => p.Nome.Contains("Média") || p.Nome.Contains("Medium")) 
-                                   ?? _context.Prioridades.FirstOrDefault();
-
+            var prioridadePadrao = _context.Prioridades.FirstOrDefault(p => p.Padrao == true);
             if (prioridadePadrao == null)
             {
-                // Tradução injetada dinamicamente via recurso do Controlador
                 ModelState.AddModelError("", _localizer["Error_SemPrioridade"]);
                 ViewBag.Categorias = _context.Categorias.OrderBy(c => c.Nome).ToList();
-                ViewBag.Itens = _context.Itens.Include(i => i.Tipos).OrderBy(i => i.Nome).ToList();
+                MontaListaItens(usuarioSistema.SetorId);
                 return View(model);
             }
 
             var statusInicial = _context.Status.FirstOrDefault(s => s.Codigo == (int)TicketStatusEnum.Aberto);
             if (statusInicial == null)
             {
-                // Tradução injetada dinamicamente via recurso do Controlador
                 ModelState.AddModelError("", _localizer["Error_SemStatusInicial"]);
                 ViewBag.Categorias = _context.Categorias.OrderBy(c => c.Nome).ToList();
-                ViewBag.Itens = _context.Itens.Include(i => i.Tipos).OrderBy(i => i.Nome).ToList();
+                MontaListaItens(usuarioSistema.SetorId);
                 return View(model);
             }
 
             var dataAberturaUtc = DateTime.UtcNow;
 
-            var prazoResposta = SlaCalculator.CalcularPrazoSlaReal(_context, usuarioSistema.SetorId, dataAberturaUtc, prioridadePadrao.TempoRespostaPadrao);
-            var prazoResolucao = SlaCalculator.CalcularPrazoSlaReal(_context, usuarioSistema.SetorId, dataAberturaUtc, prioridadePadrao.TempoResolucaoPadrao);
+            var dataHoje = DateOnly.FromDateTime(dataAberturaUtc);
+            var todosFeriados = _context.Feriados
+                .Where(f => f.Dia >= dataHoje)
+                .Select(f => f.Dia)
+                .ToList();
+            
+            var setorTiDoSistema = _context.Setores.FirstOrDefault(s => s.Ti == true);
+            int setorSlaId = setorTiDoSistema != null ? setorTiDoSistema.Id : usuarioSistema.SetorId;
+
+            var horariosSetores = _context.SetoresHorarios
+                .Include(sh => sh.Horario)
+                .Where(sh => sh.SetorId == setorSlaId)
+                .Select(sh => sh.Horario)
+                .ToList();
+
+            var prazoRespostaUtc = SlaCalculator.CalcularPrazoSlaReal(todosFeriados, horariosSetores, dataAberturaUtc, prioridadePadrao.TempoRespostaPadrao);
+            var prazoResolucaoUtc = SlaCalculator.CalcularPrazoSlaReal(todosFeriados, horariosSetores, dataAberturaUtc, prioridadePadrao.TempoResolucaoPadrao);
 
             var novoTicket = new Ticket
             {
@@ -91,15 +120,15 @@ namespace ChamadosTi.Controllers
                 PrioridadeId = prioridadePadrao.Id,
                 StatusId = statusInicial.Id,
                 DataAbertura = dataAberturaUtc,
-                PrazoRespostaSLA = prazoResposta,
-                PrazoResolucaoSLA = prazoResolucao,
+                PrazoRespostaSLA = prazoRespostaUtc,
+                PrazoResolucaoSLA = prazoResolucaoUtc,
                 Titulo = model.Titulo,
                 Comentario = model.Comentario,
                 Ativo = true
             };
 
             _context.Tickets.Add(novoTicket);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); 
 
             if (model.ItensIdsSelecionados != null && model.ItensIdsSelecionados.Any())
             {
@@ -114,7 +143,6 @@ namespace ChamadosTi.Controllers
                 }
             }
 
-            // PADRONIZAÇÃO DE AUDITORIA INTERNACIONAL: O JSON agora salva CHAVES lógicas em vez de strings fixas em português
             var dadosLog = new LogAuditoriaTicket
             {
                 Acao = "Log_AberturaChamado",
@@ -122,8 +150,8 @@ namespace ChamadosTi.Controllers
                 CamposModificados = new Dictionary<string, string>
                 {
                     { "Log_StatusInicial", "Status_Aberto" },
-                    { "Log_PrazoResposta", prazoResposta.ToLocalTime().ToString("g") },
-                    { "Log_PrazoResolucao", prazoResolucao.ToLocalTime().ToString("g") }
+                    { "Log_PrazoResposta", prazoRespostaUtc.ToString("g") },
+                    { "Log_PrazoResolucao", prazoResolucaoUtc.ToString("g") }
                 }
             };
 
@@ -139,6 +167,161 @@ namespace ChamadosTi.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        // GET: Tickets/Details/5
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var usuarioSistema = GetUsuario();
+            if (usuarioSistema is null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var ticket = _context.Tickets
+                .Include(t => t.Status)
+                .Include(t => t.Prioridades)
+                .Include(t => t.Categorias)
+                .Include(t => t.Usuarios) 
+                .Include(t => t.UsuariosTecnicos) 
+                .Include(t => t.Setores) 
+                .Include(t => t.ItensTickets!)
+                    .ThenInclude(it => it.Item)
+                        .ThenInclude(i => i.Marcas)
+                .Include(t => t.ItensTickets!)
+                    .ThenInclude(it => it.Item)
+                        .ThenInclude(i => i.Tipos)
+                .FirstOrDefault(t => t.Id == id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            var auditorias = _context.AuditoriasTickets
+                .Where(a => a.TicketId == id)
+                .OrderBy(a => a.RegistradoEm)
+                .ToList();
+
+            var listaLogsDecodificados = new List<LogAuditoriaTicket>();
+
+            foreach (var auditoria in auditorias)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(auditoria.Log))
+                    {
+                        var logEstruturado = JsonSerializer.Deserialize<LogAuditoriaTicket>(auditoria.Log);
+                        if (logEstruturado != null)
+                        {
+                            listaLogsDecodificados.Add(logEstruturado);
+                        }
+                    }
+                }
+                catch (JsonException)
+                {
+                    listaLogsDecodificados.Add(new LogAuditoriaTicket 
+                    { 
+                        Acao = "Error_LogCorrompido", 
+                        Usuario = "System" 
+                    });
+                }
+            }
+
+            ViewBag.LogsHistorico = listaLogsDecodificados;
+            ViewBag.AuditoriasOriginais = auditorias; 
+
+            return View(ticket);
+        }
+
+        // POST: Tickets/Assumir/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Assumir(int id)
+        {
+            var tecnicoSistema = GetUsuario();
+            if (tecnicoSistema is null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var ticket = _context.Tickets
+                .Include(t => t.Status)
+                .FirstOrDefault(t => t.Id == id);
+
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            if (ticket.Status.Codigo != (int)TicketStatusEnum.Aberto)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_ChamadoJaAssumidoOuFechado"].Value;
+                return RedirectToAction(nameof(Details), new { id = ticket.Id });
+            }
+
+            var novoStatus = _context.Status.FirstOrDefault(s => s.Codigo == (int)TicketStatusEnum.EmAtendimento);
+            if (novoStatus == null)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_StatusAtendimentoNaoEncontrado"].Value;
+                return RedirectToAction(nameof(Details), new { id = ticket.Id });
+            }
+
+            ticket.UsuarioTecnicoId = tecnicoSistema.Id;
+            ticket.StatusId = novoStatus.Id;
+
+            _context.Tickets.Update(ticket);
+
+            var dataInteracaoUtc = DateTime.UtcNow;
+            var dadosLog = new LogAuditoriaTicket
+            {
+                Acao = "Log_ChamadoAssumido",
+                Usuario = tecnicoSistema.Nome,
+                CamposModificados = new Dictionary<string, string>
+                {
+                    { "Log_StatusAlterado", "Status_EmAtendimento" },
+                    { "Log_TecnicoAtribuido", tecnicoSistema.Nome }
+                }
+            };
+
+            string jsonString = JsonSerializer.Serialize(dadosLog);
+
+            _context.AuditoriasTickets.Add(new AuditoriaTicket
+            {
+                TicketId = ticket.Id,
+                Log = jsonString,
+                RegistradoEm = dataInteracaoUtc,
+                Ativo = true
+            });
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = _localizer["Success_ChamadoAssumido"].Value;
+            return RedirectToAction(nameof(Details), new { id = ticket.Id });
+        }
+
+        private Usuario? GetUsuario()
+        {
+            var identityUserId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(identityUserId))
+            {
+                return null;
+            }
+
+            return _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
+        }
+
+        private void MontaListaItens(int setorId)
+        {
+            ViewBag.Itens =  _context.Itens
+                             .Include(i => i.Tipos)
+                             .Include(i => i.Marcas)
+                             .Where(i => i.SetorId == setorId)
+                             .OrderBy(i => i.Nome)
+                             .ThenBy(i => i.Tipos.Nome)
+                             .ThenBy(i => i.Marcas.Nome)
+                             .Select(i => new { Id = i.Id, TextOpcional = i.Nome + " - " + i.Tipos.Nome + " - " + i.Marcas.Nome }).ToList();
         }
     }
 }

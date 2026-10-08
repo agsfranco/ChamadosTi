@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Details_TituloPagina" xml:space="preserve"><value>Detalhes do Chamado</value></data>
+  <data name="Details_BotaoVoltar" xml:space="preserve"><value>Voltar para a Fila</value></data>
+  <data name="Details_SecaoDescricao" xml:space="preserve"><value>Descrição do Problema</value></data>
+  <data name="Details_SecaoAtivos" xml:space="preserve"><value>Equipamentos / Ativos Vinculados</value></data>
+  <data name="Details_SecaoLinhaTempo" xml:space="preserve"><value>Histórico e Linha do Tempo (Auditoria)</value></data>
+  <data name="Details_SecaoPainelControle" xml:space="preserve"><value>Painel de Controle e SLA</value></data>
+  <data name="Details_TabelaAtivo" xml:space="preserve"><value>Ativo</value></data>
+  <data name="Details_TabelaTipo" xml:space="preserve"><value>Tipo</value></data>
+  <data name="Details_TabelaMarca" xml:space="preserve"><value>Marca</value></data>
+  <data name="Details_SemAtivos" xml:space="preserve"><value>Nenhum equipamento foi associado a este chamado na abertura.</value></data>
+  <data name="Details_SemHistorico" xml:space="preserve"><value>Nenhum registro de histórico localizado para este chamado.</value></data>
+  <data name="Details_LabelSolicitante" xml:space="preserve"><value>Usuário Solicitante</value></data>
+  <data name="Details_LabelTecnico" xml:space="preserve"><value>Técnico Responsável</value></data>
+  <data name="Details_BotaoAssumir" xml:space="preserve"><value>Assumir este Chamado</value></data>
+  <data name="Details_LabelPrioridade" xml:space="preserve"><value>Prioridade do Acordo (SLA)</value></data>
+  <data name="Details_LabelDataAbertura" xml:space="preserve"><value>Data de Abertura</value></data>
+  <data name="Details_LabelSlaResposta" xml:space="preserve"><value>Limite para Primeira Resposta</value></data>
+  <data name="Details_LabelSlaResolucao" xml:space="preserve"><value>Prazo Limite de Resolução (SLA)</value></data>
+  <data name="Value_Unassigned" xml:space="preserve"><value>Aguardando Técnico...</value></data>
+  <data name="Log_ExecutedBy" xml:space="preserve"><value>Executado por</value></data>
+  <data name="Error_LogCorrompido" xml:space="preserve"><value>Registro de auditoria indisponível ou corrompido</value></data>
+  <data name="Success_ChamadoAssumido" xml:space="preserve"><value>Você assumiu o atendimento deste chamado com sucesso!</value></data>
+  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve"><value>Este chamado já foi assumido por outro analista ou já se encontra encerrado.</value></data>
+  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>O status 'Em Atendimento' não foi localizado na base do sistema.</value></data>
+  <data name="Log_AberturaChamado" xml:space="preserve"><value>Abertura do Chamado</value></data>
+  <data name="Log_StatusInicial" xml:space="preserve"><value>Status Inicial</value></data>
+  <data name="Log_PrazoResposta" xml:space="preserve"><value>SLA de Resposta Inicial</value></data>
+  <data name="Log_PrazoResolucao" xml:space="preserve"><value>SLA de Resolução Calculado</value></data>
+  <data name="Status_Aberto" xml:space="preserve"><value>Aberto</value></data>
+  <data name="Log_ChamadoAssumido" xml:space="preserve"><value>Chamado Assumido pelo Técnico</value></data>
+  <data name="Log_StatusAlterado" xml:space="preserve"><value>Status Alterado para</value></data>
+  <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Analista Vinculado</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
+</root>

@@ -10,4 +10,5 @@
   <data name="Label_Descricao" xml:space="preserve"><value>Short Description</value></data>
   <data name="Button_Save" xml:space="preserve"><value>Save Changes</value></data>
   <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Ti" xml:space="preserve"><value>Support</value></data>
 </root>

@@ -30,10 +30,23 @@
                 <!-- Seleção Múltipla de Equipamentos / Ativos Afetados -->
                 <div class="mb-3">
                     <label asp-for="ItensIdsSelecionados" class="form-label text-muted small px-2">@Localizer["Label_ItensAfetados"]</label>
-                    <select asp-for="ItensIdsSelecionados" class="form-select" multiple style="height: 120px;"
-                            asp-items="@(new SelectList(ViewBag.Itens, "Id", "Nome"))">
-                    </select>
-                    <div class="form-text small text-muted px-2">@Localizer["HelpText_MultipleSelection"]</div>
+                    
+                    @if (ViewBag.Itens != null && ((System.Collections.IEnumerable)ViewBag.Itens).Cast<object>().Any())
+                    {
+                        <!-- Se houver itens, mostra a caixa de seleção múltipla normal -->
+                        <select asp-for="ItensIdsSelecionados" class="form-select" multiple style="height: 120px;"
+                                asp-items="@(new SelectList(ViewBag.Itens, "Id", "TextOpcional"))">
+                        </select>
+                        <div class="form-text small text-muted px-2">@Localizer["HelpText_MultipleSelection"]</div>
+                    }
+                    else
+                    {
+                        <!-- Se a lista estiver vazia, exibe um aviso institucional amigável -->
+                        <div class="alert alert-light border text-muted small p-3 rounded shadow-sm mb-0">
+                            <i class="bi bi-info-circle-fill text-secondary me-2"></i>
+                            @Localizer["Message_NoAssetsInSector"]
+                        </div>
+                    }
                 </div>
 
                 <!-- Descrição Detalhada / Comentário Inicial -->

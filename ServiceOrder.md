@@ -24,6 +24,7 @@ erDiagram
         int Id PK      
         string Nome
         string Descricao
+        bit Ti
         bit Ativo
     }
 

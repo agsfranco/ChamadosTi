@@ -49,10 +49,19 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
+            var jaExisteTi = _context.Setores.Any(x => x.Id != model.Id && x.Ti && x.Ativo);
+            if (jaExisteTi)
+            {
+                ModelState.AddModelError("Ti", _localizer["Error_TiJaExistente"]);
+                ViewBag.Prioridade = model;
+                return View(model);
+            } 
+
             var novoSetor = new Setor
             {
                 Nome = model.Nome,
                 Descricao = model.Descricao,
+                Ti = model.Ti,
                 Ativo = true
             };
 
@@ -71,7 +80,8 @@ namespace ChamadosTi.Controllers
             {
                 Id = setor.Id,
                 Nome = setor.Nome,
-                Descricao = setor.Descricao
+                Descricao = setor.Descricao,
+                Ti = setor.Ti
             };
 
             return View(model);
@@ -83,11 +93,20 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
+            var jaExisteTi = _context.Setores.Any(x => x.Id != model.Id && x.Ti && x.Ativo);
+            if (jaExisteTi)
+            {
+                ModelState.AddModelError("Ti", _localizer["Error_TiJaExistente"]);
+                ViewBag.Prioridade = model;
+                return View(model);
+            } 
+
             var setor = _context.Setores.Find(model.Id);
             if (setor == null) return NotFound();
 
             setor.Nome = model.Nome;
             setor.Descricao = model.Descricao;
+            setor.Ti = model.Ti;
 
             _context.Setores.Update(setor);
             await _context.SaveChangesAsync();

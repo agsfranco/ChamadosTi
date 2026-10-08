@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Details_TituloPagina" xml:space="preserve"><value>Ticket Details</value></data>
+  <data name="Details_BotaoVoltar" xml:space="preserve"><value>Back to Queue</value></data>
+  <data name="Details_SecaoDescricao" xml:space="preserve"><value>Issue Description</value></data>
+  <data name="Details_SecaoAtivos" xml:space="preserve"><value>Linked Equipment / Assets</value></data>
+  <data name="Details_SecaoLinhaTempo" xml:space="preserve"><value>History and Timeline (Audit)</value></data>
+  <data name="Details_SecaoPainelControle" xml:space="preserve"><value>Control Panel &amp; SLA</value></data>
+  <data name="Details_TabelaAtivo" xml:space="preserve"><value>Asset</value></data>
+  <data name="Details_TabelaTipo" xml:space="preserve"><value>Type</value></data>
+  <data name="Details_TabelaMarca" xml:space="preserve"><value>Brand</value></data>
+  <data name="Details_SemAtivos" xml:space="preserve"><value>No equipment was associated with this ticket at creation.</value></data>
+  <data name="Details_SemHistorico" xml:space="preserve"><value>No history log found for this ticket.</value></data>
+  <data name="Details_LabelSolicitante" xml:space="preserve"><value>Requesting User</value></data>
+  <data name="Details_LabelTecnico" xml:space="preserve"><value>Assigned Technician</value></data>
+  <data name="Details_BotaoAssumir" xml:space="preserve"><value>Take Ownership</value></data>
+  <data name="Details_LabelPrioridade" xml:space="preserve"><value>Agreement Priority (SLA)</value></data>
+  <data name="Details_LabelDataAbertura" xml:space="preserve"><value>Date Opened</value></data>
+  <data name="Details_LabelSlaResposta" xml:space="preserve"><value>First Response Limit</value></data>
+  <data name="Details_LabelSlaResolucao" xml:space="preserve"><value>Resolution Deadline (SLA)</value></data>
+  <data name="Value_Unassigned" xml:space="preserve"><value>Awaiting Technician...</value></data>
+  <data name="Log_ExecutedBy" xml:space="preserve"><value>Executed by</value></data>
+  <data name="Error_LogCorrompido" xml:space="preserve"><value>Audit log unavailable or corrupted</value></data>
+  <data name="Success_ChamadoAssumido" xml:space="preserve"><value>You have successfully taken ownership of this ticket!</value></data>
+  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve"><value>This ticket has already been taken by another analyst or is already closed.</value></data>
+  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>The 'In Progress' status was not found in the system database.</value></data>
+  <data name="Log_AberturaChamado" xml:space="preserve"><value>Ticket Created</value></data>
+  <data name="Log_StatusInicial" xml:space="preserve"><value>Initial Status</value></data>
+  <data name="Log_PrazoResposta" xml:space="preserve"><value>First Response SLA</value></data>
+  <data name="Log_PrazoResolucao" xml:space="preserve"><value>Calculated Resolution SLA</value></data>
+  <data name="Status_Aberto" xml:space="preserve"><value>Open</value></data>
+  <data name="Log_ChamadoAssumido" xml:space="preserve"><value>Ticket Owner Assigned</value></data>
+  <data name="Log_StatusAlterado" xml:space="preserve"><value>Status Changed to</value></data>
+  <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Assigned Analyst</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>In Progress</value></data>
+</root>

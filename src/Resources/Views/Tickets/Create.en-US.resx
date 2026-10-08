@@ -16,4 +16,5 @@
   <data name="Log_StatusInicial" xml:space="preserve"><value>Initial Status</value></data>
   <data name="Log_PrazoResposta" xml:space="preserve"><value>First Response SLA</value></data>
   <data name="Log_PrazoResolucao" xml:space="preserve"><value>Estimated Resolution SLA</value></data>
+  <data name="Message_NoAssetsInSector" xml:space="preserve"><value>No hardware equipment or IT assets found for your current sector.</value></data>
 </root>

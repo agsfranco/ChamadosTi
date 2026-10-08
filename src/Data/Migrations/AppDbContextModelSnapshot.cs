@@ -350,6 +350,9 @@ namespace ChamadosTi.Data
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("Ti")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Setores", (string)null);

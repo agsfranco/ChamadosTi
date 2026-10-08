@@ -5,19 +5,16 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   
-  <data name="Error_LockedOut" xml:space="preserve">
-    <value>Conta bloqueada temporariamente.</value>
-  </data>
-  <data name="Error_InvalidLogin" xml:space="preserve">
-    <value>Tentativa de login inválida.</value>
-  </data>
-    <data name="Error_UserNotFound" xml:space="preserve">
-    <value>Usuário não encontrado.</value>
-  </data>
-  <data name="Success_EmailConfirmed" xml:space="preserve">
-    <value>Obrigado por confirmar seu e-mail.</value>
-  </data>
-  <data name="Error_EmailConfirmationFailed" xml:space="preserve">
-    <value>Erro ao confirmar o e-mail.</value>
-  </data>
+  <data name="Error_EmailNotConfirmed" xml:space="preserve"><value>Por favor, confirme seu e-mail antes de realizar o acesso.</value></data>
+  <data name="Error_LockedOut" xml:space="preserve"><value>Esta conta está temporariamente bloqueada por excesso de tentativas falhas.</value></data>
+  <data name="Error_InvalidLogin" xml:space="preserve"><value>Usuário ou senha inválidos.</value></data>
+  <data name="Error_UserNotFound" xml:space="preserve"><value>Usuário não localizado no sistema.</value></data>
+  <data name="Error_TokenRequired" xml:space="preserve"><value>Um token válido deve ser fornecido para redefinir a senha.</value></data>
+  <data name="Success_EmailConfirmed" xml:space="preserve"><value>E-mail confirmado com sucesso! Você já pode realizar o login.</value></data>
+  <data name="Error_EmailConfirmationFailed" xml:space="preserve"><value>Falha ao confirmar o e-mail. Token inválido ou expirado.</value></data>
+  <data name="Error_SetorTiExigeDadosTecnicos" xml:space="preserve"><value>Para fazer parte do setor de TI, é obrigatório marcar a opção 'Técnico' e vincular seus dados de especialidade técnica.</value></data>
+  <data name="Email_ConfirmSubject" xml:space="preserve"><value>Confirme sua conta - ChamadosTI</value></data>
+  <data name="Email_ConfirmBody" xml:space="preserve"><value>Por favor, confirme sua conta no sistema de chamados &lt;a href='{0}'&gt;clicando aqui&lt;/a&gt;.</value></data>
+  <data name="Email_ResetSubject" xml:space="preserve"><value>Redefinição de Senha - ChamadosTI</value></data>
+  <data name="Email_ResetBody" xml:space="preserve"><value>Você solicitou a alteração de sua senha. Redefina-a de forma segura &lt;a href='{0}'&gt;clicando aqui&lt;/a&gt;.</value></data>
 </root>

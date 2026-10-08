@@ -1,0 +1,185 @@
+@model ChamadosTi.Models.Ticket
+@{
+    ViewData["Title"] = Localizer["Details_TituloPagina"] + " #" + Model.Id;
+    var logsDecodificados = ViewBag.LogsHistorico as List<ChamadosTi.Models.LogAuditoriaTicket>;
+    var auditoriasOriginais = ViewBag.AuditoriasOriginais as List<ChamadosTi.Models.AuditoriaTicket>;
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show small shadow-sm mt-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show small shadow-sm mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="mt-4 mb-4">
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> @Localizer["Details_BotaoVoltar"]
+    </a>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>#@Model.Id - @Model.Titulo</h2>
+        <span class="badge bg-primary fs-6 px-3 py-2">@Localizer[Model.Status.Nome]</span>
+    </div>
+    <span class="text-muted small">@Model.Categorias.Nome • @Model.Setores.Nome</span>
+</div>
+
+<div class="row">
+    <!-- COLUNA DA ESQUERDA: Informações Principais, Inventário e Timeline -->
+    <div class="col-lg-8 mb-4">
+        <!-- Descrição Inicial -->
+        <div class="card shadow-sm border rounded bg-white p-4 mb-4">
+            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoDescricao"]</h5>
+            <p class="card-text text-dark" style="white-space: pre-line;">@Model.Comentario</p>
+        </div>
+
+        <!-- Equipamentos / Ativos Afetados -->
+        <div class="card shadow-sm border rounded bg-white p-4 mb-4">
+            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoAtivos"]</h5>
+            @if (Model.ItensTickets != null && Model.ItensTickets.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">@Localizer["Details_TabelaAtivo"]</th>
+                                <th scope="col">@Localizer["Details_TabelaTipo"]</th>
+                                <th scope="col">@Localizer["Details_TabelaMarca"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var itemTicket in Model.ItensTickets)
+                            {
+                                <tr>
+                                    <td class="fw-bold text-primary">@itemTicket.Item.Nome</td>
+                                    <td class="text-secondary">@itemTicket.Item.Tipos.Nome</td>
+                                    <td class="text-secondary">@itemTicket.Item.Marcas.Nome</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0"><i class="bi bi-info-circle"></i> @Localizer["Details_SemAtivos"]</p>
+            }
+        </div>
+
+        <!-- LINHA DO TEMPO (Timeline de Auditoria JSON Deserializada) -->
+        <div class="card shadow-sm border rounded bg-white p-4">
+            <h5 class="card-title fw-bold text-secondary mb-4">@Localizer["Details_SecaoLinhaTempo"]</h5>
+            @if (logsDecodificados != null && logsDecodificados.Any())
+            {
+                <div class="position-relative ps-4 border-start border-2 border-light ms-2">
+                    @for (int i = 0; i < logsDecodificados.Count; i++)
+                    {
+                        var log = logsDecodificados[i];
+                        var original = auditoriasOriginais?[i];
+
+                        <div class="mb-4 position-relative">
+                            <div class="position-absolute start-0 translate-middle bg-primary rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" 
+                                 style="width: 24px; height: 24px; left: -25px !important; top: 12px;">
+                                <i class="bi bi-check-circle-fill small"></i>
+                            </div>
+                            
+                            <div class="p-3 bg-light rounded border border-light-subtle shadow-sm ms-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-dark">@Localizer[log.Acao]</strong>
+                                    <span class="text-muted small">
+                                        <i class="bi bi-calendar3"></i> @original?.RegistradoEm.ToLocalTime().ToString("g")
+                                    </span>
+                                </div>
+                                <div class="text-secondary small mb-2">@Localizer["Log_ExecutedBy"]: <strong>@log.Usuario</strong></div>
+                                
+                                @if (log.CamposModificados != null && log.CamposModificados.Any())
+                                {
+                                    <div class="border-top pt-2 mt-2 bg-white p-2 rounded border">
+                                        @foreach (var campo in log.CamposModificados)
+                                        {
+                                            <div class="small text-muted py-1">
+                                                <i class="bi bi-dot text-primary"></i> 
+                                                <strong>@Localizer[campo.Key]:</strong> 
+                                                <span class="text-dark">@Localizer[campo.Value]</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0">@Localizer["Details_SemHistorico"]</p>
+            }
+        </div>
+    </div>
+
+    <!-- COLUNA DA DIREITA: Painel Lateral de Metadados e Acordo de SLA -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border rounded bg-white p-4">
+            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoPainelControle"]</h5>
+            
+            <div class="mb-3 border-bottom pb-2">
+                <label class="text-muted small d-block">@Localizer["Details_LabelSolicitante"]</label>
+                <span class="fw-medium text-dark"><i class="bi bi-person-fill text-secondary"></i> @Model.Usuarios.Nome</span>
+            </div>
+
+            <div class="mb-3 border-bottom pb-2">
+                <label class="text-muted small d-block">@Localizer["Details_LabelTecnico"]</label>
+                <span class="fw-medium text-dark d-block mb-2">
+                    <i class="bi bi-person-badge-fill text-secondary"></i> 
+                    @(Model.UsuariosTecnicos != null ? Model.UsuariosTecnicos.Nome : Localizer["Value_Unassigned"])
+                </span>
+
+                @if (Model.UsuarioTecnicoId == null)
+                {
+                    <form asp-action="Assumir" asp-route-id="@Model.Id" method="post" class="mt-2">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-success w-100 shadow-sm">
+                            <i class="bi bi-hand-index-thumb-fill"></i> @Localizer["Details_BotaoAssumir"]
+                        </button>
+                    </form>
+                }
+            </div>
+
+            <div class="mb-3 border-bottom pb-2">
+                <label class="text-muted small d-block">@Localizer["Details_LabelPrioridade"]</label>
+                <span class="fw-bold text-primary">
+                    <i class="bi bi-lightning-fill text-warning"></i> @Model.Prioridades.Nome
+                </span>
+            </div>
+
+            <div class="mb-3 border-bottom pb-2">
+                <label class="text-muted small d-block">@Localizer["Details_LabelDataAbertura"]</label>
+                <span class="text-secondary small">
+                    <i class="bi bi-calendar-plus"></i> @Model.DataAbertura.ToLocalTime().ToString("g")
+                </span>
+            </div>
+
+            <div class="mb-3 border-bottom pb-2 bg-light p-2 rounded border border-light-subtle">
+                <label class="text-muted small d-block">@Localizer["Details_LabelSlaResposta"]</label>
+                <span class="fw-medium text-dark small">
+                    <i class="bi bi-chat-left-dots text-info"></i> @Model.PrazoRespostaSLA.ToLocalTime().ToString("g")
+                </span>
+            </div>
+
+            <div class="mb-0 bg-danger-subtle p-2 rounded border border-danger-subtle text-danger">
+                <label class="text-danger small d-block fw-bold">@Localizer["Details_LabelSlaResolucao"]</label>
+                <span class="fw-bold small">
+                    <i class="bi bi-alarm-fill"></i> @Model.PrazoResolucaoSLA.ToLocalTime().ToString("g")
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

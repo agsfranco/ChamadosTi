@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
 
 namespace ChamadosTi.Controllers
 {
@@ -16,7 +17,6 @@ namespace ChamadosTi.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<AccountController> _localizer;
         private readonly IEmailSender _emailSender;
-
         private readonly AppDbContext _context;
 
         public AccountController(
@@ -47,10 +47,10 @@ namespace ChamadosTi.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                // Verifica se o e-mail foi confirmado antes de tentar o login para evitar exceções de SignIn
+                // Busca a string traduzida do recurso para e-mail não confirmado
                 if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
-                    ModelState.AddModelError(string.Empty, _localizer["Error_EmailNotConfirmed"] ?? "Confirme seu e-mail primeiro.");
+                    ModelState.AddModelError(string.Empty, _localizer["Error_EmailNotConfirmed"]);
                     return View(model);
                 }
             }
@@ -59,7 +59,6 @@ namespace ChamadosTi.Controllers
 
             if (result.Succeeded)
             {
-                // VERIFICAÇÃO DO COMPLEMENTO DE CADASTRO
                 var identityUser = await _userManager.FindByEmailAsync(model.Email);
                 if (identityUser is not null)
                 {
@@ -67,7 +66,6 @@ namespace ChamadosTi.Controllers
                 
                     if (!perfilCompleto)
                     {
-                        // Se não completou o perfil, manda para a tela de finalização
                         return RedirectToAction("CompleteProfile");
                     }
                 }
@@ -103,10 +101,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            if (!ModelState.IsValid) return View(model);
 
             var user = new IdentityUser { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -120,8 +115,11 @@ namespace ChamadosTi.Controllers
                     new { userId = user.Id, code = code }, 
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(model.Email, "Confirme sua conta", 
-                    $"Por favor, confirme sua conta <a href='{callbackUrl}'>clicando aqui</a>.");
+                // Busca o assunto e o corpo formatado diretamente dos recursos (.resx)
+                string assunto = _localizer["Email_ConfirmSubject"];
+                string corpo = string.Format(_localizer["Email_ConfirmBody"], callbackUrl);
+
+                await _emailSender.SendEmailAsync(model.Email, assunto, corpo);
 
                 return RedirectToAction("RegisterConfirmation", new { email = model.Email });
             }
@@ -141,7 +139,6 @@ namespace ChamadosTi.Controllers
             ViewBag.Email = email;
             return View();
         }
-
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -151,7 +148,6 @@ namespace ChamadosTi.Controllers
 
             var result = await _userManager.ConfirmEmailAsync(user, code);
             
-            // Substituído por chaves do localizer
             ViewBag.StatusMessage = result.Succeeded 
                 ? _localizer["Success_EmailConfirmed"] 
                 : _localizer["Error_EmailConfirmationFailed"];
@@ -180,8 +176,11 @@ namespace ChamadosTi.Controllers
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Scheme);
 
-            await _emailSender.SendEmailAsync(model.Email, "Redefinição de Senha",
-                $"Redefina sua senha <a href='{callbackUrl}'>clicando aqui</a>.");
+            // Busca assunto e corpo estruturado em HTML das chaves de recurso
+            string assunto = _localizer["Email_ResetSubject"];
+            string corpo = string.Format(_localizer["Email_ResetBody"], callbackUrl);
+
+            await _emailSender.SendEmailAsync(model.Email, assunto, corpo);
 
             return RedirectToAction("ForgotPasswordConfirmation");
         }
@@ -192,7 +191,6 @@ namespace ChamadosTi.Controllers
             return View();
         }
 
-        // GET: Account/GenerateResetTokenForLoggedUser
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GenerateResetTokenForLoggedUser()
@@ -200,17 +198,14 @@ namespace ChamadosTi.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login");
 
-            // Gera o token de redefinição de forma legítima pois o usuário está autenticado
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            // Redireciona para o ResetPassword passando o token de segurança obrigatório
             return RedirectToAction("ResetPassword", new { code = code });
         }
 
         [HttpGet]
         public IActionResult ResetPassword(string? code = null)
         {
-            if (code == null) return BadRequest("Um token válido deve ser fornecido.");
+            if (code == null) return BadRequest(_localizer["Error_TokenRequired"]);
             return View(new ResetPasswordViewModel { Code = code });
         }
 
@@ -248,16 +243,14 @@ namespace ChamadosTi.Controllers
             ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();
             
             ViewBag.DadosTecnicos = _context.DadosTecnicos
-            .Include(d => d.Especialidades)
-            .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
-            .ThenBy(d => d.Nivel)
-            .Select(d => new {
-                Id = d.Id,
-                DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel
-            }).ToList();
+                .Include(d => d.Especialidades)
+                .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
+                .ThenBy(d => d.Nivel)
+                .Select(d => new {
+                    Id = d.Id,
+                    DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel
+                }).ToList();
 
-            // Verifica se o usuário pode gerenciar o próprio status de técnico
-            // Só permitimos se ele for o primeiro usuário do sistema ou se ele mesmo já for um técnico editando seu perfil
             var totalUsuarios = _context.Usuarios.Count();
             var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
             
@@ -291,11 +284,28 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            var setorSelecionado = _context.Setores.Find(model.SetorId);
+
+            // TRAVA REGRA DE NEGÓCIO: Se o setor selecionado for o de suporte/TI, impede o salvamento caso não possua especialidade técnica
+            if (setorSelecionado != null && setorSelecionado.Ti)
+            {
+                if (!model.EhTecnico || model.DadoTecnicoId == null)
+                {
+                    ModelState.AddModelError("SetorId", _localizer["Error_SetorTiExigeDadosTecnicos"]);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Setores = _context.Setores.ToList();
-                ViewBag.DadosTecnicos = _context.DadosTecnicos.Include(d => d.Especialidades)
-                    .Select(d => new { Id = d.Id, DescricaoFormatada = d.Nivel + " - " + (d.Especialidades != null ? d.Especialidades.Nome : "") }).ToList();
+                ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();
+                ViewBag.DadosTecnicos = _context.DadosTecnicos
+                    .Include(d => d.Especialidades)
+                    .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
+                    .ThenBy(d => d.Nivel)
+                    .Select(d => new { 
+                        Id = d.Id, 
+                        DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
+                    }).ToList();
                 
                 var total = _context.Usuarios.Count();
                 var atual = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
@@ -307,7 +317,6 @@ namespace ChamadosTi.Controllers
             var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
             var totalUsuariosSistema = _context.Usuarios.Count();
 
-            // Se o usuário desmarcou o checkbox ou não preencheu, limpa a FK
             if (!model.EhTecnico)
             {
                 model.DadoTecnicoId = null;
@@ -315,7 +324,6 @@ namespace ChamadosTi.Controllers
 
             if (usuarioExistente == null)
             {
-                // Se for o primeiro usuário absoluto, ele pode se auto-promover, senão força false
                 bool definirComoTecnico = totalUsuariosSistema == 0 ? model.EhTecnico : false;
 
                 var novoUsuario = new Usuario
@@ -335,7 +343,6 @@ namespace ChamadosTi.Controllers
                 usuarioExistente.Nome = model.Nome;
                 usuarioExistente.SetorId = model.SetorId!.Value;
                 
-                // Só aplica a alteração do checkbox de técnico se a ViewBag deu permissão legítima
                 if (totalUsuariosSistema == 1 || usuarioExistente.EhTecnico)
                 {
                     usuarioExistente.EhTecnico = model.EhTecnico;
