@@ -223,6 +223,10 @@ namespace ChamadosTi.Data
                 p.HasOne(t => t.Status)
                  .WithMany()
                  .HasForeignKey(t => t.StatusId);
+                
+                p.HasOne(x => x.TicketOrigem)
+                 .WithMany()
+                 .HasForeignKey(x => x.TicketOrigemId);
 
                 p.Property(t => t.Titulo).HasMaxLength(100).IsRequired();
                 p.Property(t => t.Comentario).HasMaxLength(1000).IsRequired();  

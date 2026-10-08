@@ -144,25 +144,35 @@
             }
         </div>
         <!-- Formulário para envio de novas Interações / Comentários -->
-        <div class="card shadow-sm border rounded bg-white p-4 mt-4">
-            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoAdicionarComentario"]</h5>
-            <form asp-action="AdicionarComentario" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="ticketId" value="@Model.Id" />
-                
-                <div class="mb-3">
-                    <textarea name="mensagemTexto" class="form-control small" rows="3" 
-                            placeholder="@Localizer["Details_PlaceholderComentario"]" required style="resize: none;"></textarea>
-                </div>
-                
-                <div class="text-end">
-                    <button type="submit" class="btn btn-sm btn-primary px-4 shadow-sm">
-                        <i class="bi bi-send-fill me-1"></i> @Localizer["Details_BotaoEnviarComentario"]
-                    </button>
-                </div>
-            </form>
-        </div>
-
+        @if (Model.Status.Codigo < (int)ChamadosTi.Models.TicketStatusEnum.Resolvido)
+        {
+            <div class="card shadow-sm border rounded bg-white p-4 mt-4">
+                <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoAdicionarComentario"]</h5>
+                <form asp-action="AdicionarComentario" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ticketId" value="@Model.Id" />
+                    
+                    <div class="mb-3">
+                        <textarea name="mensagemTexto" class="form-control small" rows="3" 
+                                placeholder="@Localizer["Details_PlaceholderComentario"]" required style="resize: none;"></textarea>
+                    </div>
+                    
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-sm btn-primary px-4 shadow-sm">
+                            <i class="bi bi-send-fill me-1"></i> @Localizer["Details_BotaoEnviarComentario"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <!-- Aviso visual de histórico bloqueado/encerrado -->
+            <div class="alert alert-light border text-muted small p-3 rounded shadow-sm mt-4 text-center">
+                <i class="bi bi-lock-fill text-secondary me-2"></i>
+                @Localizer["Details_AvisoChamadoEncerradoComentarios"]
+            </div>
+        }
     </div>
 
     <!-- COLUNA DA DIREITA: Painel Lateral de Metadados e Acordo de SLA -->
@@ -220,41 +230,56 @@
                     <i class="bi bi-alarm-fill"></i> @Model.PrazoResolucaoSLA.ToLocalTime().ToString("g")
                 </span>
             </div>
-
+            
             <div class="mb-3 border-bottom pb-3">
                 <label class="text-muted small d-block mb-1">@Localizer["Details_LabelStatusAtual"]</label>
-                <span class="badge @classeCorStatusDetails fs-6 px-3 py-2 mb-2 d-inline-block">@Localizer[Model.Status.Nome]</span>
+                <span class="badge @classeCorStatusDetails fs-6 px-3 py-2 mb-2 d-inline-block shadow-sm">@Localizer[Model.Status.Nome]</span>
 
-                <!-- Exibe ações de fluxo apenas se estiver em Atendimento ou Pendente -->
                 @if (Model.Status.Codigo == (int)ChamadosTi.Models.TicketStatusEnum.EmAtendimento)
                 {
-                    <div class="d-flex gap-2 mt-3">
-                        <!-- Botão Pausar: Agora com estilo outline-warning suave -->
+                    <div class="d-flex gap-2 mt-2">
                         <form asp-action="MoverParaPendente" asp-route-id="@Model.Id" method="post" class="w-100">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-sm btn-outline-warning text-warning-emphasis w-100 shadow-sm fw-semibold py-2">
                                 <i class="bi bi-pause-fill"></i> @Localizer["Details_BotaoPendente"]
                             </button>
                         </form>
-                        
-                        <!-- Botão Resolver: Agora com estilo outline-success para contrastar com o Status estático -->
-                        <form asp-action="MoverParaResolvido" asp-route-id="@Model.Id" method="post" class="w-100">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-sm btn-outline-success w-100 shadow-sm fw-semibold py-2">
-                                <i class="bi bi-check-all"></i> @Localizer["Details_BotaoResolvido"]
-                            </button>
-                        </form>
                     </div>
+
+                    <form asp-action="MoverParaResolvido" asp-route-id="@Model.Id" method="post" class="mt-3">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-2">
+                            <label class="text-muted small fw-medium ps-1 mb-1">@Localizer["Details_LabelParecerTecnico"]</label>
+                            <textarea name="solucaoTexto" class="form-control form-control-sm small" rows="2" 
+                                    placeholder="@Localizer["Details_PlaceholderParecer"]" required style="resize: none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-outline-success w-100 shadow-sm fw-semibold py-2">
+                            <i class="bi bi-check-all"></i> @Localizer["Details_BotaoResolvido"]
+                        </button>
+                    </form>
                 }
 
                 @if (Model.Status.Codigo == (int)ChamadosTi.Models.TicketStatusEnum.Pendente)
                 {
-                    <!-- Se o chamado estiver pausado, o botão de resolver também acompanha o estilo outline-success -->
-                    <form asp-action="MoverParaResolvido" asp-route-id="@Model.Id" method="post" class="mt-3">
+                    <div class="d-flex gap-2 mt-2 mb-3">
+                        <form asp-action="RetomarAtendimento" asp-route-id="@Model.Id" method="post" class="w-100">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-primary w-100 shadow-sm fw-semibold py-2">
+                                <i class="bi bi-play-fill"></i> @Localizer["Details_BotaoRetomar"]
+                            </button>
+                        </form>
+                    </div>
+
+                    <form asp-action="MoverParaResolvido" asp-route-id="@Model.Id" method="post">
                         @Html.AntiForgeryToken()
+                        <div class="mb-2">
+                            <label class="text-muted small fw-medium ps-1 mb-1">@Localizer["Details_LabelParecerTecnico"]</label>
+                            <textarea name="solucaoTexto" class="form-control form-control-sm small" rows="2" 
+                                    placeholder="@Localizer["Details_PlaceholderParecer"]" required style="resize: none;"></textarea>
+                        </div>
                         <button type="submit" class="btn btn-sm btn-outline-success w-100 shadow-sm fw-semibold py-2">
                             <i class="bi bi-check-all"></i> @Localizer["Details_BotaoResolvido"]
-                            </button>
+                        </button>
                     </form>
                 }
             </div>

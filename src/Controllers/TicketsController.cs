@@ -350,6 +350,7 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticketId });
         }
 
+        // POST: Tickets/MoverParaPendente/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaPendente(int id)
@@ -360,7 +361,6 @@ namespace ChamadosTi.Controllers
             var ticket = _context.Tickets.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
             if (ticket == null) return NotFound();
 
-            // Regra: Só altera status se estiver "Em Atendimento"
             if (ticket.Status.Codigo != (int)TicketStatusEnum.EmAtendimento)
             {
                 TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaTramitar"].Value;
@@ -373,22 +373,18 @@ namespace ChamadosTi.Controllers
             ticket.StatusId = statusPendente.Id;
             _context.Tickets.Update(ticket);
 
-            var dataUtc = DateTime.UtcNow;
             var dadosLog = new LogAuditoriaTicket
             {
                 Acao = "Log_ChamadoPendente",
                 Usuario = tecnicoSistema.Nome,
-                CamposModificados = new Dictionary<string, string>
-                {
-                    { "Log_StatusAlterado", "Status_Pendente" }
-                }
+                CamposModificados = new Dictionary<string, string> { { "Log_StatusAlterado", "Status_Pendente" } }
             };
 
             _context.AuditoriasTickets.Add(new AuditoriaTicket
             {
                 TicketId = ticket.Id,
                 Log = JsonSerializer.Serialize(dadosLog),
-                RegistradoEm = dataUtc,
+                RegistradoEm = DateTime.UtcNow,
                 Ativo = true
             });
 
@@ -397,12 +393,64 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
+        // POST: Tickets/RetomarAtendimento/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MoverParaResolvido(int id)
+        public async Task<IActionResult> RetomarAtendimento(int id)
         {
             var tecnicoSistema = GetUsuario();
             if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
+
+            var ticket = _context.Tickets.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
+            if (ticket == null) return NotFound();
+
+            // Regra: Só pode retomar se estiver atualmente como Pendente
+            if (ticket.Status.Codigo != (int)TicketStatusEnum.Pendente)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaTramitar"].Value;
+                return RedirectToAction(nameof(Details), new { id = ticket.Id });
+            }
+
+            var statusAtendimento = _context.Status.FirstOrDefault(s => s.Codigo == (int)TicketStatusEnum.EmAtendimento);
+            if (statusAtendimento == null) return NotFound();
+
+            ticket.StatusId = statusAtendimento.Id;
+            _context.Tickets.Update(ticket);
+
+            var dadosLog = new LogAuditoriaTicket
+            {
+                Acao = "Log_ChamadoRetomado",
+                Usuario = tecnicoSistema.Nome,
+                CamposModificados = new Dictionary<string, string> { { "Log_StatusAlterado", "Status_EmAtendimento" } }
+            };
+
+            _context.AuditoriasTickets.Add(new AuditoriaTicket
+            {
+                TicketId = ticket.Id,
+                Log = JsonSerializer.Serialize(dadosLog),
+                RegistradoEm = DateTime.UtcNow,
+                Ativo = true
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = _localizer["Success_ChamadoRetomado"].Value;
+            return RedirectToAction(nameof(Details), new { id = ticket.Id });
+        }
+
+        // POST: Tickets/MoverParaResolvido/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MoverParaResolvido(int id, string solucaoTexto)
+        {
+            var tecnicoSistema = GetUsuario();
+            if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
+
+            // Validação do Parecer Técnico: impede envio de texto em branco no encerramento
+            if (string.IsNullOrWhiteSpace(solucaoTexto))
+            {
+                TempData["ErrorMessage"] = _localizer["Error_ParecerObrigatorio"].Value;
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
 
             var ticket = _context.Tickets.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
             if (ticket == null) return NotFound();
@@ -417,25 +465,23 @@ namespace ChamadosTi.Controllers
             if (statusResolvido == null) return NotFound();
 
             ticket.StatusId = statusResolvido.Id;
-            ticket.DataFechamento = DateTime.UtcNow; // Registra o momento exato da solução do problema
+            ticket.DataFechamento = DateTime.UtcNow; 
             _context.Tickets.Update(ticket);
 
-            var dataUtc = DateTime.UtcNow;
+            // O Parecer entra na propriedade 'Mensagem' do JSON, integrando-se nativamente à linha do tempo
             var dadosLog = new LogAuditoriaTicket
             {
                 Acao = "Log_ChamadoResolvido",
                 Usuario = tecnicoSistema.Nome,
-                CamposModificados = new Dictionary<string, string>
-                {
-                    { "Log_StatusAlterado", "Status_Resolvido" }
-                }
+                Mensagem = solucaoTexto.Trim(),
+                CamposModificados = new Dictionary<string, string> { { "Log_StatusAlterado", "Status_Resolvido" } }
             };
 
             _context.AuditoriasTickets.Add(new AuditoriaTicket
             {
                 TicketId = ticket.Id,
                 Log = JsonSerializer.Serialize(dadosLog),
-                RegistradoEm = dataUtc,
+                RegistradoEm = DateTime.UtcNow,
                 Ativo = true
             });
 
@@ -443,7 +489,6 @@ namespace ChamadosTi.Controllers
             TempData["SuccessMessage"] = _localizer["Success_ChamadoResolvido"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
-
 
         private Usuario? GetUsuario()
         {

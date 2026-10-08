@@ -132,6 +132,7 @@ erDiagram
         int CategoriasId FK
         int PrioridadesId FK
         int StatusId FK
+        int TicketOrigemId FK
         datetime DataAbertura
         datetime DataFechamento
         datetime PrazoRespostaSLA
@@ -172,6 +173,7 @@ erDiagram
     Setores ||--o{ Tickets : "origina"
     Status ||--o{ Tickets : "rastreia"
     Tickets ||--o{ AuditoriasTickets : "geria"
+    Tickets ||--o{ Tickets : "Origina"
     Tipos ||--o{ Itens : "possui"
     Marcas ||--o{ Itens : "possui"
     Setores o|--o{ Itens : "possui"

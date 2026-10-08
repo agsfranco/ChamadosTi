@@ -11,6 +11,7 @@ namespace ChamadosTi.Models
         public int CategoriaId { get; set; }
         public int PrioridadeId { get; set; }
         public int StatusId { get; set; }
+        public int? TicketOrigemId { get; set; }
         public DateTime DataAbertura { get; set; } = System.DateTime.UtcNow;
         public DateTime DataFechamento { get; set; }
         public DateTime PrazoRespostaSLA { get; set; }
@@ -24,6 +25,7 @@ namespace ChamadosTi.Models
         public virtual Categoria Categorias { get; set; } = null!;
         public virtual Prioridade Prioridades { get; set; } = null!;
         public virtual Status Status { get; set; } = null!;
+        public virtual Ticket? TicketOrigem { get; set; }
         public virtual ICollection<ItemTicket>? ItensTickets { get; set; } = new List<ItemTicket>();
     }
 }

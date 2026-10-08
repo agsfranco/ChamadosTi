@@ -47,4 +47,10 @@
   <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Current Ticket Status</value></data>
   <data name="Details_BotaoPendente" xml:space="preserve"><value>Pause Ticket</value></data>
   <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolve Ticket</value></data>
+  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>This ticket has been resolved or closed. New text interactions are locked.</value></data>
+  <data name="Details_LabelParecerTecnico" xml:space="preserve"><value>Resolution / Closing Summary</value></data>
+  <data name="Details_PlaceholderParecer" xml:space="preserve"><value>Briefly describe what was done to mitigate the technical issue...</value></data>
+  <data name="Details_BotaoRetomar" xml:space="preserve"><value>Resume Support</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pending</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
 </root>

@@ -47,4 +47,10 @@
   <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Status Atual do Chamado</value></data>
   <data name="Details_BotaoPendente" xml:space="preserve"><value>Pausar Atendimento</value></data>
   <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolver Chamado</value></data>
+  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>Este chamado já foi solucionado ou concluído. Novas interações de texto foram bloqueadas.</value></data>
+  <data name="Details_LabelParecerTecnico" xml:space="preserve"><value>Solução / Parecer de Encerramento</value></data>
+  <data name="Details_PlaceholderParecer" xml:space="preserve"><value>Descreva resumidamente o que foi feito para mitigar o problema técnico...</value></data>
+  <data name="Details_BotaoRetomar" xml:space="preserve"><value>Retomar Atendimento</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pendente</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
 </root>

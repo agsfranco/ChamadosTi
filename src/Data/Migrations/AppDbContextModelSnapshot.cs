@@ -473,6 +473,9 @@ namespace ChamadosTi.Data
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TicketOrigemId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -493,6 +496,8 @@ namespace ChamadosTi.Data
                     b.HasIndex("SetorId");
 
                     b.HasIndex("StatusId");
+
+                    b.HasIndex("TicketOrigemId");
 
                     b.HasIndex("UsuarioId");
 
@@ -890,6 +895,11 @@ namespace ChamadosTi.Data
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("ChamadosTi.Models.Ticket", "TicketOrigem")
+                        .WithMany()
+                        .HasForeignKey("TicketOrigemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("ChamadosTi.Models.Usuario", "Usuarios")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
@@ -908,6 +918,8 @@ namespace ChamadosTi.Data
                     b.Navigation("Setores");
 
                     b.Navigation("Status");
+
+                    b.Navigation("TicketOrigem");
 
                     b.Navigation("Usuarios");
 
