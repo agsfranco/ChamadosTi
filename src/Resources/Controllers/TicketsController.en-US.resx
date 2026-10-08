@@ -12,4 +12,9 @@
   <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>The 'In Progress' status was not found in the system database.</value></data>
   <data name="Error_ComentarioVazio" xml:space="preserve"><value>Cannot send an empty comment.</value></data>
   <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Your message has been successfully published and recorded in the history!</value></data>
+  <data name="Error_StatusInvalidoParaTramitar" xml:space="preserve"><value>The ticket is not in a status that allows this modification.</value></data>
+  <data name="Success_ChamadoPendente" xml:space="preserve"><value>The ticket has been successfully paused and set to Pending status!</value></data>
+  <data name="Success_ChamadoResolvido" xml:space="preserve"><value>Congratulations! The ticket has been solved and marked as Resolved.</value></data>
+  <data name="Log_ChamadoPendente" xml:space="preserve"><value>Support Paused / Suspended</value></data>
+  <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Ticket Solved / Resolved</value></data>
 </root>

@@ -12,5 +12,10 @@
   <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>O status 'Em Atendimento' não foi localizado na base do sistema.</value></data>
   <data name="Error_ComentarioVazio" xml:space="preserve"><value>Não é possível enviar um comentário em branco.</value></data>
   <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Sua mensagem foi publicada e registrada no histórico com sucesso!</value></data>
+  <data name="Error_StatusInvalidoParaTramitar" xml:space="preserve"><value>O chamado não se encontra em um status que permite esta alteração.</value></data>
+  <data name="Success_ChamadoPendente" xml:space="preserve"><value>O chamado foi pausado e colocado em status Pendente com sucesso!</value></data>
+  <data name="Success_ChamadoResolvido" xml:space="preserve"><value>Parabéns! O chamado foi solucionado e marcado como Resolvido.</value></data>
+  <data name="Log_ChamadoPendente" xml:space="preserve"><value>Atendimento Suspenso / Pausado</value></data>
+  <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Chamado Solucionado / Resolvido</value></data>
 </root>
 

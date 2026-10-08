@@ -44,4 +44,7 @@
   <data name="Error_ComentarioVazio" xml:space="preserve"><value>Não é possível enviar um comentário em branco.</value></data>
   <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Sua mensagem foi publicada e registrada no histórico com sucesso!</value></data>
   <data name="Log_NovaInteracao" xml:space="preserve"><value>Nova Mensagem / Interação</value></data>
+  <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Status Atual do Chamado</value></data>
+  <data name="Details_BotaoPendente" xml:space="preserve"><value>Pausar Atendimento</value></data>
+  <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolver Chamado</value></data>
 </root>

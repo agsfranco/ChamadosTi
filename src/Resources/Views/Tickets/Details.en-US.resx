@@ -44,4 +44,7 @@
   <data name="Error_ComentarioVazio" xml:space="preserve"><value>Cannot send an empty comment.</value></data>
   <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Your message has been successfully published and recorded in the history!</value></data>
   <data name="Log_NovaInteracao" xml:space="preserve"><value>New Message / Interaction</value></data>
+  <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Current Ticket Status</value></data>
+  <data name="Details_BotaoPendente" xml:space="preserve"><value>Pause Ticket</value></data>
+  <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolve Ticket</value></data>
 </root>

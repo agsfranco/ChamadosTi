@@ -350,6 +350,101 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticketId });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MoverParaPendente(int id)
+        {
+            var tecnicoSistema = GetUsuario();
+            if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
+
+            var ticket = _context.Tickets.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
+            if (ticket == null) return NotFound();
+
+            // Regra: Só altera status se estiver "Em Atendimento"
+            if (ticket.Status.Codigo != (int)TicketStatusEnum.EmAtendimento)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaTramitar"].Value;
+                return RedirectToAction(nameof(Details), new { id = ticket.Id });
+            }
+
+            var statusPendente = _context.Status.FirstOrDefault(s => s.Codigo == (int)TicketStatusEnum.Pendente);
+            if (statusPendente == null) return NotFound();
+
+            ticket.StatusId = statusPendente.Id;
+            _context.Tickets.Update(ticket);
+
+            var dataUtc = DateTime.UtcNow;
+            var dadosLog = new LogAuditoriaTicket
+            {
+                Acao = "Log_ChamadoPendente",
+                Usuario = tecnicoSistema.Nome,
+                CamposModificados = new Dictionary<string, string>
+                {
+                    { "Log_StatusAlterado", "Status_Pendente" }
+                }
+            };
+
+            _context.AuditoriasTickets.Add(new AuditoriaTicket
+            {
+                TicketId = ticket.Id,
+                Log = JsonSerializer.Serialize(dadosLog),
+                RegistradoEm = dataUtc,
+                Ativo = true
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = _localizer["Success_ChamadoPendente"].Value;
+            return RedirectToAction(nameof(Details), new { id = ticket.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MoverParaResolvido(int id)
+        {
+            var tecnicoSistema = GetUsuario();
+            if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
+
+            var ticket = _context.Tickets.Include(t => t.Status).FirstOrDefault(t => t.Id == id);
+            if (ticket == null) return NotFound();
+
+            if (ticket.Status.Codigo != (int)TicketStatusEnum.EmAtendimento && ticket.Status.Codigo != (int)TicketStatusEnum.Pendente)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaTramitar"].Value;
+                return RedirectToAction(nameof(Details), new { id = ticket.Id });
+            }
+
+            var statusResolvido = _context.Status.FirstOrDefault(s => s.Codigo == (int)TicketStatusEnum.Resolvido);
+            if (statusResolvido == null) return NotFound();
+
+            ticket.StatusId = statusResolvido.Id;
+            ticket.DataFechamento = DateTime.UtcNow; // Registra o momento exato da solução do problema
+            _context.Tickets.Update(ticket);
+
+            var dataUtc = DateTime.UtcNow;
+            var dadosLog = new LogAuditoriaTicket
+            {
+                Acao = "Log_ChamadoResolvido",
+                Usuario = tecnicoSistema.Nome,
+                CamposModificados = new Dictionary<string, string>
+                {
+                    { "Log_StatusAlterado", "Status_Resolvido" }
+                }
+            };
+
+            _context.AuditoriasTickets.Add(new AuditoriaTicket
+            {
+                TicketId = ticket.Id,
+                Log = JsonSerializer.Serialize(dadosLog),
+                RegistradoEm = dataUtc,
+                Ativo = true
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = _localizer["Success_ChamadoResolvido"].Value;
+            return RedirectToAction(nameof(Details), new { id = ticket.Id });
+        }
+
+
         private Usuario? GetUsuario()
         {
             var identityUserId = _userManager.GetUserId(User);

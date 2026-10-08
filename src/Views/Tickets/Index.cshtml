@@ -33,8 +33,21 @@
                         </td>
                         <td class="fw-medium text-secondary">@item.Usuarios.Nome</td>
                         <td>
-                            <!-- Tradução dinâmica do Status com base nas chaves do Seeding -->
-                            <span class="badge bg-info text-white fw-bold">@Localizer[item.Status.Nome]</span>
+                            @{
+                                // Define a classe de cor do Bootstrap com base no código do status
+                                string classeCorStatus = item.Status.Codigo switch
+                                {
+                                    1 => "bg-info",          // Aberto (Azul claro / Ciano)
+                                    2 => "bg-primary",       // Em Atendimento (Azul sólido)
+                                    3 => "bg-warning text-dark", // Pendente (Amarelo de atenção)
+                                    4 => "bg-success",       // Resolvido (Verde de sucesso)
+                                    _ => "bg-secondary"      // Qualquer outro ou Fechado (Cinza)
+                                };
+                            }
+                            <!-- Renderiza o badge com a cor dinâmica e o texto internacionalizado -->
+                            <span class="badge @classeCorStatus fw-bold px-3 py-2 fs-7 shadow-sm">
+                                @Localizer[item.Status.Nome]
+                            </span>
                         </td>
                         <td class="text-secondary small">@item.DataAbertura.ToLocalTime().ToString("g")</td>
                         <td>
