@@ -131,16 +131,40 @@
                                     </div>
                                 }
 
-                                <!-- SE FOR ALTERAÇÃO TÉCNICA: Exibe a tabela de propriedades modificadas -->
                                 @if (log.CamposModificados != null && log.CamposModificados.Any())
                                 {
                                     <div class="border-top pt-2 mt-2 bg-white p-2 rounded border">
                                         @foreach (var campo in log.CamposModificados)
                                         {
+                                            string valorExibicao = campo.Value;
+                                            bool ehData = false;
+
+                                            if (campo.Key == "Log_PrazoResolucaoEstendido" || campo.Key == "Log_PrazoRespostaEstendido" || 
+                                                campo.Key == "Log_PrazoResposta" || campo.Key == "Log_PrazoResolucao")
+                                            {
+                                                if (DateTime.TryParse(campo.Value, out DateTime dataUtc))
+                                                {
+                                                    valorExibicao = dataUtc.ToLocalTime().ToString("g");
+                                                    ehData = true;
+                                                }
+                                            }
+
                                             <div class="small text-muted py-1">
                                                 <i class="bi bi-dot text-primary"></i> 
                                                 <strong>@Localizer[campo.Key]:</strong> 
-                                                <span class="text-dark">@Localizer[campo.Value]</span>
+                                                
+                                                <span class="text-dark">
+                                                    @if (ehData)
+                                                    {
+                                                        <!-- Se for data formatada, imprime o texto diretamente -->
+                                                        @valorExibicao
+                                                    }
+                                                    else
+                                                    {
+                                                        <!-- CORREÇÃO: Envelopa com o Localizer para traduzir os status (Status_Aberto, etc) -->
+                                                        @Localizer[valorExibicao]
+                                                    }
+                                                </span>
                                             </div>
                                         }
                                     </div>
@@ -228,20 +252,47 @@
                     <i class="bi bi-calendar-plus"></i> @Model.DataAbertura.ToLocalTime().ToString("g")
                 </span>
             </div>
+            
+            @{
+                var agoraUtc = DateTime.UtcNow;
 
-            <div class="mb-3 border-bottom pb-2 bg-light p-2 rounded border border-light-subtle">
-                <label class="text-muted small d-block">@Localizer["Details_LabelSlaResposta"]</label>
-                <span class="fw-medium text-dark small">
-                    <i class="bi bi-chat-left-dots text-info"></i> @Model.PrazoRespostaSLA.ToLocalTime().ToString("g")
+                // LÓGICA DE CORES: SLA de Resposta
+                TimeSpan restResposta = Model.PrazoRespostaSLA - agoraUtc;
+                string corSlaResp = "text-secondary border-light-subtle bg-light";
+                string iconSlaResp = "bi-chat-left-dots";
+                
+                if (Model.UsuarioTecnicoId == null) // Só acende o alerta se nenhum técnico assumiu ainda
+                {
+                    if (restResposta.TotalMinutes < 0) { corSlaResp = "text-danger border-danger-subtle bg-danger-subtle fw-bold"; iconSlaResp = "bi-exclamation-octagon-fill"; }
+                    else if (restResposta.TotalDays <= 1) { corSlaResp = "text-warning border-warning-subtle bg-warning-subtle fw-bold"; iconSlaResp = "bi-exclamation-triangle-fill"; }
+                }
+
+                // LÓGICA DE CORES: SLA de Resolução
+                TimeSpan restResolucao = Model.PrazoResolucaoSLA - agoraUtc;
+                string corSlaReso = "text-secondary border-light-subtle bg-light";
+                string iconSlaReso = "bi-clock";
+                
+                // Só acende o alerta se não estiver resolvido, fechado ou cancelado
+                if (Model.Status.Codigo < (int)ChamadosTi.Models.TicketStatusEnum.Resolvido)
+                {
+                    if (restResolucao.TotalMinutes < 0) { corSlaReso = "text-danger border-danger-subtle bg-danger-subtle fw-bold"; iconSlaReso = "bi-exclamation-octagon-fill"; }
+                    else if (restResolucao.TotalDays <= 1) { corSlaReso = "text-warning border-warning-subtle bg-warning-subtle fw-bold"; iconSlaReso = "bi-exclamation-triangle-fill"; }
+                }
+            }
+            <div class="mb-3 p-2 rounded border @corSlaResp shadow-sm">
+                <label class="text-muted small d-block mb-1 fw-normal text-dark-emphasis">@Localizer["Details_LabelSlaResposta"]</label>
+                <span class="small d-flex align-items-center gap-1">
+                    <i class="bi @iconSlaResp"></i> @Model.PrazoRespostaSLA.ToLocalTime().ToString("g")
                 </span>
             </div>
 
-            <div class="mb-0 bg-danger-subtle p-2 rounded border border-danger-subtle text-danger">
-                <label class="text-danger small d-block fw-bold">@Localizer["Details_LabelSlaResolucao"]</label>
-                <span class="fw-bold small">
-                    <i class="bi bi-alarm-fill"></i> @Model.PrazoResolucaoSLA.ToLocalTime().ToString("g")
+            <div class="mb-0 p-2 rounded border @corSlaReso shadow-sm">
+                <label class="text-muted small d-block mb-1 fw-normal text-dark-emphasis">@Localizer["Details_LabelSlaResolucao"]</label>
+                <span class="small d-flex align-items-center gap-1">
+                    <i class="bi @iconSlaReso"></i> @Model.PrazoResolucaoSLA.ToLocalTime().ToString("g")
                 </span>
             </div>
+
             
             <div class="mb-3 border-bottom pb-3">
                 <label class="text-muted small d-block mb-1">@Localizer["Details_LabelStatusAtual"]</label>

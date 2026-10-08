@@ -25,4 +25,6 @@
   <data name="Success_ChamadoCancelado" xml:space="preserve"><value>The ticket was successfully cancelled and removed from the active queue.</value></data>
   <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Ticket Cancelled by User</value></data>
   <data name="Error_JustificativaObrigatoria" xml:space="preserve"><value>Providing a justification summary is mandatory to cancel the ticket.</value></data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>New Response SLA (Pause Compensated)</value></data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>New Resolution SLA (Pause Compensated)</value></data>
 </root>

@@ -33,11 +33,9 @@
   <data name="Log_StatusInicial" xml:space="preserve"><value>Status Inicial</value></data>
   <data name="Log_PrazoResposta" xml:space="preserve"><value>SLA de Resposta Inicial</value></data>
   <data name="Log_PrazoResolucao" xml:space="preserve"><value>SLA de Resolução Calculado</value></data>
-  <data name="Status_Aberto" xml:space="preserve"><value>Aberto</value></data>
   <data name="Log_ChamadoAssumido" xml:space="preserve"><value>Chamado Assumido pelo Técnico</value></data>
   <data name="Log_StatusAlterado" xml:space="preserve"><value>Status Alterado para</value></data>
   <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Analista Vinculado</value></data>
-  <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
   <data name="Details_SecaoAdicionarComentario" xml:space="preserve"><value>Adicionar Nova Interação</value></data>
   <data name="Details_PlaceholderComentario" xml:space="preserve"><value>Digite aqui sua mensagem ou atualização sobre o andamento do chamado...</value></data>
   <data name="Details_BotaoEnviarComentario" xml:space="preserve"><value>Enviar Mensagem</value></data>
@@ -51,8 +49,6 @@
   <data name="Details_LabelParecerTecnico" xml:space="preserve"><value>Solução / Parecer de Encerramento</value></data>
   <data name="Details_PlaceholderParecer" xml:space="preserve"><value>Descreva resumidamente o que foi feito para mitigar o problema técnico...</value></data>
   <data name="Details_BotaoRetomar" xml:space="preserve"><value>Retomar Atendimento</value></data>
-  <data name="Status_Pendente" xml:space="preserve"><value>Pendente</value></data>
-  <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
   <data name="Details_LinkTicketOrigem" xml:space="preserve"><value>Derivado do Chamado</value></data>
   <data name="Details_LabelAcoesEncerradas" xml:space="preserve"><value>Histórico / Novas Demandas</value></data>
   <data name="Details_BotaoGerarVinculado" xml:space="preserve"><value>Abrir Chamado Vinculado</value></data>
@@ -61,11 +57,18 @@
   <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Chamado Solucionado / Resolvido</value></data>
   <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancelar este Chamado</value></data>
   <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve"><value>Tem certeza absoluta de que deseja cancelar este chamado? Esta ação não poderá ser desfeita.</value></data>
-  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelado</value></data>
   <data name="Details_ModalCancelarTitulo" xml:space="preserve"><value>Confirmar Cancelamento do Chamado</value></data>
   <data name="Details_ModalCancelarInstrucao" xml:space="preserve"><value>Você está prestes a abortar este atendimento. Uma justificativa é obrigatória para auditar o encerramento.</value></data>
   <data name="Details_LabelJustificativa" xml:space="preserve"><value>Justificativa do Descarte</value></data>
   <data name="Details_PlaceholderJustificativa" xml:space="preserve"><value>Explique resumidamente por que este chamado está sendo cancelado...</value></data>
   <data name="Details_ModalBotaoFechar" xml:space="preserve"><value>Voltar</value></data>
   <data name="Details_ModalBotaoConfirmar" xml:space="preserve"><value>Confirmar Cancelamento</value></data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>Novo SLA de Resposta (Pausa Compensada)</value></data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>Novo SLA de Resolução (Pausa Compensada)</value></data>
+  <data name="Status_Aberto" xml:space="preserve"><value>Aberto</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pendente</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
+  <data name="Status_Fechado" xml:space="preserve"><value>Fechado / Concluído</value></data>
+  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelado</value></data>
 </root>

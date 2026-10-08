@@ -25,5 +25,7 @@
   <data name="Success_ChamadoCancelado" xml:space="preserve"><value>O chamado foi cancelado com sucesso e retirado da fila operacional.</value></data>
   <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Chamado Cancelado pelo Usuário</value></data>
   <data name="Error_JustificativaObrigatoria" xml:space="preserve"><value>O preenchimento da justificativa é obrigatório para realizar o cancelamento do chamado.</value></data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>Novo SLA de Resposta (Pausa Compensada)</value></data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>Novo SLA de Resolução (Pausa Compensada)</value></data>  
 </root>
 

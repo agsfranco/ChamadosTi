@@ -33,11 +33,9 @@
   <data name="Log_StatusInicial" xml:space="preserve"><value>Initial Status</value></data>
   <data name="Log_PrazoResposta" xml:space="preserve"><value>First Response SLA</value></data>
   <data name="Log_PrazoResolucao" xml:space="preserve"><value>Calculated Resolution SLA</value></data>
-  <data name="Status_Aberto" xml:space="preserve"><value>Open</value></data>
   <data name="Log_ChamadoAssumido" xml:space="preserve"><value>Ticket Owner Assigned</value></data>
   <data name="Log_StatusAlterado" xml:space="preserve"><value>Status Changed to</value></data>
   <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Assigned Analyst</value></data>
-  <data name="Status_EmAtendimento" xml:space="preserve"><value>In Progress</value></data>
   <data name="Details_SecaoAdicionarComentario" xml:space="preserve"><value>Add New Interaction</value></data>
   <data name="Details_PlaceholderComentario" xml:space="preserve"><value>Type your message or update about the ticket progress here...</value></data>
   <data name="Details_BotaoEnviarComentario" xml:space="preserve"><value>Send Message</value></data>
@@ -51,8 +49,6 @@
   <data name="Details_LabelParecerTecnico" xml:space="preserve"><value>Resolution / Closing Summary</value></data>
   <data name="Details_PlaceholderParecer" xml:space="preserve"><value>Briefly describe what was done to mitigate the technical issue...</value></data>
   <data name="Details_BotaoRetomar" xml:space="preserve"><value>Resume Support</value></data>
-  <data name="Status_Pendente" xml:space="preserve"><value>Pending</value></data>
-  <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
   <data name="Details_LinkTicketOrigem" xml:space="preserve"><value>Derived from Ticket</value></data>
   <data name="Details_LabelAcoesEncerradas" xml:space="preserve"><value>History / New Demands</value></data>
   <data name="Details_BotaoGerarVinculado" xml:space="preserve"><value>Open Linked Ticket</value></data>
@@ -61,11 +57,18 @@
   <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Ticket Solved / Resolved</value></data>
   <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancel this Ticket</value></data>
   <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve"><value>Are you absolutely sure you want to cancel this ticket? This action cannot be undone.</value></data>
-  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelled</value></data>
   <data name="Details_ModalCancelarTitulo" xml:space="preserve"><value>Confirm Ticket Cancellation</value></data>
   <data name="Details_ModalCancelarInstrucao" xml:space="preserve"><value>You are about to abort this ticket. A justification statement is mandatory to audit the closing sequence.</value></data>
   <data name="Details_LabelJustificativa" xml:space="preserve"><value>Cancellation Justification</value></data>
   <data name="Details_PlaceholderJustificativa" xml:space="preserve"><value>Briefly explain why this ticket is being cancelled...</value></data>
   <data name="Details_ModalBotaoFechar" xml:space="preserve"><value>Go Back</value></data>
   <data name="Details_ModalBotaoConfirmar" xml:space="preserve"><value>Confirm Cancellation</value></data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>New Response SLA (Pause Compensated)</value></data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>New Resolution SLA (Pause Compensated)</value></data>
+  <data name="Status_Aberto" xml:space="preserve"><value>Open</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>In Progress</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pending</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
+  <data name="Status_Fechado" xml:space="preserve"><value>Closed / Concluded</value></data>
+  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelled</value></data>
 </root>

@@ -418,6 +418,31 @@ namespace ChamadosTi.Controllers
             var statusAtendimento = _context.Status.FirstOrDefault(s => s.Codigo == (int)TicketStatusEnum.EmAtendimento);
             if (statusAtendimento == null) return NotFound();
 
+            var dataRetomadaUtc = DateTime.UtcNow;
+
+            var ultimaAuditoriaPausa = _context.AuditoriasTickets
+                .Where(a => a.TicketId == id && a.Log.Contains("Status_Pendente"))
+                .OrderByDescending(a => a.RegistradoEm)
+                .FirstOrDefault();
+
+            var dicionarioModificacoesLog = new Dictionary<string, string>
+            {
+                { "Log_StatusAlterado", "Status_EmAtendimento" }
+            };
+
+            if (ultimaAuditoriaPausa != null)
+            {
+                TimeSpan tempoCongelado = dataRetomadaUtc - ultimaAuditoriaPausa.RegistradoEm;
+                double minutosParaEstender = tempoCongelado.TotalMinutes;
+
+                if (minutosParaEstender > 0)
+                {
+                    ticket.PrazoResolucaoSLA = ticket.PrazoResolucaoSLA.AddMinutes(minutosParaEstender);
+                    dicionarioModificacoesLog.Add("Log_PrazoResolucaoEstendido", ticket.PrazoResolucaoSLA.ToString("o"));
+                }
+
+            }
+
             ticket.StatusId = statusAtendimento.Id;
             _context.Tickets.Update(ticket);
 
@@ -425,14 +450,14 @@ namespace ChamadosTi.Controllers
             {
                 Acao = "Log_ChamadoRetomado",
                 Usuario = tecnicoSistema.Nome,
-                CamposModificados = new Dictionary<string, string> { { "Log_StatusAlterado", "Status_EmAtendimento" } }
+                CamposModificados = dicionarioModificacoesLog
             };
 
             _context.AuditoriasTickets.Add(new AuditoriaTicket
             {
                 TicketId = ticket.Id,
                 Log = JsonSerializer.Serialize(dadosLog),
-                RegistradoEm = DateTime.UtcNow,
+                RegistradoEm = dataRetomadaUtc,
                 Ativo = true
             });
 
@@ -440,6 +465,7 @@ namespace ChamadosTi.Controllers
             TempData["SuccessMessage"] = _localizer["Success_ChamadoRetomado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
