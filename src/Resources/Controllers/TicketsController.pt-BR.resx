@@ -1,31 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  
-  <data name="Error_SemPrioridade" xml:space="preserve"><value>Nenhuma prioridade (SLA) cadastrada no sistema. Entre em contato com o administrador.</value></data>
-  <data name="Error_SemStatusInicial" xml:space="preserve"><value>O status inicial 'Aberto' não foi localizado nas configurações do sistema.</value></data>
-  <data name="Success_ChamadoAssumido" xml:space="preserve"><value>Você assumiu o atendimento deste chamado com sucesso!</value></data>
-  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve"><value>Este chamado já foi assumido por outro analista ou já se encontra encerrado.</value></data>
-  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>O status 'Em Atendimento' não foi localizado na base do sistema.</value></data>
-  <data name="Error_ComentarioVazio" xml:space="preserve"><value>Não é possível enviar um comentário em branco.</value></data>
-  <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Sua mensagem foi publicada e registrada no histórico com sucesso!</value></data>
-  <data name="Error_StatusInvalidoParaTramitar" xml:space="preserve"><value>O chamado não se encontra em um status que permite esta alteração.</value></data>
-  <data name="Success_ChamadoPendente" xml:space="preserve"><value>O chamado foi pausado e colocado em status Pendente com sucesso!</value></data>
-  <data name="Success_ChamadoResolvido" xml:space="preserve"><value>Parabéns! O chamado foi solucionado e marcado como Resolvido.</value></data>
-  <data name="Log_ChamadoPendente" xml:space="preserve"><value>Atendimento Suspenso / Pausado</value></data>
-  <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Chamado Solucionado / Resolvido</value></data>
-  <data name="Error_ParecerObrigatorio" xml:space="preserve"><value>O preenchimento do parecer técnico com a solução dada é obrigatório para encerrar o chamado.</value></data>
-  <data name="Success_ChamadoRetomado" xml:space="preserve"><value>Atendimento retomado com sucesso! O cronômetro de SLA foi reativado.</value></data>
-  <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Atendimento do Chamado Retomado</value></data>
-  <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>ID do Ticket de Origem</value></data>
-  <data name="Error_StatusInvalidoParaCancelar" xml:space="preserve"><value>Não é possível cancelar chamados que já foram solucionados ou encerrados.</value></data>
-  <data name="Success_ChamadoCancelado" xml:space="preserve"><value>O chamado foi cancelado com sucesso e retirado da fila operacional.</value></data>
-  <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Chamado Cancelado pelo Usuário</value></data>
-  <data name="Error_JustificativaObrigatoria" xml:space="preserve"><value>O preenchimento da justificativa é obrigatório para realizar o cancelamento do chamado.</value></data>
-  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>Novo SLA de Resposta (Pausa Compensada)</value></data>
-  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>Novo SLA de Resolução (Pausa Compensada)</value></data>  
-</root>
+  <!--
+    Microsoft ResX Schema
 
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Error_SemPrioridade" xml:space="preserve">
+    <value>Nenhuma prioridade (SLA) cadastrada no sistema. Entre em contato com o administrador.</value>
+    <comment/>
+  </data>
+  <data name="Error_SemStatusInicial" xml:space="preserve">
+    <value>O status inicial 'Aberto' não foi localizado nas configurações do sistema.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoAssumido" xml:space="preserve">
+    <value>Você assumiu o atendimento deste chamado com sucesso!</value>
+    <comment/>
+  </data>
+  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve">
+    <value>Este chamado já foi assumido por outro analista ou já se encontra encerrado.</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve">
+    <value>O status 'Em Atendimento' não foi localizado na base do sistema.</value>
+    <comment/>
+  </data>
+  <data name="Error_ComentarioVazio" xml:space="preserve">
+    <value>Não é possível enviar um comentário em branco.</value>
+    <comment/>
+  </data>
+  <data name="Success_ComentarioAdicionado" xml:space="preserve">
+    <value>Sua mensagem foi publicada e registrada no histórico com sucesso!</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaTramitar" xml:space="preserve">
+    <value>O chamado não se encontra em um status que permite esta alteração.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoPendente" xml:space="preserve">
+    <value>O chamado foi pausado e colocado em status Pendente com sucesso!</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoResolvido" xml:space="preserve">
+    <value>Parabéns! O chamado foi solucionado e marcado como Resolvido.</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoPendente" xml:space="preserve">
+    <value>Atendimento Suspenso / Pausado</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoResolvido" xml:space="preserve">
+    <value>Chamado Solucionado / Resolvido</value>
+    <comment/>
+  </data>
+  <data name="Error_ParecerObrigatorio" xml:space="preserve">
+    <value>O preenchimento do parecer técnico com a solução dada é obrigatório para encerrar o chamado.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoRetomado" xml:space="preserve">
+    <value>Atendimento retomado com sucesso! O cronômetro de SLA foi reativado.</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoRetomado" xml:space="preserve">
+    <value>Atendimento do Chamado Retomado</value>
+    <comment/>
+  </data>
+  <data name="Log_DerivadoDoTicket" xml:space="preserve">
+    <value>ID do Ticket de Origem</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaCancelar" xml:space="preserve">
+    <value>Não é possível cancelar chamados que já foram solucionados ou encerrados.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoCancelado" xml:space="preserve">
+    <value>O chamado foi cancelado com sucesso e retirado da fila operacional.</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoCancelado" xml:space="preserve">
+    <value>Chamado Cancelado pelo Usuário</value>
+    <comment/>
+  </data>
+  <data name="Error_JustificativaObrigatoria" xml:space="preserve">
+    <value>O preenchimento da justificativa é obrigatório para realizar o cancelamento do chamado.</value>
+    <comment/>
+  </data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve">
+    <value>Novo SLA de Resposta (Pausa Compensada)</value>
+    <comment/>
+  </data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve">
+    <value>Novo SLA de Resolução (Pausa Compensada)</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaAlterarPrioridade" xml:space="preserve">
+    <value>Não é possível alterar a prioridade de chamados que já foram solucionados ou encerrados.</value>
+    <comment/>
+  </data>
+  <data name="Success_PrioridadeAlterada" xml:space="preserve">
+    <value>A Prioridade do chamado foi alterada com sucesso! Os prazos SLA foram recalculados.</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaAlterarItens" xml:space="preserve"><value>Não é possível alterar os ativos vinculados em um chamado que já se encontra encerrado.</value></data>
+  <data name="Success_ItensAlterados" xml:space="preserve"><value>O inventário de ativos vinculados ao chamado foi atualizado com sucesso!</value></data>  
+</root>

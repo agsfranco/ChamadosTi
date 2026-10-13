@@ -34,7 +34,7 @@
                     @if (ViewBag.Itens != null && ((System.Collections.IEnumerable)ViewBag.Itens).Cast<object>().Any())
                     {
                         <select asp-for="ItensIdsSelecionados" class="form-select" multiple style="height: 120px;"
-                                asp-items="@(new SelectList(ViewBag.Itens, "Id", "TextOpcional"))">
+                                asp-items="@(new SelectList(ViewBag.Itens, "Id", "Texto"))">
                         </select>
                         <div class="form-text small text-muted px-2">@Localizer["HelpText_MultipleSelection"]</div>
                     }

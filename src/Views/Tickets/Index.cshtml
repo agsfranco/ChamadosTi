@@ -65,9 +65,10 @@
                                 var agoraUtc = DateTime.UtcNow;
                                 string classeCorSlaResp = "text-secondary";
                                 string iconeSlaResp = "bi-chat-left-dots";
+                                bool abertoSemTecnico = item.Status.Codigo < (int)TicketStatus.Resolvido && item.UsuarioTecnicoId == null;
 
                                 // Só calcula alerta de resposta se o chamado estiver ativo E sem técnico
-                                if (item.Status.Codigo < 4 && item.UsuarioTecnicoId == null)
+                                if (abertoSemTecnico)
                                 {
                                     TimeSpan restResposta = item.PrazoRespostaSLA - agoraUtc;
                                     if (restResposta.TotalMinutes < 0) { classeCorSlaResp = "text-danger fw-bold"; iconeSlaResp = "bi-exclamation-octagon-fill"; }
@@ -75,7 +76,7 @@
                                 }
                             }
                             <div><i class="bi bi-calendar-plus text-muted me-1"></i>@item.DataAbertura.ToLocalTime().ToString("g")</div>
-                            @if (item.UsuarioTecnicoId == null && item.Status.Codigo < 4)
+                            @if (abertoSemTecnico)
                             {
                                 <div class="@classeCorSlaResp mt-1" style="font-size: 0.72rem;">
                                     <i class="bi @iconeSlaResp"></i> Resp: @item.PrazoRespostaSLA.ToLocalTime().ToString("g")
@@ -83,13 +84,14 @@
                             }
                         </td>
                         
+                        <!-- Coluna PrazoResolucaoSLA -->
                         <td>
                             @{
                                 string classeCorSlaReso = "text-secondary"; 
                                 string iconeSlaReso = "bi-clock";           
                                 string tituloTooltip = Localizer["Tickets_Index_SlaNoPrazo"].Value;
 
-                                if (item.Status.Codigo < (int)TicketStatusEnum.Resolvido)
+                                if (item.Status.Codigo < (int)TicketStatus.Resolvido)
                                 {
                                     TimeSpan restResolucao = item.PrazoResolucaoSLA - agoraUtc;
                                     if (restResolucao.TotalMinutes < 0)

@@ -1,4 +1,5 @@
 using ChamadosTi.Models;
+using ChamadosTi.Models.Enums;
 using ChamadosTi.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -261,14 +262,13 @@ namespace ChamadosTi.Data
             });
 
             builder.Entity<Status>().HasData(
-                new Status { Id = 1, Codigo = (int)TicketStatusEnum.Aberto, Nome = "Status_Aberto" },
-                new Status { Id = 2, Codigo = (int)TicketStatusEnum.EmAtendimento, Nome = "Status_EmAtendimento" },
-                new Status { Id = 3, Codigo = (int)TicketStatusEnum.Pendente, Nome = "Status_Pendente" },
-                new Status { Id = 4, Codigo = (int)TicketStatusEnum.Resolvido, Nome = "Status_Resolvido" },
-                new Status { Id = 5, Codigo = (int)TicketStatusEnum.Fechado, Nome = "Status_Fechado" }
+                new Status { Id = 1, Codigo = (int)TicketStatus.Aberto, Nome = "Status_Aberto" },
+                new Status { Id = 2, Codigo = (int)TicketStatus.EmAtendimento, Nome = "Status_EmAtendimento" },
+                new Status { Id = 3, Codigo = (int)TicketStatus.Pendente, Nome = "Status_Pendente" },
+                new Status { Id = 4, Codigo = (int)TicketStatus.Resolvido, Nome = "Status_Resolvido" },
+                new Status { Id = 5, Codigo = (int)TicketStatus.Fechado, Nome = "Status_Fechado" }
             );
-
-
+            
             AplicaSoftDelete(builder);
         }
     

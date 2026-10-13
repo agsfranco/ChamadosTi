@@ -1,132 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Title" xml:space="preserve">
-    <value>Página principal</value>
-    <comment/>
-  </data>
-  <data name="Subtitle" xml:space="preserve">
-    <value>Uma breve descrição ou subtítulo para a página (Opcional)</value>
-    <comment/>
-  </data>
-  <data name="p_Conteudo" xml:space="preserve">
-    <value>Título do conteúdo</value>
-    <comment/>
-  </data>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Home_TituloPagina" xml:space="preserve"><value>Página Inicial</value></data>
+  <data name="Home_BoasVindasTitulo" xml:space="preserve"><value>Central de Operações de TI</value></data>
+  <data name="Home_BoasVindasSubtitulo" xml:space="preserve"><value>Seja bem-vindo. Use os painéis abaixo para gerenciar seus chamados e equipamentos.</value></data>
+  <data name="Home_SecaoIndicadores" xml:space="preserve"><value>Indicadores Gerais da Fila</value></data>
+  <data name="Home_SecaoComum" xml:space="preserve"><value>Área Comum e Atendimento</value></data>
+  <data name="Home_SecaoAdmin" xml:space="preserve"><value>Painel de Controle e Governança Administrativa</value></data>
+  
+  <data name="Kpi_Abertos" xml:space="preserve"><value>Novos Chamados</value></data>
+  <data name="Kpi_Atendimento" xml:space="preserve"><value>Em Execução</value></data>
+  <data name="Kpi_Pendentes" xml:space="preserve"><value>Aguardando Retorno</value></data>
+  <data name="Kpi_SlaVencidos" xml:space="preserve"><value>SLA Estourado</value></data>
+  
+  <data name="Atalho_NovoTicket_Titulo" xml:space="preserve"><value>Abrir Novo Chamado</value></data>
+  <data name="Atalho_NovoTicket_Desc" xml:space="preserve"><value>Registre um novo incidente ou requisição de suporte.</value></data>
+  <data name="Atalho_Fila_Titulo" xml:space="preserve"><value>Fila Operacional</value></data>
+  <data name="Atalho_Fila_Desc" xml:space="preserve"><value>Visualize e faça a triagem da fila completa de chamados.</value></data>
+  <data name="Atalho_Perfil_Titulo" xml:space="preserve"><value>Meu Perfil Técnico</value></data>
+  <data name="Atalho_Perfil_Desc" xml:space="preserve"><value>Atualize seus dados cadastrais, especialidades e senha.</value></data>
+  <data name="Atalho_Usuarios_Titulo" xml:space="preserve"><value>Gestão de Colaboradores</value></data>
+  <data name="Atalho_Usuarios_Desc" xml:space="preserve"><value>Administre permissões, setores e promoções de analistas.</value></data>
+  <data name="Atalho_Ativos_Titulo" xml:space="preserve"><value>Inventário de Hardware</value></data>
+  <data name="Atalho_Ativos_Desc" xml:space="preserve"><value>Consulte a lista completa de ativos e marcas mapeadas.</value></data>
+  <data name="Atalho_Setores_Titulo" xml:space="preserve"><value>Departamentos da Empresa</value></data>
+  <data name="Atalho_Setores_Desc" xml:space="preserve"><value>Mapeie setores e associe se possuem atendimento de TI.</value></data>
+  <data name="Atalho_Horarios_Titulo" xml:space="preserve"><value>Escalas e Turnos</value></data>
+  <data name="Atalho_Horarios_Desc" xml:space="preserve"><value>Configure as janelas de horários comerciais operacionais.</value></data>
+  <data name="Atalho_Prioridades_Titulo" xml:space="preserve"><value>Matriz de Severidade</value></data>
+  <data name="Atalho_Prioridades_Desc" xml:space="preserve"><value>Parametrice os tempos padrões de SLA por criticidade.</value></data>
+  <data name="Atalho_Feriados_Titulo" xml:space="preserve"><value>Calendário de Suspensão</value></data>
+  <data name="Atalho_Feriados_Desc" xml:space="preserve"><value>Cadastre feriados nacionais e locais para pausa do SLA.</value></data>
+  <data name="Atalho_Categorias_Titulo" xml:space="preserve"><value>Árvores de Categorias</value></data>
+  <data name="Atalho_Categorias_Desc" xml:space="preserve"><value>Gerencie categorias, marcas e tipos do catálogo de serviços.</value></data>
+  <data name="Atalho_DadosTecnicos_Titulo" xml:space="preserve"><value>Matriz de Especialidades</value></data>
+  <data name="Atalho_DadosTecnicos_Desc" xml:space="preserve"><value>Configure competências técnicas exigidas pelo Service Desk.</value></data>
 </root>

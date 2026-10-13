@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using ChamadosTi.Models.Enums;
 using ChamadosTi.Models.Interfaces;
 
 namespace ChamadosTi.Models
@@ -14,7 +16,8 @@ namespace ChamadosTi.Models
 
     public class LogAuditoriaTicket
     {
-        public string Acao { get; set; } = string.Empty;
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public TicketAcaoLog Acao { get; set; } = TicketAcaoLog.Log_Indefinido;
         public string Usuario { get; set; } = string.Empty;
         public Dictionary<string, string>? CamposModificados { get; set; }
         public string? Mensagem { get; set; }

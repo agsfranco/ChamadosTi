@@ -1,30 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  
-  <data name="Error_SemPrioridade" xml:space="preserve"><value>No ticket priority (SLA) registered in the system. Please contact your administrator.</value></data>
-  <data name="Error_SemStatusInicial" xml:space="preserve"><value>The initial status 'Open' could not be found in the system configurations.</value></data>
-  <data name="Success_ChamadoAssumido" xml:space="preserve"><value>You have successfully taken ownership of this ticket!</value></data>
-  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve"><value>This ticket has already been taken by another analyst or is already closed.</value></data>
-  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve"><value>The 'In Progress' status was not found in the system database.</value></data>
-  <data name="Error_ComentarioVazio" xml:space="preserve"><value>Cannot send an empty comment.</value></data>
-  <data name="Success_ComentarioAdicionado" xml:space="preserve"><value>Your message has been successfully published and recorded in the history!</value></data>
-  <data name="Error_StatusInvalidoParaTramitar" xml:space="preserve"><value>The ticket is not in a status that allows this modification.</value></data>
-  <data name="Success_ChamadoPendente" xml:space="preserve"><value>The ticket has been successfully paused and set to Pending status!</value></data>
-  <data name="Success_ChamadoResolvido" xml:space="preserve"><value>Congratulations! The ticket has been solved and marked as Resolved.</value></data>
-  <data name="Log_ChamadoPendente" xml:space="preserve"><value>Support Paused / Suspended</value></data>
-  <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Ticket Solved / Resolved</value></data>
-  <data name="Error_ParecerObrigatorio" xml:space="preserve"><value>Providing a technical resolution summary is mandatory to resolve the ticket.</value></data>
-  <data name="Success_ChamadoRetomado" xml:space="preserve"><value>Support resumed successfully! The SLA tracker has been reactivated.</value></data>
-  <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Ticket Support Resumed</value></data>
-  <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>Source Ticket ID</value></data>
-  <data name="Error_StatusInvalidoParaCancelar" xml:space="preserve"><value>Cannot cancel tickets that have already been resolved or closed.</value></data>
-  <data name="Success_ChamadoCancelado" xml:space="preserve"><value>The ticket was successfully cancelled and removed from the active queue.</value></data>
-  <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Ticket Cancelled by User</value></data>
-  <data name="Error_JustificativaObrigatoria" xml:space="preserve"><value>Providing a justification summary is mandatory to cancel the ticket.</value></data>
-  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>New Response SLA (Pause Compensated)</value></data>
-  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>New Resolution SLA (Pause Compensated)</value></data>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Error_SemPrioridade" xml:space="preserve">
+    <value>No ticket priority (SLA) registered in the system. Please contact your administrator.</value>
+    <comment/>
+  </data>
+  <data name="Error_SemStatusInicial" xml:space="preserve">
+    <value>The initial status 'Open' could not be found in the system configurations.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoAssumido" xml:space="preserve">
+    <value>You have successfully taken ownership of this ticket!</value>
+    <comment/>
+  </data>
+  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve">
+    <value>This ticket has already been taken by another analyst or is already closed.</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve">
+    <value>The 'In Progress' status was not found in the system database.</value>
+    <comment/>
+  </data>
+  <data name="Error_ComentarioVazio" xml:space="preserve">
+    <value>Cannot send an empty comment.</value>
+    <comment/>
+  </data>
+  <data name="Success_ComentarioAdicionado" xml:space="preserve">
+    <value>Your message has been successfully published and recorded in the history!</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaTramitar" xml:space="preserve">
+    <value>The ticket is not in a status that allows this modification.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoPendente" xml:space="preserve">
+    <value>The ticket has been successfully paused and set to Pending status!</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoResolvido" xml:space="preserve">
+    <value>Congratulations! The ticket has been solved and marked as Resolved.</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoPendente" xml:space="preserve">
+    <value>Support Paused / Suspended</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoResolvido" xml:space="preserve">
+    <value>Ticket Solved / Resolved</value>
+    <comment/>
+  </data>
+  <data name="Error_ParecerObrigatorio" xml:space="preserve">
+    <value>Providing a technical resolution summary is mandatory to resolve the ticket.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoRetomado" xml:space="preserve">
+    <value>Support resumed successfully! The SLA tracker has been reactivated.</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoRetomado" xml:space="preserve">
+    <value>Ticket Support Resumed</value>
+    <comment/>
+  </data>
+  <data name="Log_DerivadoDoTicket" xml:space="preserve">
+    <value>Source Ticket ID</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaCancelar" xml:space="preserve">
+    <value>Cannot cancel tickets that have already been resolved or closed.</value>
+    <comment/>
+  </data>
+  <data name="Success_ChamadoCancelado" xml:space="preserve">
+    <value>The ticket was successfully cancelled and removed from the active queue.</value>
+    <comment/>
+  </data>
+  <data name="Log_ChamadoCancelado" xml:space="preserve">
+    <value>Ticket Cancelled by User</value>
+    <comment/>
+  </data>
+  <data name="Error_JustificativaObrigatoria" xml:space="preserve">
+    <value>Providing a justification summary is mandatory to cancel the ticket.</value>
+    <comment/>
+  </data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve">
+    <value>New Response SLA (Pause Compensated)</value>
+    <comment/>
+  </data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve">
+    <value>New Resolution SLA (Pause Compensated)</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaAlterarPrioridade" xml:space="preserve">
+    <value>Cannot update priority of tickets that have already been resolved or closed.</value>
+    <comment/>
+  </data>
+  <data name="Success_PrioridadeAlterada" xml:space="preserve">
+    <value>The ticket priority has been successfully changed! The SLA deadlines have been recalculated.</value>
+    <comment/>
+  </data>
+  <data name="Error_StatusInvalidoParaAlterarItens" xml:space="preserve"><value>Cannot modify linked equipment in a ticket that is already closed.</value></data>
+  <data name="Success_ItensAlterados" xml:space="preserve"><value>The inventory of assets linked to this ticket has been successfully updated!</value></data>
 </root>

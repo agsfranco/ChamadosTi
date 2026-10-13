@@ -1,16 +1,89 @@
-@using Microsoft.AspNetCore.Mvc.Localization
-@inject IViewLocalizer Localizer
-<!-- Titulo e Subtitulo da Pagina com linha divisoria -->
+@model ChamadosTi.ViewModels.Home.IndexViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Home_TituloPagina"].Value;
+    bool ehAdministrador = User.IsInRole("Admin") || true;  
+
+    // FUNÇÃO LOCAL 1: Renderiza cartões de indicadores rápidos (KPIs)
+    Microsoft.AspNetCore.Html.IHtmlContent RenderizarCardKpi(string titulo, string valor, string icone, string classeCor)
+    {
+        var html = $@"
+            <div class='col-xl-3 col-sm-6 mb-3'>
+                <div class='card shadow-sm border border-light-subtle rounded bg-white p-3 d-flex flex-row align-items-center justify-content-between'>
+                    <div>
+                        <label class='text-muted small d-block mb-1 text-uppercase fw-semibold' style='font-size: 0.65rem; letter-spacing: 0.5px;'>{Localizer[titulo].Value}</label>
+                        <span class='fs-3 fw-bold text-dark'>{valor}</span>
+                    </div>
+                    <div class='rounded-circle p-3 bg-light {classeCor} d-flex align-items-center justify-content-center' style='width: 46px; height: 46px;'>
+                        <i class='bi {icone} fs-5'></i>
+                    </div>
+                </div>
+            </div>";
+        return new Microsoft.AspNetCore.Html.HtmlString(html);
+    }
+
+    // FUNÇÃO LOCAL 2: Renderiza botões de atalhos rápidos de navegação interna
+    Microsoft.AspNetCore.Html.IHtmlContent RenderizarBotaoAtalho(string controller, string action, string icone, string titulo, string descricao, string classeBorda = "border-primary-subtle", string classeTexto = "text-primary")
+    {
+        var url = Url.Action(action, controller);
+        var html = $@"
+            <div class='col-md-4 col-sm-6 mb-3'>
+                <a href='{url}' class='card shadow-sm border border-light-subtle rounded bg-white p-3 h-100 text-decoration-none transition-hover d-flex flex-row align-items-start gap-3 text-start'>
+                    <div class='p-2 bg-light text-secondary rounded border {classeBorda} {classeTexto} d-flex align-items-center justify-content-center' style='width: 44px; height: 44px; min-width: 44px;'>
+                        <i class='bi {icone} fs-5'></i>
+                    </div>
+                    <div>
+                        <h6 class='fw-bold text-dark mb-1 small' style='font-size: 0.88rem;'>{Localizer[titulo].Value}</h6>
+                        <p class='text-muted mb-0 lh-sm' style='font-size: 0.75rem;'>{Localizer[descricao].Value}</p>
+                    </div>
+                </a>
+            </div>";
+        return new Microsoft.AspNetCore.Html.HtmlString(html);
+    }
+}
+
+<style>
+    .transition-hover { transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+    .transition-hover:hover { transform: translateY(-2px); box-shadow: 0 .4rem .8rem rgba(0,0,0,.1)!important; }
+</style>
+
+<!-- Banner de Boas-Vindas -->
+<div class="bg-white border rounded shadow-sm p-4 mb-4 mt-3">
+    <h3 class="fw-bold text-primary mb-1"><i class="bi bi-shield-lock-fill me-1"></i> @Localizer["Home_BoasVindasTitulo"]</h3>
+    <p class="text-muted small mb-0">@Localizer["Home_BoasVindasSubtitulo"]</p>
+</div>
+
+<!-- SEÇÃO 1: KPIs Comuns -->
+<h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Home_SecaoIndicadores"]</h6>
+<div class="row mb-3">
+    @RenderizarCardKpi("Kpi_Abertos", Model.TotalNovosAbertos.ToString(), "bi-folder-fill", "text-info")
+    @RenderizarCardKpi("Kpi_Atendimento", Model.TotalEmAtendimento.ToString(), "bi-person-gear", "text-primary")
+    @RenderizarCardKpi("Kpi_Pendentes", Model.TotalPendentes.ToString(), "bi-pause-circle-fill", "text-warning")
+    @RenderizarCardKpi("Kpi_SlaVencidos", Model.TotalSlaVencidos.ToString(), "bi-exclamation-octagon-fill", "text-danger")
+</div>
+
+<!-- SEÇÃO 2: Área Comum Operacional -->
+<h6 class="fw-bold text-secondary mb-3 mt-2 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Home_SecaoComum"]</h6>
 <div class="row mb-4">
-    <div class="col-12">
-        <h1 class="display-6 fw-bold text-dark mb-1">@Localizer["Title"]</h1>
-        <p class="text-muted fs-6 mb-0">@Localizer["Subtitle"]</p>
-        <hr class="mt-2 mb-0">
-    </div>
+    @RenderizarBotaoAtalho("Tickets", "Create", "bi-plus-circle-fill", "Atalho_NovoTicket_Titulo", "Atalho_NovoTicket_Desc")
+    @RenderizarBotaoAtalho("Tickets", "Index", "bi-ticket-perforated-fill", "Atalho_Fila_Titulo", "Atalho_Fila_Desc")
+    @RenderizarBotaoAtalho("Account", "CompleteProfile", "bi-person-vcard-fill", "Atalho_Perfil_Titulo", "Atalho_Perfil_Desc")
 </div>
-<!-- Cartao que envelopa o conteudo específico da View -->
-<div class="card shadow-sm border-light">
-    <div class="card-body p-4">
-        <p>@Localizer["p_Conteudo"]</p>
+
+<!-- SEÇÃO 3: Área Administrativa Protegida -->
+@if (ehAdministrador)
+{
+    <h6 class="fw-bold text-danger mb-3 mt-2 small text-uppercase" style="letter-spacing: 0.5px;">
+        <i class="bi bi-gear-fill me-1"></i> @Localizer["Home_SecaoAdmin"]
+    </h6>
+    <div class="row">
+        @RenderizarBotaoAtalho("Usuarios", "Index", "bi-people-fill", "Atalho_Usuarios_Titulo", "Atalho_Usuarios_Desc", "border-danger-subtle", "text-danger")
+        @RenderizarBotaoAtalho("Itens", "Index", "bi-hdd-rack-fill", "Atalho_Ativos_Titulo", "Atalho_Ativos_Desc", "border-danger-subtle", "text-danger")
+        @RenderizarBotaoAtalho("Setores", "Index", "bi-building-fill", "Atalho_Setores_Titulo", "Atalho_Setores_Desc", "border-danger-subtle", "text-danger")
+        @RenderizarBotaoAtalho("Horarios", "Index", "bi-calendar-week-fill", "Atalho_Horarios_Titulo", "Atalho_Horarios_Desc", "border-danger-subtle", "text-danger")
+        @RenderizarBotaoAtalho("Prioridades", "Index", "bi-lightning-fill", "Atalho_Prioridades_Titulo", "Atalho_Prioridades_Desc", "border-danger-subtle", "text-danger")
+        @RenderizarBotaoAtalho("Feriados", "Index", "bi-calendar2-check-fill", "Atalho_Feriados_Titulo", "Atalho_Feriados_Desc", "border-danger-subtle", "text-danger")
+        @RenderizarBotaoAtalho("Categorias", "Index", "bi-tags-fill", "Atalho_Categorias_Titulo", "Atalho_Categorias_Desc", "border-danger-subtle", "text-danger")
+        @RenderizarBotaoAtalho("DadosTecnicos", "Index", "bi-file-earmark-code-fill", "Atalho_DadosTecnicos_Titulo", "Atalho_DadosTecnicos_Desc", "border-danger-subtle", "text-danger")
     </div>
-</div>
+}

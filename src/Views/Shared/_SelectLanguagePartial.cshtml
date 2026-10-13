@@ -2,28 +2,29 @@
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
+
+@inject IOptions<RequestLocalizationOptions> LocOptions
+@inject IViewLocalizer Localizer
+
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions?.Value?.SupportedUICultures?
         .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName.ToLower() })
         .ToList();
-    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
-    var requestCultureName = @requestCulture?.RequestCulture.UICulture.Name ?? "en-US";
+        
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString.Value}";
+    var requestCultureName = requestCulture?.RequestCulture.UICulture.Name ?? "en-US";
 }
 
-<div title="@Localizer["Div_Select"]">
+<div title="@Localizer["Div_Select"].Value">
     <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" 
-          method="post" class="d-flex align-items-center gap-2" role="form">
-        
-        <!-- Texto explicativo discreto (opcional) -->
-        <span class="text-muted small">@Localizer["Span_Idioma"]</span>
-        
-        <!-- Select customizado e compacto do Bootstrap 5 -->
+          method="post" class="d-flex align-items-center gap-1 m-0" role="form">
+        <i class="bi bi-translate text-muted small me-1"></i>
         <select name="culture" onchange="this.form.submit();"
                 asp-for="@requestCultureName" 
                 asp-items="cultureItems"
-                class="form-select form-select-sm text-dark bg-white shadow-sm"
-                style="max-width: 200px; cursor: pointer;">
+                class="form-select form-select-sm text-dark bg-white shadow-sm fw-medium"
+                style="max-width: 165px; font-size: 0.75rem; cursor: pointer; padding-top: 0.2rem; padding-bottom: 0.2rem;">
         </select>
     </form>
 </div>

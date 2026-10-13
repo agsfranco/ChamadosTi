@@ -1,6 +1,6 @@
-namespace ChamadosTi.Models
+namespace ChamadosTi.Models.Enums
 {
-    public enum TicketStatusEnum
+    public enum TicketStatus
     {
         Aberto = 1,
         EmAtendimento = 2,

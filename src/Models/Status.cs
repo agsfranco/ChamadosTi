@@ -1,5 +1,3 @@
-using ChamadosTi.Models.Interfaces;
-
 namespace ChamadosTi.Models
 {
     public class Status
