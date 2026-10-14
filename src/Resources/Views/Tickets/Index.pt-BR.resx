@@ -4,28 +4,27 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  
-  <data name="Tickets_Index_Title" xml:space="preserve"><value>Fila de Chamados e Atendimentos</value></data>
+
+  <data name="Tickets_Index_Title" xml:space="preserve"><value>Fila de Chamados - Service Desk</value></data>
   <data name="Table_Ticket" xml:space="preserve"><value>Chamado / Assunto</value></data>
   <data name="Table_Solicitante" xml:space="preserve"><value>Solicitante</value></data>
   <data name="Table_Status" xml:space="preserve"><value>Status</value></data>
   <data name="Table_DataAbertura" xml:space="preserve"><value>Aberto em</value></data>
   <data name="Table_PrazoSLA" xml:space="preserve"><value>Prazo Limite (SLA)</value></data>
   <data name="Table_Acoes" xml:space="preserve"><value>Ações</value></data>
-  <data name="No_Tickets_Found" xml:space="preserve"><value>Nenhum chamado ativo ou registrado foi localizado.</value></data>
+  <data name="No_Tickets_Found" xml:space="preserve"><value>Nenhum chamado ativo foi encontrado nesta fila.</value></data>
   <data name="Button_NewTicket" xml:space="preserve"><value>Abrir Novo Chamado</value></data>
   <data name="Button_Details" xml:space="preserve"><value>Visualizar Detalhes</value></data>
   
-  <data name="Status_Aberto" xml:space="preserve"><value>Aberto</value></data>
-  <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
-  <data name="Status_Pendente" xml:space="preserve"><value>Pendente (Aguardando)</value></data>
-  <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
-  <data name="Status_Fechado" xml:space="preserve"><value>Fechado / Concluído</value></data>
   <data name="Tickets_Index_TooltipOrigem" xml:space="preserve"><value>Chamado derivado de uma reincidência técnica</value></data>
   <data name="Tickets_Index_SlaNoPrazo" xml:space="preserve"><value>Chamado dentro do prazo regulamentar de atendimento.</value></data>
   <data name="Tickets_Index_SlaAlerta" xml:space="preserve"><value>Atenção! Este chamado expira em menos de 24 horas.</value></data>
   <data name="Tickets_Index_SlaVencido" xml:space="preserve"><value>Crítico! Este chamado ultrapassou o limite do acordo de SLA.</value></data>
-  <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancelar este Chamado</value></data>
-  <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve"><value>Tem certeza absoluta de que deseja cancelar este chamado? Esta ação não poderá ser desfeita.</value></data>
+  
+  <data name="Status_Aberto" xml:space="preserve"><value>Aberto</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pendente</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
+  <data name="Status_Fechado" xml:space="preserve"><value>Fechado / Concluído</value></data>
   <data name="Status_Cancelado" xml:space="preserve"><value>Cancelado</value></data>
 </root>

@@ -51,7 +51,6 @@ namespace ChamadosTi.Controllers
 
         private void CarregaDropdowns()
         {
-            // Traz as listagens de apoio em ordem alfabética
             ViewBag.Tipos = _context.Tipos.OrderBy(t => t.Nome).ToList();
             ViewBag.Marcas = _context.Marcas.OrderBy(m => m.Nome).ToList();
             ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();

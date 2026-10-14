@@ -1,381 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
-    Version 2.0
+  <data name="Details_TituloPagina" xml:space="preserve"><value>Ticket Details</value></data>
+  <data name="Details_BotaoVoltar" xml:space="preserve"><value>Back to Queue</value></data>
+  <data name="Details_SecaoDescricao" xml:space="preserve"><value>Initial Problem Description</value></data>
+  <data name="Details_SecaoAtivos" xml:space="preserve"><value>Affected Hardware / Assets</value></data>
+  <data name="Details_SecaoLinhaTempo" xml:space="preserve"><value>Audit Timeline &amp; Interactions</value></data>
+  <data name="Details_SecaoPainelControle" xml:space="preserve"><value>Control Panel</value></data>
+  <data name="Details_TabelaAtivo" xml:space="preserve"><value>Asset Name</value></data>
+  <data name="Details_TabelaTipo" xml:space="preserve"><value>Type</value></data>
+  <data name="Details_TabelaMarca" xml:space="preserve"><value>Brand</value></data>
+  <data name="Details_SemAtivos" xml:space="preserve"><value>No physical assets or hardware linked to this ticket.</value></data>
+  <data name="Details_SemHistorico" xml:space="preserve"><value>No interactions recorded for this ticket yet.</value></data>
+  <data name="Details_LabelSolicitante" xml:space="preserve"><value>Opened By (User)</value></data>
+  <data name="Details_LabelTecnico" xml:space="preserve"><value>Assigned IT Analyst</value></data>
+  <data name="Details_BotaoAssumir" xml:space="preserve"><value>Assign to Me / Support Ticket</value></data>
+  <data name="Details_LabelPrioridade" xml:space="preserve"><value>Ticket Severity Level</value></data>
+  <data name="Details_LabelDataAbertura" xml:space="preserve"><value>Opening Time (UTC)</value></data>
+  <data name="Details_LabelSlaResposta" xml:space="preserve"><value>Response Target SLA</value></data>
+  <data name="Details_LabelSlaResolucao" xml:space="preserve"><value>Resolution Target SLA</value></data>
+  <data name="Value_Unassigned" xml:space="preserve"><value>Waiting for Analyst</value></data>
+  <data name="Log_ExecutedBy" xml:space="preserve"><value>Action performed by</value></data>
+  
+  <data name="Details_SecaoAdicionarComentario" xml:space="preserve"><value>Add New Interaction</value></data>
+  <data name="Details_PlaceholderComentario" xml:space="preserve"><value>Type a new comment or update message here...</value></data>
+  <data name="Details_BotaoEnviarComentario" xml:space="preserve"><value>Send Message</value></data>
+  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>This ticket has been resolved or closed. New text interactions are locked.</value></data>
+  <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Current Lifespan Status</value></data>
+  <data name="Details_BotaoPendente" xml:space="preserve"><value>Pause Support / Set Pending</value></data>
+  <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolve / Fix Ticket</value></data>
+  <data name="Details_BotaoRetomar" xml:space="preserve"><value>Resume Support Clock</value></data>
 
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
+  <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancel this Ticket</value></data>
+  <data name="Details_ModalCancelarTitulo" xml:space="preserve"><value>Confirm Ticket Cancellation</value></data>
+  <data name="Details_ModalCancelarInstrucao" xml:space="preserve"><value>You are about to abort this ticket. A justification statement is mandatory to audit the closing sequence.</value></data>
+  <data name="Details_LabelJustificativa" xml:space="preserve"><value>Cancellation Reason</value></data>
+  <data name="Details_PlaceholderJustificativa" xml:space="preserve"><value>Briefly explain why this ticket is being cancelled...</value></data>
+  <data name="Details_ModalBotaoFechar" xml:space="preserve"><value>Go Back</value></data>
+  <data name="Details_ModalBotaoConfirmar" xml:space="preserve"><value>Confirm Cancellation</value></data>
 
-    Example:
+  <data name="Details_ModalParecerTecnicoTitulo" xml:space="preserve"><value>Provide Technical Resolution Summary</value></data>
+  <data name="Details_ModalParecerTecnicoInstrucao" xml:space="preserve"><value>Describing what steps were taken to mitigate the incident is mandatory before solving the ticket.</value></data>
 
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
+  <data name="Details_LinkTicketOrigem" xml:space="preserve"><value>Derived from Ticket</value></data>
+  <data name="Details_LabelAcoesEncerradas" xml:space="preserve"><value>History / New Demands</value></data>
+  <data name="Details_BotaoGerarVinculado" xml:space="preserve"><value>Open Linked Ticket</value></data>
 
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Details_TituloPagina" xml:space="preserve">
-    <value>Ticket Details</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoVoltar" xml:space="preserve">
-    <value>Back to Queue</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoDescricao" xml:space="preserve">
-    <value>Issue Description</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoAtivos" xml:space="preserve">
-    <value>Linked Equipment / Assets</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoLinhaTempo" xml:space="preserve">
-    <value>History and Timeline (Audit)</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoPainelControle" xml:space="preserve">
-    <value>Control Panel &amp; SLA</value>
-    <comment/>
-  </data>
-  <data name="Details_TabelaAtivo" xml:space="preserve">
-    <value>Asset</value>
-    <comment/>
-  </data>
-  <data name="Details_TabelaTipo" xml:space="preserve">
-    <value>Type</value>
-    <comment/>
-  </data>
-  <data name="Details_TabelaMarca" xml:space="preserve">
-    <value>Brand</value>
-    <comment/>
-  </data>
-  <data name="Details_SemAtivos" xml:space="preserve">
-    <value>No equipment was associated with this ticket at creation.</value>
-    <comment/>
-  </data>
-  <data name="Details_SemHistorico" xml:space="preserve">
-    <value>No history log found for this ticket.</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelSolicitante" xml:space="preserve">
-    <value>Requesting User</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelTecnico" xml:space="preserve">
-    <value>Assigned Technician</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoAssumir" xml:space="preserve">
-    <value>Take Ownership</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelPrioridade" xml:space="preserve">
-    <value>Agreement Priority (SLA)</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelDataAbertura" xml:space="preserve">
-    <value>Date Opened</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelSlaResposta" xml:space="preserve">
-    <value>First Response Limit</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelSlaResolucao" xml:space="preserve">
-    <value>Resolution Deadline (SLA)</value>
-    <comment/>
-  </data>
-  <data name="Value_Unassigned" xml:space="preserve">
-    <value>Awaiting Technician...</value>
-    <comment/>
-  </data>
-  <data name="Log_ExecutedBy" xml:space="preserve">
-    <value>Executed by</value>
-    <comment/>
-  </data>
-  <data name="Log_ErrorCorrompido" xml:space="preserve">
-    <value>Audit log unavailable or corrupted</value>
-    <comment/>
-  </data>
-  <data name="Success_ChamadoAssumido" xml:space="preserve">
-    <value>You have successfully taken ownership of this ticket!</value>
-    <comment/>
-  </data>
-  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve">
-    <value>This ticket has already been taken by another analyst or is already closed.</value>
-    <comment/>
-  </data>
-  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve">
-    <value>The 'In Progress' status was not found in the system database.</value>
-    <comment/>
-  </data>
-  <data name="Log_AberturaChamado" xml:space="preserve">
-    <value>Ticket Created</value>
-    <comment/>
-  </data>
-  <data name="Log_StatusInicial" xml:space="preserve">
-    <value>Initial Status</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoResposta" xml:space="preserve">
-    <value>First Response SLA</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoResolucao" xml:space="preserve">
-    <value>Calculated Resolution SLA</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoAssumido" xml:space="preserve">
-    <value>Ticket Owner Assigned</value>
-    <comment/>
-  </data>
-  <data name="Log_StatusAlterado" xml:space="preserve">
-    <value>Status Changed to</value>
-    <comment/>
-  </data>
-  <data name="Log_TecnicoAtribuido" xml:space="preserve">
-    <value>Assigned Analyst</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoAdicionarComentario" xml:space="preserve">
-    <value>Add New Interaction</value>
-    <comment/>
-  </data>
-  <data name="Details_PlaceholderComentario" xml:space="preserve">
-    <value>Type your message or update about the ticket progress here...</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoEnviarComentario" xml:space="preserve">
-    <value>Send Message</value>
-    <comment/>
-  </data>
-  <data name="Error_ComentarioVazio" xml:space="preserve">
-    <value>Cannot send an empty comment.</value>
-    <comment/>
-  </data>
-  <data name="Success_ComentarioAdicionado" xml:space="preserve">
-    <value>Your message has been successfully published and recorded in the history!</value>
-    <comment/>
-  </data>
-  <data name="Log_NovaInteracao" xml:space="preserve">
-    <value>New Message / Interaction</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelStatusAtual" xml:space="preserve">
-    <value>Current Ticket Status</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoPendente" xml:space="preserve">
-    <value>Pause Ticket</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoResolvido" xml:space="preserve">
-    <value>Resolve Ticket</value>
-    <comment/>
-  </data>
-  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve">
-    <value>This ticket has been resolved or closed. New text interactions are locked.</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoRetomar" xml:space="preserve">
-    <value>Resume Support</value>
-    <comment/>
-  </data>
-  <data name="Details_LinkTicketOrigem" xml:space="preserve">
-    <value>Derived from Ticket</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelAcoesEncerradas" xml:space="preserve">
-    <value>History / New Demands</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoGerarVinculado" xml:space="preserve">
-    <value>Open Linked Ticket</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoPendente" xml:space="preserve">
-    <value>Support Paused / Suspended</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoRetomado" xml:space="preserve">
-    <value>Ticket Support Resumed</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoResolvido" xml:space="preserve">
-    <value>Ticket Solved / Resolved</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoCancelar" xml:space="preserve">
-    <value>Cancel this Ticket</value>
-    <comment/>
-  </data>
-  <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve">
-    <value>Are you absolutely sure you want to cancel this ticket? This action cannot be undone.</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoRespostaEstendido" xml:space="preserve">
-    <value>New Response SLA (Pause Compensated)</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve">
-    <value>New Resolution SLA (Pause Compensated)</value>
-    <comment/>
-  </data>
-  <data name="Status_Aberto" xml:space="preserve">
-    <value>Open</value>
-    <comment/>
-  </data>
-  <data name="Status_EmAtendimento" xml:space="preserve">
-    <value>In Progress</value>
-    <comment/>
-  </data>
-  <data name="Status_Pendente" xml:space="preserve">
-    <value>Pending</value>
-    <comment/>
-  </data>
-  <data name="Status_Resolvido" xml:space="preserve">
-    <value>Resolved</value>
-    <comment/>
-  </data>
-  <data name="Status_Fechado" xml:space="preserve">
-    <value>Closed / Concluded</value>
-    <comment/>
-  </data>
-  <data name="Status_Cancelado" xml:space="preserve">
-    <value>Cancelled</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalCancelarTitulo" xml:space="preserve">
-    <value>Confirm Ticket Cancellation</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalCancelarInstrucao" xml:space="preserve">
-    <value>You are about to abort this ticket. A justification statement is mandatory to audit the closing sequence.</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalParecerTecnicoTitulo" xml:space="preserve">
-    <value>Resolution / Closing Summary</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalParecerTecnicoInstrucao" xml:space="preserve">
-    <value>Briefly describe what was done to mitigate the technical issue.</value>
-    <comment/>
-  </data>
-  <data name="Details_SelectalterarPrioridade" xml:space="preserve">
-    <value>Update Priority</value>
-    <comment/>
-  </data>
-  <data name="Log_PrioridadeAlterada" xml:space="preserve">
-    <value>Priority updated</value>
-    <comment/>
-  </data>
   <data name="Details_SecaoAlterarAtivos" xml:space="preserve"><value>Reclassify Affected Assets</value></data>
   <data name="Details_LabelSelecaoAtivos" xml:space="preserve"><value>Select Department Assets Linked to the Incident</value></data>
   <data name="Details_DicaSelecaoMultipla" xml:space="preserve"><value>Hold down the Ctrl key (or Cmd on Mac) to select or deselect multiple devices.</value></data>
   <data name="Details_BotaoSalvarAtivos" xml:space="preserve"><value>Update Linked Assets</value></data>
+
+  <data name="Status_Aberto" xml:space="preserve"><value>Open</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>In Progress</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pending</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
+  <data name="Status_Fechado" xml:space="preserve"><value>Closed / Concluded</value></data>
+  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelled</value></data>
+
+  <data name="Log_StatusInicial" xml:space="preserve"><value>Initial Status Assigned</value></data>
+  <data name="Log_StatusAlterado" xml:space="preserve"><value>Status Changed To</value></data>
+  <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Analyst Assigned To Support</value></data>
+  <data name="Log_PrazoResposta" xml:space="preserve"><value>Response Target SLA Window</value></data>
+  <data name="Log_PrazoResolucao" xml:space="preserve"><value>Resolution Target SLA Window</value></data>
+  <data name="Log_PrioridadeAlterada" xml:space="preserve"><value>Severity Level Reclassified To</value></data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>New Resolution SLA (Pause Compensated)</value></data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>New Response SLA (Pause Compensated)</value></data>
+  <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>Source Ticket Origin ID</value></data>
   <data name="Log_ItensAlterados" xml:space="preserve"><value>Ticket Linked Assets Modified</value></data>
+  <data name="Log_ErrorCorrompido" xml:space="preserve"><value>System Audit Trail Entry Corrupted</value></data>
 </root>

@@ -1,381 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
-    Version 2.0
+  <data name="Details_TituloPagina" xml:space="preserve"><value>Detalhes do Chamado</value></data>
+  <data name="Details_BotaoVoltar" xml:space="preserve"><value>Voltar para a Fila</value></data>
+  <data name="Details_SecaoDescricao" xml:space="preserve"><value>Descrição Inicial do Problema</value></data>
+  <data name="Details_SecaoAtivos" xml:space="preserve"><value>Equipamentos / Ativos Afetados</value></data>
+  <data name="Details_SecaoLinhaTempo" xml:space="preserve"><value>Linha do Tempo e Interações de Auditoria</value></data>
+  <data name="Details_SecaoPainelControle" xml:space="preserve"><value>Painel de Controle</value></data>
+  <data name="Details_TabelaAtivo" xml:space="preserve"><value>Nome do Ativo</value></data>
+  <data name="Details_TabelaTipo" xml:space="preserve"><value>Tipo</value></data>
+  <data name="Details_TabelaMarca" xml:space="preserve"><value>Marca</value></data>
+  <data name="Details_SemAtivos" xml:space="preserve"><value>Nenhum ativo físico ou hardware vinculado a este chamado.</value></data>
+  <data name="Details_SemHistorico" xml:space="preserve"><value>Nenhuma interação registrada para este chamado até o momento.</value></data>
+  <data name="Details_LabelSolicitante" xml:space="preserve"><value>Aberto por (Usuário)</value></data>
+  <data name="Details_LabelTecnico" xml:space="preserve"><value>Técnico Responsável</value></data>
+  <data name="Details_BotaoAssumir" xml:space="preserve"><value>Assumir Atendimento / Atribuir a Mim</value></data>
+  <data name="Details_LabelPrioridade" xml:space="preserve"><value>Nível de Severidade / Prioridade</value></data>
+  <data name="Details_LabelDataAbertura" xml:space="preserve"><value>Horário de Abertura (UTC)</value></data>
+  <data name="Details_LabelSlaResposta" xml:space="preserve"><value>SLA de Resposta</value></data>
+  <data name="Details_LabelSlaResolucao" xml:space="preserve"><value>SLA de Resolução</value></data>
+  <data name="Value_Unassigned" xml:space="preserve"><value>Aguardando Analista</value></data>
+  <data name="Log_ExecutedBy" xml:space="preserve"><value>Ação realizada por</value></data>
+  
+  <data name="Details_SecaoAdicionarComentario" xml:space="preserve"><value>Adicionar Nova Interação</value></data>
+  <data name="Details_PlaceholderComentario" xml:space="preserve"><value>Digite um novo comentário ou mensagem de atualização aqui...</value></data>
+  <data name="Details_BotaoEnviarComentario" xml:space="preserve"><value>Enviar Mensagem</value></data>
+  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>Este chamado foi resolvido ou encerrado. Novas interações de texto estão bloqueadas.</value></data>
+  <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Status Atual do Ciclo de Vida</value></data>
+  <data name="Details_BotaoPendente" xml:space="preserve"><value>Pausar Atendimento / Definir Pendente</value></data>
+  <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolver Chamado</value></data>
+  <data name="Details_BotaoRetomar" xml:space="preserve"><value>Retomar Atendimento</value></data>
 
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
+  <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancelar este Chamado</value></data>
+  <data name="Details_ModalCancelarTitulo" xml:space="preserve"><value>Confirmar Cancelamento do Chamado</value></data>
+  <data name="Details_ModalCancelarInstrucao" xml:space="preserve"><value>Você está prestes a abortar este atendimento. Uma justificativa é obrigatória para auditar o encerramento.</value></data>
+  <data name="Details_LabelJustificativa" xml:space="preserve"><value>Motivo do Cancelamento</value></data>
+  <data name="Details_PlaceholderJustificativa" xml:space="preserve"><value>Explique resumidamente por que este chamado está sendo cancelado...</value></data>
+  <data name="Details_ModalBotaoFechar" xml:space="preserve"><value>Voltar</value></data>
+  <data name="Details_ModalBotaoConfirmar" xml:space="preserve"><value>Confirmar Cancelamento</value></data>
 
-    Example:
+  <data name="Details_ModalParecerTecnicoTitulo" xml:space="preserve"><value>Informar Parecer Técnico de Resolução</value></data>
+  <data name="Details_ModalParecerTecnicoInstrucao" xml:space="preserve"><value>Descrever os passos tomados para a mitigação do incidente é obrigatório antes de resolver o chamado.</value></data>
 
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
+  <data name="Details_LinkTicketOrigem" xml:space="preserve"><value>Derivado do Chamado</value></data>
+  <data name="Details_LabelAcoesEncerradas" xml:space="preserve"><value>Histórico / Novas Demandas</value></data>
+  <data name="Details_BotaoGerarVinculado" xml:space="preserve"><value>Abrir Chamado Vinculado</value></data>
 
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Details_TituloPagina" xml:space="preserve">
-    <value>Detalhes do Chamado</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoVoltar" xml:space="preserve">
-    <value>Voltar para a Fila</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoDescricao" xml:space="preserve">
-    <value>Descrição do Problema</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoAtivos" xml:space="preserve">
-    <value>Equipamentos / Ativos Vinculados</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoLinhaTempo" xml:space="preserve">
-    <value>Histórico e Linha do Tempo (Auditoria)</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoPainelControle" xml:space="preserve">
-    <value>Painel de Controle e SLA</value>
-    <comment/>
-  </data>
-  <data name="Details_TabelaAtivo" xml:space="preserve">
-    <value>Ativo</value>
-    <comment/>
-  </data>
-  <data name="Details_TabelaTipo" xml:space="preserve">
-    <value>Tipo</value>
-    <comment/>
-  </data>
-  <data name="Details_TabelaMarca" xml:space="preserve">
-    <value>Marca</value>
-    <comment/>
-  </data>
-  <data name="Details_SemAtivos" xml:space="preserve">
-    <value>Nenhum equipamento foi associado a este chamado na abertura.</value>
-    <comment/>
-  </data>
-  <data name="Details_SemHistorico" xml:space="preserve">
-    <value>Nenhum registro de histórico localizado para este chamado.</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelSolicitante" xml:space="preserve">
-    <value>Usuário Solicitante</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelTecnico" xml:space="preserve">
-    <value>Técnico Responsável</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoAssumir" xml:space="preserve">
-    <value>Assumir este Chamado</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelPrioridade" xml:space="preserve">
-    <value>Prioridade do Acordo (SLA)</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelDataAbertura" xml:space="preserve">
-    <value>Data de Abertura</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelSlaResposta" xml:space="preserve">
-    <value>Limite para Primeira Resposta</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelSlaResolucao" xml:space="preserve">
-    <value>Prazo Limite de Resolução (SLA)</value>
-    <comment/>
-  </data>
-  <data name="Value_Unassigned" xml:space="preserve">
-    <value>Aguardando Técnico...</value>
-    <comment/>
-  </data>
-  <data name="Log_ExecutedBy" xml:space="preserve">
-    <value>Executado por</value>
-    <comment/>
-  </data>
-  <data name="Log_ErrorCorrompido" xml:space="preserve">
-    <value>Registro de auditoria indisponível ou corrompido</value>
-    <comment/>
-  </data>
-  <data name="Success_ChamadoAssumido" xml:space="preserve">
-    <value>Você assumiu o atendimento deste chamado com sucesso!</value>
-    <comment/>
-  </data>
-  <data name="Error_ChamadoJaAssumidoOuFechado" xml:space="preserve">
-    <value>Este chamado já foi assumido por outro analista ou já se encontra encerrado.</value>
-    <comment/>
-  </data>
-  <data name="Error_StatusAtendimentoNaoEncontrado" xml:space="preserve">
-    <value>O status 'Em Atendimento' não foi localizado na base do sistema.</value>
-    <comment/>
-  </data>
-  <data name="Log_AberturaChamado" xml:space="preserve">
-    <value>Abertura do Chamado</value>
-    <comment/>
-  </data>
-  <data name="Log_StatusInicial" xml:space="preserve">
-    <value>Status Inicial</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoResposta" xml:space="preserve">
-    <value>SLA de Resposta Inicial</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoResolucao" xml:space="preserve">
-    <value>SLA de Resolução Calculado</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoAssumido" xml:space="preserve">
-    <value>Chamado Assumido pelo Técnico</value>
-    <comment/>
-  </data>
-  <data name="Log_StatusAlterado" xml:space="preserve">
-    <value>Status Alterado para</value>
-    <comment/>
-  </data>
-  <data name="Log_TecnicoAtribuido" xml:space="preserve">
-    <value>Analista Vinculado</value>
-    <comment/>
-  </data>
-  <data name="Details_SecaoAdicionarComentario" xml:space="preserve">
-    <value>Adicionar Nova Interação</value>
-    <comment/>
-  </data>
-  <data name="Details_PlaceholderComentario" xml:space="preserve">
-    <value>Digite aqui sua mensagem ou atualização sobre o andamento do chamado...</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoEnviarComentario" xml:space="preserve">
-    <value>Enviar Mensagem</value>
-    <comment/>
-  </data>
-  <data name="Error_ComentarioVazio" xml:space="preserve">
-    <value>Não é possível enviar um comentário em branco.</value>
-    <comment/>
-  </data>
-  <data name="Success_ComentarioAdicionado" xml:space="preserve">
-    <value>Sua mensagem foi publicada e registrada no histórico com sucesso!</value>
-    <comment/>
-  </data>
-  <data name="Log_NovaInteracao" xml:space="preserve">
-    <value>Nova Mensagem / Interação</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelStatusAtual" xml:space="preserve">
-    <value>Status Atual do Chamado</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoPendente" xml:space="preserve">
-    <value>Pausar Atendimento</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoResolvido" xml:space="preserve">
-    <value>Resolver Chamado</value>
-    <comment/>
-  </data>
-  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve">
-    <value>Este chamado já foi solucionado ou concluído. Novas interações de texto foram bloqueadas.</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoRetomar" xml:space="preserve">
-    <value>Retomar Atendimento</value>
-    <comment/>
-  </data>
-  <data name="Details_LinkTicketOrigem" xml:space="preserve">
-    <value>Derivado do Chamado</value>
-    <comment/>
-  </data>
-  <data name="Details_LabelAcoesEncerradas" xml:space="preserve">
-    <value>Histórico / Novas Demandas</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoGerarVinculado" xml:space="preserve">
-    <value>Abrir Chamado Vinculado</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoPendente" xml:space="preserve">
-    <value>Atendimento Suspenso / Pausado</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoRetomado" xml:space="preserve">
-    <value>Atendimento do Chamado Retomado</value>
-    <comment/>
-  </data>
-  <data name="Log_ChamadoResolvido" xml:space="preserve">
-    <value>Chamado Solucionado / Resolvido</value>
-    <comment/>
-  </data>
-  <data name="Details_BotaoCancelar" xml:space="preserve">
-    <value>Cancelar este Chamado</value>
-    <comment/>
-  </data>
-  <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve">
-    <value>Tem certeza absoluta de que deseja cancelar este chamado? Esta ação não poderá ser desfeita.</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoRespostaEstendido" xml:space="preserve">
-    <value>Novo SLA de Resposta (Pausa Compensada)</value>
-    <comment/>
-  </data>
-  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve">
-    <value>Novo SLA de Resolução (Pausa Compensada)</value>
-    <comment/>
-  </data>
-  <data name="Status_Aberto" xml:space="preserve">
-    <value>Aberto</value>
-    <comment/>
-  </data>
-  <data name="Status_EmAtendimento" xml:space="preserve">
-    <value>Em Atendimento</value>
-    <comment/>
-  </data>
-  <data name="Status_Pendente" xml:space="preserve">
-    <value>Pendente</value>
-    <comment/>
-  </data>
-  <data name="Status_Resolvido" xml:space="preserve">
-    <value>Resolvido</value>
-    <comment/>
-  </data>
-  <data name="Status_Fechado" xml:space="preserve">
-    <value>Fechado / Concluído</value>
-    <comment/>
-  </data>
-  <data name="Status_Cancelado" xml:space="preserve">
-    <value>Cancelado</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalCancelarTitulo" xml:space="preserve">
-    <value>Confirmar Cancelamento do Chamado</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalCancelarInstrucao" xml:space="preserve">
-    <value>Você está prestes a abortar este atendimento. Uma justificativa é obrigatória para auditar o encerramento.</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalParecerTecnicoTitulo" xml:space="preserve">
-    <value>Solução / Parecer de Encerramento</value>
-    <comment/>
-  </data>
-  <data name="Details_ModalParecerTecnicoInstrucao" xml:space="preserve">
-    <value>Descreva resumidamente o que foi feito para mitigar o problema técnico.</value>
-    <comment/>
-  </data>
-  <data name="Details_SelectalterarPrioridade" xml:space="preserve">
-    <value>Alterar a Prioridade</value>
-    <comment/>
-  </data>
-  <data name="Log_PrioridadeAlterada" xml:space="preserve">
-    <value>Prioridade do Chamado alterada</value>
-    <comment/>
-  </data>
   <data name="Details_SecaoAlterarAtivos" xml:space="preserve"><value>Reclassificar Equipamentos Afetados</value></data>
   <data name="Details_LabelSelecaoAtivos" xml:space="preserve"><value>Selecione os Ativos do Setor Relacionados ao Incidente</value></data>
   <data name="Details_DicaSelecaoMultipla" xml:space="preserve"><value>Mantenha pressionada a tecla Ctrl (ou Cmd no Mac) para selecionar ou remover múltiplos equipamentos.</value></data>
   <data name="Details_BotaoSalvarAtivos" xml:space="preserve"><value>Atualizar Ativos Vinculados</value></data>
+
+  <data name="Status_Aberto" xml:space="preserve"><value>Aberto</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>Em Atendimento</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pendente</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
+  <data name="Status_Fechado" xml:space="preserve"><value>Fechado / Concluído</value></data>
+  <data name="Status_Cancelado" xml:space="preserve"><value>Cancelado</value></data>
+
+  <data name="Log_StatusInicial" xml:space="preserve"><value>Status Inicial Atribuído</value></data>
+  <data name="Log_StatusAlterado" xml:space="preserve"><value>Status Alterado Para</value></data>
+  <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Técnico Atribuído ao Suporte</value></data>
+  <data name="Log_PrazoResposta" xml:space="preserve"><value>Janela Limite de SLA de Resposta</value></data>
+  <data name="Log_PrazoResolucao" xml:space="preserve"><value>Janela Limite de SLA de Resolução</value></data>
+  <data name="Log_PrioridadeAlterada" xml:space="preserve"><value>Nível de Severidade Reclassificado Para</value></data>
+  <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>Novo SLA de Resolução (Pausa Compensada)</value></data>
+  <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>Novo SLA de Resposta (Pausa Compensada)</value></data>
+  <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>ID do Chamado de Origem Gerador</value></data>
   <data name="Log_ItensAlterados" xml:space="preserve"><value>Ativos Vinculados ao Chamado Alterados</value></data>
+  <data name="Log_ErrorCorrompido" xml:space="preserve"><value>Entrada do Histórico de Auditoria do Sistema Corrompida</value></data>
 </root>

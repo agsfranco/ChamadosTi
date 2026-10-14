@@ -4,28 +4,27 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  
-  <data name="Tickets_Index_Title" xml:space="preserve"><value>Tickets Queue and Support</value></data>
+
+  <data name="Tickets_Index_Title" xml:space="preserve"><value>Service Desk Ticket Queue</value></data>
   <data name="Table_Ticket" xml:space="preserve"><value>Ticket / Subject</value></data>
   <data name="Table_Solicitante" xml:space="preserve"><value>Requester</value></data>
   <data name="Table_Status" xml:space="preserve"><value>Status</value></data>
-  <data name="Table_DataAbertura" xml:space="preserve"><value>Opened at</value></data>
-  <data name="Table_PrazoSLA" xml:space="preserve"><value>Deadline (SLA)</value></data>
+  <data name="Table_DataAbertura" xml:space="preserve"><value>Opened At</value></data>
+  <data name="Table_PrazoSLA" xml:space="preserve"><value>SLA Target</value></data>
   <data name="Table_Acoes" xml:space="preserve"><value>Actions</value></data>
-  <data name="No_Tickets_Found" xml:space="preserve"><value>No active or registered tickets found.</value></data>
+  <data name="No_Tickets_Found" xml:space="preserve"><value>No active tickets found in this queue.</value></data>
   <data name="Button_NewTicket" xml:space="preserve"><value>Open New Ticket</value></data>
   <data name="Button_Details" xml:space="preserve"><value>View Details</value></data>
   
-  <data name="Status_Aberto" xml:space="preserve"><value>Open</value></data>
-  <data name="Status_EmAtendimento" xml:space="preserve"><value>In Progress</value></data>
-  <data name="Status_Pendente" xml:space="preserve"><value>Pending (Waiting)</value></data>
-  <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
-  <data name="Status_Fechado" xml:space="preserve"><value>Closed / Concluded</value></data>
   <data name="Tickets_Index_TooltipOrigem" xml:space="preserve"><value>Ticket derived from a technical reoccurrence</value></data>
   <data name="Tickets_Index_SlaNoPrazo" xml:space="preserve"><value>Ticket within the regular support deadline.</value></data>
   <data name="Tickets_Index_SlaAlerta" xml:space="preserve"><value>Warning! This ticket expires in less than 24 hours.</value></data>
   <data name="Tickets_Index_SlaVencido" xml:space="preserve"><value>Critical! This ticket has breached the SLA agreement limit.</value></data>
-  <data name="Details_BotaoCancelar" xml:space="preserve"><value>Cancel this Ticket</value></data>
-  <data name="Details_ConfirmacaoCancelamentoJS" xml:space="preserve"><value>Are you absolutely sure you want to cancel this ticket? This action cannot be undone.</value></data>
+  
+  <data name="Status_Aberto" xml:space="preserve"><value>Open</value></data>
+  <data name="Status_EmAtendimento" xml:space="preserve"><value>In Progress</value></data>
+  <data name="Status_Pendente" xml:space="preserve"><value>Pending</value></data>
+  <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
+  <data name="Status_Fechado" xml:space="preserve"><value>Closed / Concluded</value></data>
   <data name="Status_Cancelado" xml:space="preserve"><value>Cancelled</value></data>
 </root>
