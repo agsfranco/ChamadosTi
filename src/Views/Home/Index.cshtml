@@ -1,10 +1,14 @@
 @model ChamadosTi.ViewModels.Home.IndexViewModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@using ChamadosTi.Models.Enums
+
 @{
     ViewData["Title"] = Localizer["Home_TituloPagina"].Value;
-    bool ehAdministrador = User.IsInRole("Admin") || true;  
+    
+    bool ehAdmin = User.IsInRole(UsuarioRole.Admin.ToString());
+    bool ehTecnico = User.IsInRole(UsuarioRole.Tecnico.ToString());
+    bool possuiAcessoGlobal = ehAdmin || ehTecnico;
 
-    // FUNÇÃO LOCAL 1: Renderiza cartões de indicadores rápidos (KPIs)
     Microsoft.AspNetCore.Html.IHtmlContent RenderizarCardKpi(string titulo, string valor, string icone, string classeCor)
     {
         var html = $@"
@@ -22,7 +26,6 @@
         return new Microsoft.AspNetCore.Html.HtmlString(html);
     }
 
-    // FUNÇÃO LOCAL 2: Renderiza botões de atalhos rápidos de navegação interna
     Microsoft.AspNetCore.Html.IHtmlContent RenderizarBotaoAtalho(string controller, string action, string icone, string titulo, string descricao, string classeBorda = "border-primary-subtle", string classeTexto = "text-primary")
     {
         var url = Url.Action(action, controller);
@@ -47,22 +50,22 @@
     .transition-hover:hover { transform: translateY(-2px); box-shadow: 0 .4rem .8rem rgba(0,0,0,.1)!important; }
 </style>
 
-<!-- Banner de Boas-Vindas -->
 <div class="bg-white border rounded shadow-sm p-4 mb-4 mt-3">
     <h3 class="fw-bold text-primary mb-1"><i class="bi bi-shield-lock-fill me-1"></i> @Localizer["Home_BoasVindasTitulo"]</h3>
     <p class="text-muted small mb-0">@Localizer["Home_BoasVindasSubtitulo"]</p>
 </div>
 
-<!-- SEÇÃO 1: KPIs Comuns -->
-<h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Home_SecaoIndicadores"]</h6>
-<div class="row mb-3">
-    @RenderizarCardKpi("Kpi_Abertos", Model.TotalNovosAbertos.ToString(), "bi-folder-fill", "text-info")
-    @RenderizarCardKpi("Kpi_Atendimento", Model.TotalEmAtendimento.ToString(), "bi-person-gear", "text-primary")
-    @RenderizarCardKpi("Kpi_Pendentes", Model.TotalPendentes.ToString(), "bi-pause-circle-fill", "text-warning")
-    @RenderizarCardKpi("Kpi_SlaVencidos", Model.TotalSlaVencidos.ToString(), "bi-exclamation-octagon-fill", "text-danger")
-</div>
+@if (possuiAcessoGlobal)
+{
+    <h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Home_SecaoIndicadores"]</h6>
+    <div class="row mb-3">
+        @RenderizarCardKpi("Kpi_Abertos", Model.TotalNovosAbertos.ToString(), "bi-folder-fill", "text-info")
+        @RenderizarCardKpi("Kpi_Atendimento", Model.TotalEmAtendimento.ToString(), "bi-person-gear", "text-primary")
+        @RenderizarCardKpi("Kpi_Pendentes", Model.TotalPendentes.ToString(), "bi-pause-circle-fill", "text-warning")
+        @RenderizarCardKpi("Kpi_SlaVencidos", Model.TotalSlaVencidos.ToString(), "bi-exclamation-octagon-fill", "text-danger")
+    </div>
+}
 
-<!-- SEÇÃO 2: Área Comum Operacional -->
 <h6 class="fw-bold text-secondary mb-3 mt-2 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Home_SecaoComum"]</h6>
 <div class="row mb-4">
     @RenderizarBotaoAtalho("Tickets", "Create", "bi-plus-circle-fill", "Atalho_NovoTicket_Titulo", "Atalho_NovoTicket_Desc")
@@ -70,8 +73,7 @@
     @RenderizarBotaoAtalho("Account", "CompleteProfile", "bi-person-vcard-fill", "Atalho_Perfil_Titulo", "Atalho_Perfil_Desc")
 </div>
 
-<!-- SEÇÃO 3: Área Administrativa Protegida -->
-@if (ehAdministrador)
+@if (ehAdmin)
 {
     <h6 class="fw-bold text-danger mb-3 mt-2 small text-uppercase" style="letter-spacing: 0.5px;">
         <i class="bi bi-gear-fill me-1"></i> @Localizer["Home_SecaoAdmin"]

@@ -17,3 +17,12 @@
 * Observações: 
 1. Os valores DateTime estão sendo gravadas no banco em UTC 
 
+## Definições de acesso:
+
+| Perfil (Role) | O que ele faz no sistema? (Regra de Negócio) | O que ele enxerga na Home? (Filtro de Escopo) |
+| --- | --- | --- |
+| Usuário Comum | Abre chamados e acompanha o andamento do seu próprio histórico. | Vê as métricas apenas dos chamados abertos por ele mesmo. |
+| Técnico | Atende chamados da fila, muda status, tramita o SLA e resolve incidentes. | Vê as métricas de todos os chamados da empresa inteira para poder trabalhar. |
+| Admin | Gerencia as tabelas satélites (Cadastra setores, prioridades, feriados) e gerencia usuários. | Vê as métricas de todos os chamados da empresa inteira + acesso ao menu de cadastros. |
+
+

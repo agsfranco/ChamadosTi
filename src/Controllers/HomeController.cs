@@ -4,6 +4,7 @@ using ChamadosTi.ViewModels.Home;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChamadosTi.Controllers
@@ -12,29 +13,53 @@ namespace ChamadosTi.Controllers
     public class HomeController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(AppDbContext context)
+        public HomeController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
             var agoraUtc = DateTime.UtcNow;
+            var identityUserId = _userManager.GetUserId(User);
 
-            var novosAbertos = await _context.Tickets
-                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.Aberto && t.Ativo == true);
+            if (string.IsNullOrEmpty(identityUserId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
-            var emAtendimento = await _context.Tickets
-                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.EmAtendimento && t.Ativo == true);
+            var usuarioLocal = await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == identityUserId);
+            if (usuarioLocal == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
-            var pendentes = await _context.Tickets
-                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.Pendente && t.Ativo == true);
+            var ehAdmin = User.IsInRole(UsuarioRole.Admin.ToString());
+            var ehTecnico = User.IsInRole(UsuarioRole.Tecnico.ToString());
+            var possuiAcessoGlobal = ehAdmin || ehTecnico;
 
-            var slaVencidos = await _context.Tickets
+            var queryBase = _context.Tickets.Where(t => t.Ativo == true);
+
+            if (!possuiAcessoGlobal)
+            {
+                queryBase = queryBase.Where(t => t.UsuarioId == usuarioLocal.Id);
+            }
+
+            var novosAbertos = await queryBase
+                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.Aberto);
+
+            var emAtendimento = await queryBase
+                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.EmAtendimento);
+
+            var pendentes = await queryBase
+                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.Pendente);
+
+            var slaVencidos = await queryBase
                 .CountAsync(t => t.Status.Codigo < (int)TicketStatus.Resolvido 
-                              && t.PrazoResolucaoSLA < agoraUtc 
-                              && t.Ativo == true);
+                              && t.PrazoResolucaoSLA < agoraUtc);
 
             var modelDashboard = new IndexViewModel
             {

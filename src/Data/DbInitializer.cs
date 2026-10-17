@@ -1,6 +1,9 @@
 using ChamadosTi.Models;
+using ChamadosTi.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace ChamadosTi.Data
 {
@@ -10,7 +13,7 @@ namespace ChamadosTi.Data
         {
             await context.Database.EnsureCreatedAsync();
 
-            string[] roles = { "Admin", "Tecnico" };
+            string[] roles = { UsuarioRole.Admin.ToString(), UsuarioRole.Tecnico.ToString() };
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
@@ -38,18 +41,18 @@ namespace ChamadosTi.Data
             {
                 var identityUser = new IdentityUser
                 {
-                    UserName = "admin@chamadosti.com",
+                    UserName = "Admin",
                     Email = "admin@chamadosti.com",
                     EmailConfirmed = true,
-                    NormalizedUserName = "ADMIN@CHAMADOSTI.COM",
+                    NormalizedUserName = "ADMIN",
                     NormalizedEmail = "ADMIN@CHAMADOSTI.COM"
                 };
 
                 var result = await userManager.CreateAsync(identityUser, "Admin@123456");
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(identityUser, "Admin");
-                    await userManager.AddToRoleAsync(identityUser, "Tecnico");
+                    await userManager.AddToRoleAsync(identityUser, UsuarioRole.Admin.ToString());
+                    await userManager.AddToRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
 
                     var usuarioLocal = new Usuario
                     {

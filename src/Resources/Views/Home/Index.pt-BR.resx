@@ -39,4 +39,18 @@
   <data name="Atalho_Categorias_Desc" xml:space="preserve"><value>Gerencie categorias, marcas e tipos do catálogo de serviços.</value></data>
   <data name="Atalho_DadosTecnicos_Titulo" xml:space="preserve"><value>Matriz de Especialidades</value></data>
   <data name="Atalho_DadosTecnicos_Desc" xml:space="preserve"><value>Configure competências técnicas exigidas pelo Service Desk.</value></data>
+  <data name="Home_Index_Title" xml:space="preserve"><value>Painel de Controle - Central de Serviços</value></data>
+  <data name="Home_Welcome_Title" xml:space="preserve"><value>Bem-vindo ao Service Desk</value></data>
+  <data name="Home_Welcome_Subtitle" xml:space="preserve"><value>Gerencie seus incidentes, requisições de tecnologia e acompanhe seus SLAs em tempo real.</value></data>
+  <data name="Card_NewTickets" xml:space="preserve"><value>Novos / Abertos</value></data>
+  <data name="Card_InProgress" xml:space="preserve"><value>Em Atendimento</value></data>
+  <data name="Card_Pending" xml:space="preserve"><value>Pausados / Pendentes</value></data>
+  <data name="Card_BreachedSla" xml:space="preserve"><value>SLA Estourado</value></data>
+  <data name="Section_Actions_Title" xml:space="preserve"><value>Suporte Técnico</value></data>
+  <data name="Section_Actions_Text" xml:space="preserve"><value>Precisa de auxílio técnico ou abertura de novos chamados operacionais para o seu departamento?</value></data>
+  <data name="Button_OpenTicket" xml:space="preserve"><value>Abrir Chamado</value></data>
+  <data name="Button_ViewQueue" xml:space="preserve"><value>Ver Fila Completa</value></data>
+  <data name="Section_Security_Title" xml:space="preserve"><value>Segurança da Conta</value></data>
+  <data name="Section_Security_Text" xml:space="preserve"><value>Mantenha sua credencial corporativa protegida atualizando sua senha periodicamente.</value></data>
+  <data name="Button_ChangePassword" xml:space="preserve"><value>Alterar Senha</value></data>
 </root>

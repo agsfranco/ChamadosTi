@@ -1,4 +1,5 @@
 using ChamadosTi.Data;
+using ChamadosTi.Models.Enums;
 using ChamadosTi.ViewModels.Usuario;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -36,7 +37,7 @@ namespace ChamadosTi.Controllers
             {
                 var identityUser = await _userManager.FindByIdAsync(u.AspNetUserId);
                 var email = identityUser?.Email ?? string.Empty;
-                var ehTecnico = identityUser != null && await _userManager.IsInRoleAsync(identityUser, "Tecnico");
+                var ehTecnico = identityUser != null && await _userManager.IsInRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
 
                 listaViewModels.Add(new UsuarioIndexViewModel
                 {
@@ -69,14 +70,14 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var jaEhTecnico = await _userManager.IsInRoleAsync(identityUser, "Tecnico");
+            var jaEhTecnico = await _userManager.IsInRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
             if (jaEhTecnico)
             {
                 TempData["ErrorMessage"] = _localizer["Error_JaEhTecnico"].Value;
                 return RedirectToAction(nameof(Index));
             }
 
-            await _userManager.AddToRoleAsync(identityUser, "Tecnico");
+            await _userManager.AddToRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
 
             TempData["SuccessMessage"] = _localizer["Success_PromovidoTecnico"].Value;
             return RedirectToAction(nameof(Index));
