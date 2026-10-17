@@ -1,0 +1,83 @@
+@model IEnumerable<ChamadosTi.ViewModels.Usuario.UsuarioIndexViewModel>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Usuarios_Index_Title"].Value;
+}
+
+@{
+    Microsoft.AspNetCore.Html.IHtmlContent RenderizarBadgePerfil(bool ehTecnico)
+    {
+        string classeCor = ehTecnico ? "bg-success" : "bg-secondary";
+        string chaveTexto = ehTecnico ? "Badge_Tecnico" : "Badge_Comum";
+        
+        var html = $@"<span class='badge {classeCor} fw-bold px-3 py-2 shadow-sm'>{Localizer[chaveTexto].Value}</span>";
+        return new Microsoft.AspNetCore.Html.HtmlString(html);
+    }
+}
+
+<div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show small shadow-sm mb-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-alert="close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show small shadow-sm mb-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-alert="close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow-sm bg-white rounded border">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" class="px-4">@Localizer["Table_Colaborador"]</th>
+                    <th scope="col">@Localizer["Table_Email"]</th>
+                    <th scope="col">@Localizer["Table_Setor"]</th>
+                    <th scope="col">@Localizer["Table_Perfil"]</th>
+                    <th scope="col" class="text-end px-4">@Localizer["Table_Acoes"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">@Localizer["No_Users_Found"]</td>
+                    </tr>
+                }
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td class="px-4 fw-bold text-dark">@usuario.Nome</td>
+                        <td class="text-secondary small">@usuario.Email</td>
+                        <td class="fw-medium text-secondary">@usuario.SetorNome</td>
+                        <td>
+                            @RenderizarBadgePerfil(usuario.EhTecnico)
+                        </td>
+                        <td class="text-end px-4">
+                            @if (!usuario.EhTecnico)
+                            {
+                                <form asp-action="PromoverParaTecnico" asp-route-id="@usuario.Id" method="post" class="d-inline m-0">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-primary fw-semibold px-3 shadow-sm">
+                                        <i class="bi bi-person-up me-1"></i> @Localizer["Button_Promover"]
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

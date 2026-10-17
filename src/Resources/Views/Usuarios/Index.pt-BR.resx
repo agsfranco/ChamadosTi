@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Usuarios_Index_Title" xml:space="preserve"><value>Gestão de Colaboradores e Permissões</value></data>
+  <data name="Table_Colaborador" xml:space="preserve"><value>Nome Completo</value></data>
+  <data name="Table_Email" xml:space="preserve"><value>E-mail Corporativo</value></data>
+  <data name="Table_Setor" xml:space="preserve"><value>Departamento</value></data>
+  <data name="Table_Perfil" xml:space="preserve"><value>Perfil de Acesso</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Ações Administrativas</value></data>
+  <data name="No_Users_Found" xml:space="preserve"><value>Nenhum colaborador ativo foi listado no sistema.</value></data>
+  <data name="Badge_Tecnico" xml:space="preserve"><value>Analista Técnico</value></data>
+  <data name="Badge_Comum" xml:space="preserve"><value>Usuário Comum</value></data>
+  <data name="Button_Promover" xml:space="preserve"><value>Promover a Técnico</value></data>
+</root>

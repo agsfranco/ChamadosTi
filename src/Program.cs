@@ -44,9 +44,11 @@ builder.Services.AddIdentityCore<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
 })
+.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AppDbContext>()
 .AddApiEndpoints()
 .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
+
 
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
     .AddCookie(IdentityConstants.ApplicationScheme, options =>
