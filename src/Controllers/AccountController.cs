@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace ChamadosTi.Controllers
@@ -18,19 +19,22 @@ namespace ChamadosTi.Controllers
         private readonly IStringLocalizer<AccountController> _localizer;
         private readonly IEmailSender _emailSender;
         private readonly AppDbContext _context;
+        private readonly IdentityOptions _identityOptions;
 
         public AccountController(
             SignInManager<IdentityUser> signInManager, 
             UserManager<IdentityUser> userManager,
             IStringLocalizer<AccountController> localizer,
             IEmailSender emailSender,
-            AppDbContext context)
+            AppDbContext context,
+            IOptions<IdentityOptions> identityOptions)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _localizer = localizer;
             _emailSender = emailSender;
             _context = context;
+            _identityOptions = identityOptions.Value;
         }
 
         [HttpGet]
@@ -108,20 +112,27 @@ namespace ChamadosTi.Controllers
 
             if (result.Succeeded)
             {
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var callbackUrl = Url.Action(
-                    "ConfirmEmail", 
-                    "Account", 
-                    new { userId = user.Id, code = code }, 
-                    protocol: Request.Scheme);
+                if (_identityOptions.SignIn.RequireConfirmedAccount)
+                {
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail", 
+                        "Account", 
+                        new { userId = user.Id, code = code }, 
+                        protocol: Request.Scheme);
 
-                // Busca o assunto e o corpo formatado diretamente dos recursos (.resx)
-                string assunto = _localizer["Email_ConfirmSubject"];
-                string corpo = string.Format(_localizer["Email_ConfirmBody"], callbackUrl);
+                    string assunto = _localizer["Email_ConfirmSubject"];
+                    string corpo = string.Format(_localizer["Email_ConfirmBody"], callbackUrl);
 
-                await _emailSender.SendEmailAsync(model.Email, assunto, corpo);
+                    await _emailSender.SendEmailAsync(model.Email, assunto, corpo);
 
-                return RedirectToAction("RegisterConfirmation", new { email = model.Email });
+                    return RedirectToAction("RegisterConfirmation", new { email = model.Email });
+                } else {
+                    user.EmailConfirmed = true;
+                }
+                await _userManager.UpdateAsync(user);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Home");
             }
 
             foreach (var error in result.Errors)
@@ -139,6 +150,7 @@ namespace ChamadosTi.Controllers
             ViewBag.Email = email;
             return View();
         }
+
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
