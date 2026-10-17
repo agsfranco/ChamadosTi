@@ -7,7 +7,7 @@
 * **Desenvolvimento Assistido por IA:** [Google Gemini](https://google.com) - utilizado como assistente de codificação, auxiliando na refatoração e geração de trechos de código.
 
 1. Entity Framework
-1. Identity API
+1. Identity
 1. Libman
 1. FluentAPI
 1. Bootstrap

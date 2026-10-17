@@ -40,27 +40,38 @@ builder.Services.AddHsts( options =>
     options.IncludeSubDomains = true;
 });
 
-builder.Services.AddIdentityCore<IdentityUser>(options =>
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = false;
 })
-.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AppDbContext>()
-.AddApiEndpoints()
-.AddErrorDescriber<LocalizedIdentityErrorDescriber>();
-
-
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddCookie(IdentityConstants.ApplicationScheme, options =>
-    {
-        options.LoginPath = "/Account/Login"; 
-    });
+.AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
+
+//Seeding Data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        
+        await DbInitializer.SeedAsync(context, userManager, roleManager);
+        await CatalogDataSeeder.SeedCatalogAsync(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocorreu um erro fatal durante a carga inicial do banco de dados.");
+    }
+}
 
 app.UseStaticFiles();
 
@@ -78,8 +89,6 @@ app.UseRequestLocalization(localizationOptions.Value);
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapGroup("/api/auth").MapIdentityApi<IdentityUser>();
 
 app.MapControllerRoute(
     name: "default",
