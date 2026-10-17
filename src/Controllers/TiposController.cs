@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class TiposController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,7 +23,6 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        // GET: Tipos
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Tipo> tipos;
@@ -136,8 +138,6 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        #region Métodos Privados Auxiliares (Clean Code)
-
         private async Task<Tipo?> BuscarTipoPorIdAsync(int id, bool ignorarFiltrosGlobais = false)
         {
             var query = _context.Tipos.AsQueryable();
@@ -149,7 +149,5 @@ namespace ChamadosTi.Controllers
 
             return await query.FirstOrDefaultAsync(t => t.Id == id);
         }
-
-        #endregion
     }
 }
