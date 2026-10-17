@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class PrioridadesController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,26 +20,23 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        // GET: Prioridades ou Prioridades?exibirInativos=true
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Prioridade> prioridades;
 
             if (exibirInativos)
             {
-                // Busca apenas os registros inativos (ISoftDelete) ordenados por nome
-                prioridades = _context.Prioridades
+                prioridades = await _context.Prioridades
                     .IgnoreQueryFilters()
                     .Where(p => !p.Ativo)
                     .OrderBy(p => p.Nome)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                // Filtro global traz apenas os ativos ordenados por nome
-                prioridades = _context.Prioridades
+                prioridades = await _context.Prioridades
                     .OrderBy(p => p.Nome)
-                    .ToList();
+                    .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
@@ -58,11 +55,9 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var jaExistePadrao = _context.Prioridades.Any(x => x.Id != model.Id && x.Padrao && x.Ativo);
-            if (jaExistePadrao)
+            if (await ValidarPadraoDuplicadoAsync(model.Id, model.Padrao))
             {
                 ModelState.AddModelError("Padrao", _localizer["Error_PadraoJaExistente"]);
-                ViewBag.Prioridade = model;
                 return View(model);
             }
 
@@ -81,9 +76,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var prioridade = _context.Prioridades.Find(id);
+            var prioridade = await BuscarPrioridadePorIdAsync(id, false);
             if (prioridade == null) return NotFound();
 
             var model = new PrioridadeViewModel
@@ -104,15 +99,13 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var jaExistePadrao = _context.Prioridades.Any(x => x.Id != model.Id && x.Padrao && x.Ativo);
-            if (jaExistePadrao)
+            if (await ValidarPadraoDuplicadoAsync(model.Id, model.Padrao))
             {
                 ModelState.AddModelError("Padrao", _localizer["Error_PadraoJaExistente"]);
-                ViewBag.Prioridade = model;
                 return View(model);
             }            
 
-            var prioridade = _context.Prioridades.Find(model.Id);
+            var prioridade = await BuscarPrioridadePorIdAsync(model.Id, false);
             if (prioridade == null) return NotFound();
 
             prioridade.Nome = model.Nome;
@@ -126,9 +119,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var prioridade = _context.Prioridades.Find(id);
+            var prioridade = await BuscarPrioridadePorIdAsync(id, false);
             if (prioridade == null) return NotFound();
 
             return View(prioridade);
@@ -138,10 +131,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var prioridade = _context.Prioridades.Find(id);
+            var prioridade = await BuscarPrioridadePorIdAsync(id, false);
             if (prioridade == null) return NotFound();
 
-            _context.Prioridades.Remove(prioridade); // Dispara o seu Soft Delete automático
+            _context.Prioridades.Remove(prioridade);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -150,7 +143,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var prioridade = _context.Prioridades.IgnoreQueryFilters().FirstOrDefault(p => p.Id == id);
+            var prioridade = await BuscarPrioridadePorIdAsync(id, true);
             if (prioridade == null) return NotFound();
 
             prioridade.Ativo = true;
@@ -158,6 +151,19 @@ namespace ChamadosTi.Controllers
             _context.Prioridades.Update(prioridade);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<Prioridade?> BuscarPrioridadePorIdAsync(int id, bool ignorarFiltros)
+        {
+            var query = _context.Prioridades.AsQueryable();
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+            return await query.FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        private async Task<bool> ValidarPadraoDuplicadoAsync(int id, bool ehPadrao)
+        {
+            if (!ehPadrao) return false;
+            return await _context.Prioridades.AnyAsync(x => x.Id != id && x.Padrao && x.Ativo);
         }
     }
 }

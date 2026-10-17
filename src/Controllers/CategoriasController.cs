@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CategoriasController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,25 +20,25 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Categoria> categorias;
 
             if (exibirInativos)
             {
-                categorias = _context.Categorias
+                categorias = await _context.Categorias
                     .IgnoreQueryFilters()
-                    .Include(c => c.Especialidades) // Carrega a propriedade de navegação
+                    .Include(c => c.Especialidades)
                     .Where(c => !c.Ativo)
                     .OrderBy(c => c.Nome)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                categorias = _context.Categorias
+                categorias = await _context.Categorias
                     .Include(c => c.Especialidades)
                     .OrderBy(c => c.Nome)
-                    .ToList();
+                    .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
@@ -46,9 +46,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Especialidades = _context.Especialidades.OrderBy(e => e.Nome).ToList();
+            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
             return View(new CategoriaViewModel());
         }
 
@@ -58,7 +58,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = _context.Especialidades.OrderBy(e => e.Nome).ToList();
+                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
                 return View(model);
             }
 
@@ -76,12 +76,12 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var categoria = _context.Categorias.Find(id);
+            var categoria = await BuscarCategoriaPorIdAsync(id, false, false);
             if (categoria == null) return NotFound();
 
-            ViewBag.Especialidades = _context.Especialidades.OrderBy(e => e.Nome).ToList();
+            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
 
             var model = new CategoriaViewModel
             {
@@ -100,11 +100,11 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = _context.Especialidades.OrderBy(e => e.Nome).ToList();
+                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
                 return View(model);
             }
 
-            var categoria = _context.Categorias.Find(model.Id);
+            var categoria = await BuscarCategoriaPorIdAsync(model.Id, false, false);
             if (categoria == null) return NotFound();
 
             categoria.EspecialidadeId = model.EspecialidadeId;
@@ -117,12 +117,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var categoria = _context.Categorias
-                .Include(c => c.Especialidades)
-                .FirstOrDefault(c => c.Id == id);
-
+            var categoria = await BuscarCategoriaPorIdAsync(id, false, true);
             if (categoria == null) return NotFound();
 
             return View(categoria);
@@ -132,7 +129,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var categoria = _context.Categorias.Find(id);
+            var categoria = await BuscarCategoriaPorIdAsync(id, false, false);
             if (categoria == null) return NotFound();
 
             _context.Categorias.Remove(categoria);
@@ -144,7 +141,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var categoria = _context.Categorias.IgnoreQueryFilters().FirstOrDefault(c => c.Id == id);
+            var categoria = await BuscarCategoriaPorIdAsync(id, true, false);
             if (categoria == null) return NotFound();
 
             categoria.Ativo = true;
@@ -152,6 +149,21 @@ namespace ChamadosTi.Controllers
             _context.Categorias.Update(categoria);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<Categoria?> BuscarCategoriaPorIdAsync(int id, bool ignorarFiltros, bool incluirEspecialidades)
+        {
+            var query = _context.Categorias.AsQueryable();
+            
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+            if (incluirEspecialidades) query = query.Include(c => c.Especialidades);
+            
+            return await query.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        private async Task<List<Especialidade>> CarregarEspecialidadesFormularioAsync()
+        {
+            return await _context.Especialidades.OrderBy(e => e.Nome).ToListAsync();
         }
     }
 }

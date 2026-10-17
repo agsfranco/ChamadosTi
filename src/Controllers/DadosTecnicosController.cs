@@ -3,13 +3,12 @@ using ChamadosTi.Models;
 using ChamadosTi.ViewModels.DadoTecnico;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class DadosTecnicosController : Controller
     {
         private readonly AppDbContext _context;
@@ -21,25 +20,23 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<DadoTecnico> dadosTecnicos;
 
             if (exibirInativos)
             {
-                // Inclui a Especialidade mesmo para os registros inativos
-                dadosTecnicos = _context.DadosTecnicos
+                dadosTecnicos = await _context.DadosTecnicos
                     .IgnoreQueryFilters()
                     .Include(d => d.Especialidades)
                     .Where(d => !d.Ativo)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                // O Include traz os dados da Especialidade vinculada
-                dadosTecnicos = _context.DadosTecnicos
+                dadosTecnicos = await _context.DadosTecnicos
                     .Include(d => d.Especialidades)
-                    .ToList();
+                    .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
@@ -47,10 +44,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // Carrega apenas as especialidades ativas para o Select
-            ViewBag.Especialidades = _context.Especialidades.ToList();
+            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
             return View(new DadoTecnicoViewModel());
         }
 
@@ -60,7 +56,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = _context.Especialidades.ToList();
+                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
                 return View(model);
             }
 
@@ -77,12 +73,12 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var dado = _context.DadosTecnicos.Find(id);
+            var dado = await BuscarDadoTecnicoPorIdAsync(id, false, false);
             if (dado == null) return NotFound();
 
-            ViewBag.Especialidades = _context.Especialidades.ToList();
+            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
 
             var model = new DadoTecnicoViewModel
             {
@@ -100,11 +96,11 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = _context.Especialidades.ToList();
+                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
                 return View(model);
             }
 
-            var dado = _context.DadosTecnicos.Find(model.Id);
+            var dado = await BuscarDadoTecnicoPorIdAsync(model.Id, false, false);
             if (dado == null) return NotFound();
 
             dado.EspecialidadeId = model.EspecialidadeId;
@@ -116,12 +112,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var dado = _context.DadosTecnicos
-                .Include(d => d.Especialidades)
-                .FirstOrDefault(d => d.Id == id);
-
+            var dado = await BuscarDadoTecnicoPorIdAsync(id, false, true);
             if (dado == null) return NotFound();
 
             return View(dado);
@@ -131,7 +124,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dado = _context.DadosTecnicos.Find(id);
+            var dado = await BuscarDadoTecnicoPorIdAsync(id, false, false);
             if (dado == null) return NotFound();
 
             _context.DadosTecnicos.Remove(dado);
@@ -143,7 +136,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var dado = _context.DadosTecnicos.IgnoreQueryFilters().FirstOrDefault(d => d.Id == id);
+            var dado = await BuscarDadoTecnicoPorIdAsync(id, true, false);
             if (dado == null) return NotFound();
 
             dado.Ativo = true;
@@ -151,6 +144,21 @@ namespace ChamadosTi.Controllers
             _context.DadosTecnicos.Update(dado);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<DadoTecnico?> BuscarDadoTecnicoPorIdAsync(int id, bool ignorarFiltros, bool incluirEspecialidades)
+        {
+            var query = _context.DadosTecnicos.AsQueryable();
+
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+            if (incluirEspecialidades) query = query.Include(d => d.Especialidades);
+
+            return await query.FirstOrDefaultAsync(d => d.Id == id);
+        }
+
+        private async Task<List<Especialidade>> CarregarEspecialidadesFormularioAsync()
+        {
+            return await _context.Especialidades.OrderBy(e => e.Nome).ToListAsync();
         }
     }
 }

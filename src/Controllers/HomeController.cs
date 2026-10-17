@@ -64,7 +64,5 @@ namespace ChamadosTi.Controllers
 
             return LocalRedirect(returnUrl);
         }
-
     }
 }
-

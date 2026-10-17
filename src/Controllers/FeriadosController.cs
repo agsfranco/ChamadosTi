@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class FeriadosController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,23 +20,23 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Feriado> feriados;
 
             if (exibirInativos)
             {
-                feriados = _context.Feriados
+                feriados = await _context.Feriados
                     .IgnoreQueryFilters()
                     .Where(f => !f.Ativo)
                     .OrderBy(f => f.Dia)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                feriados = _context.Feriados
+                feriados = await _context.Feriados
                     .OrderBy(f => f.Dia)
-                    .ToList();
+                    .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
@@ -55,9 +55,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            // Validação extra: Impede cadastrar o mesmo feriado na mesma data duas vezes
-            var feriadoDuplicado = _context.Feriados.Any(f => f.Dia == model.Dia!.Value);
-            if (feriadoDuplicado)
+            if (await ValidarFeriadoDuplicadoAsync(model.Dia!.Value, model.Id))
             {
                 ModelState.AddModelError("Dia", _localizer["Error_FeriadoDuplicado"]);
                 return View(model);
@@ -76,9 +74,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var feriado = _context.Feriados.Find(id);
+            var feriado = await BuscarFeriadoPorIdAsync(id, false);
             if (feriado == null) return NotFound();
 
             var model = new FeriadoViewModel
@@ -97,11 +95,10 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var feriado = _context.Feriados.Find(model.Id);
+            var feriado = await BuscarFeriadoPorIdAsync(model.Id, false);
             if (feriado == null) return NotFound();
 
-            var feriadoDuplicado = _context.Feriados.Any(f => f.Dia == model.Dia!.Value && f.Id != model.Id);
-            if (feriadoDuplicado)
+            if (await ValidarFeriadoDuplicadoAsync(model.Dia!.Value, model.Id))
             {
                 ModelState.AddModelError("Dia", _localizer["Error_FeriadoDuplicado"]);
                 return View(model);
@@ -116,9 +113,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var feriado = _context.Feriados.Find(id);
+            var feriado = await BuscarFeriadoPorIdAsync(id, false);
             if (feriado == null) return NotFound();
 
             return View(feriado);
@@ -128,7 +125,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var feriado = _context.Feriados.Find(id);
+            var feriado = await BuscarFeriadoPorIdAsync(id, false);
             if (feriado == null) return NotFound();
 
             _context.Feriados.Remove(feriado);
@@ -140,7 +137,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var feriado = _context.Feriados.IgnoreQueryFilters().FirstOrDefault(f => f.Id == id);
+            var feriado = await BuscarFeriadoPorIdAsync(id, true);
             if (feriado == null) return NotFound();
 
             feriado.Ativo = true;
@@ -148,6 +145,20 @@ namespace ChamadosTi.Controllers
             _context.Feriados.Update(feriado);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<Feriado?> BuscarFeriadoPorIdAsync(int id, bool ignorarFiltros)
+        {
+            var query = _context.Feriados.AsQueryable();
+
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+
+            return await query.FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        private async Task<bool> ValidarFeriadoDuplicadoAsync(DateOnly dia, int id)
+        {
+            return await _context.Feriados.AnyAsync(f => f.Dia == dia && f.Id != id);
         }
     }
 }

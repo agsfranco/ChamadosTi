@@ -20,17 +20,24 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        // GET: Tipos
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Tipo> tipos;
 
             if (exibirInativos)
             {
-                tipos = _context.Tipos.IgnoreQueryFilters().Where(t => !t.Ativo).OrderBy(t => t.Nome).ToList();
+                tipos = await _context.Tipos
+                                      .IgnoreQueryFilters()
+                                      .Where(t => !t.Ativo)
+                                      .OrderBy(t => t.Nome)
+                                      .ToListAsync();
             }
             else
             {
-                tipos = _context.Tipos.OrderBy(t => t.Nome).ToList();
+                tipos = await _context.Tipos
+                                      .OrderBy(t => t.Nome)
+                                      .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
@@ -62,9 +69,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var tipo = _context.Tipos.Find(id);
+            var tipo = await BuscarTipoPorIdAsync(id);
             if (tipo == null) return NotFound();
 
             var model = new TipoViewModel
@@ -83,7 +90,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var tipo = _context.Tipos.Find(model.Id);
+            var tipo = await BuscarTipoPorIdAsync(model.Id);
             if (tipo == null) return NotFound();
 
             tipo.Nome = model.Nome;
@@ -95,9 +102,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var tipo = _context.Tipos.Find(id);
+            var tipo = await BuscarTipoPorIdAsync(id);
             if (tipo == null) return NotFound();
 
             return View(tipo);
@@ -107,7 +114,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tipo = _context.Tipos.Find(id);
+            var tipo = await BuscarTipoPorIdAsync(id);
             if (tipo == null) return NotFound();
 
             _context.Tipos.Remove(tipo);
@@ -119,7 +126,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var tipo = _context.Tipos.IgnoreQueryFilters().FirstOrDefault(t => t.Id == id);
+            var tipo = await BuscarTipoPorIdAsync(id, ignorarFiltrosGlobais: true);
             if (tipo == null) return NotFound();
 
             tipo.Ativo = true;
@@ -128,5 +135,21 @@ namespace ChamadosTi.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        #region Métodos Privados Auxiliares (Clean Code)
+
+        private async Task<Tipo?> BuscarTipoPorIdAsync(int id, bool ignorarFiltrosGlobais = false)
+        {
+            var query = _context.Tipos.AsQueryable();
+
+            if (ignorarFiltrosGlobais)
+            {
+                query = query.IgnoreQueryFilters();
+            }
+
+            return await query.FirstOrDefaultAsync(t => t.Id == id);
+        }
+
+        #endregion
     }
 }

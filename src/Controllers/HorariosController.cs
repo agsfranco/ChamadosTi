@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class HorariosController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,42 +20,37 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Horario> horarios;
 
             if (exibirInativos)
             {
-                horarios = _context.Horarios
+                horarios = await _context.Horarios
                     .IgnoreQueryFilters()
                     .Include(h => h.SetoresHorarios!)
                         .ThenInclude(sh => sh.Setor)
                     .Where(h => !h.Ativo)
                     .OrderBy(h => h.DiaDaSemana)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                horarios = _context.Horarios
+                horarios = await _context.Horarios
                     .Include(h => h.SetoresHorarios!)
                         .ThenInclude(sh => sh.Setor)
                     .OrderBy(h => h.DiaDaSemana)
-                    .ToList();
+                    .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(horarios);
         }
 
-        private void CarregaSetores()
-        {
-            ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();
-        }
-
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            CarregaSetores();
+            await CarregaSetoresAsync();
             return View(new HorarioViewModel());
         }
 
@@ -65,15 +60,14 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                CarregaSetores();
+                await CarregaSetoresAsync();
                 return View(model);
             }
 
-            // Validação lógica: O horário de fim não pode ser menor que o de início
             if (model.JornadaFim <= model.JornadaInicio || model.AlmocoFim <= model.AlmocoInicio)
             {
                 ModelState.AddModelError("", _localizer["Error_HorarioInvalido"]);
-                CarregaSetores();
+                await CarregaSetoresAsync();
                 return View(model);
             }
 
@@ -90,7 +84,6 @@ namespace ChamadosTi.Controllers
             _context.Horarios.Add(novoHorario);
             await _context.SaveChangesAsync();
 
-            // Salva as associações muitos-para-muitos na tabela pivot
             if (model.SetoresIdsSelecionados != null && model.SetoresIdsSelecionados.Any())
             {
                 foreach (var setorId in model.SetoresIdsSelecionados)
@@ -109,15 +102,12 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var horario = _context.Horarios
-                .Include(h => h.SetoresHorarios)
-                .FirstOrDefault(h => h.Id == id);
-
+            var horario = await BuscarHorarioPorIdAsync(id, false, true);
             if (horario == null) return NotFound();
 
-            CarregaSetores();
+            await CarregaSetoresAsync();
 
             var model = new HorarioViewModel
             {
@@ -139,17 +129,17 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                CarregaSetores();
+                await CarregaSetoresAsync();
                 return View(model);
             }
 
-            var horario = _context.Horarios.Include(h => h.SetoresHorarios).FirstOrDefault(h => h.Id == model.Id);
+            var horario = await BuscarHorarioPorIdAsync(model.Id, false, true);
             if (horario == null) return NotFound();
 
             if (model.JornadaFim <= model.JornadaInicio || model.AlmocoFim <= model.AlmocoInicio)
             {
                 ModelState.AddModelError("", _localizer["Error_HorarioInvalido"]);
-                CarregaSetores();
+                await CarregaSetoresAsync();
                 return View(model);
             }
 
@@ -159,7 +149,6 @@ namespace ChamadosTi.Controllers
             horario.AlmocoInicio = model.AlmocoInicio!.Value;
             horario.AlmocoFim = model.AlmocoFim!.Value;
 
-            // Atualização inteligente da tabela pivot: Limpa os vínculos antigos e reinsere os novos
             if (horario.SetoresHorarios != null)
             {
                 _context.SetoresHorarios.RemoveRange(horario.SetoresHorarios);
@@ -184,9 +173,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var horario = _context.Horarios.Find(id);
+            var horario = await BuscarHorarioPorIdAsync(id, false, false);
             if (horario == null) return NotFound();
 
             return View(horario);
@@ -196,10 +185,9 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var horario = _context.Horarios.Include(h => h.SetoresHorarios).FirstOrDefault(h => h.Id == id);
+            var horario = await BuscarHorarioPorIdAsync(id, false, true);
             if (horario == null) return NotFound();
 
-            // Ao inativar o horário principal, cascateia a inativação para a tabela de ligação pivot
             if (horario.SetoresHorarios != null)
             {
                 _context.SetoresHorarios.RemoveRange(horario.SetoresHorarios);
@@ -214,13 +202,28 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var horario = _context.Horarios.IgnoreQueryFilters().FirstOrDefault(h => h.Id == id);
+            var horario = await BuscarHorarioPorIdAsync(id, true, false);
             if (horario == null) return NotFound();
 
             horario.Ativo = true;
             _context.Horarios.Update(horario);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task CarregaSetoresAsync()
+        {
+            ViewBag.Setores = await _context.Setores.OrderBy(s => s.Nome).ToListAsync();
+        }
+
+        private async Task<Horario?> BuscarHorarioPorIdAsync(int id, bool ignorarFiltros, bool incluirSetores)
+        {
+            var query = _context.Horarios.AsQueryable();
+
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+            if (incluirSetores) query = query.Include(h => h.SetoresHorarios);
+
+            return await query.FirstOrDefaultAsync(h => h.Id == id);
         }
     }
 }

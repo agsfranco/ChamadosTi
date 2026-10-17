@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class MarcasController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,17 +20,23 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Marca> marcas;
 
             if (exibirInativos)
             {
-                marcas = _context.Marcas.IgnoreQueryFilters().Where(m => !m.Ativo).OrderBy(m => m.Nome).ToList();
+                marcas = await _context.Marcas
+                    .IgnoreQueryFilters()
+                    .Where(m => !m.Ativo)
+                    .OrderBy(m => m.Nome)
+                    .ToListAsync();
             }
             else
             {
-                marcas = _context.Marcas.OrderBy(m => m.Nome).ToList();
+                marcas = await _context.Marcas
+                    .OrderBy(m => m.Nome)
+                    .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
@@ -61,9 +67,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var marca = _context.Marcas.Find(id);
+            var marca = await BuscarMarcaPorIdAsync(id, false);
             if (marca == null) return NotFound();
 
             var model = new MarcaViewModel
@@ -81,7 +87,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var marca = _context.Marcas.Find(model.Id);
+            var marca = await BuscarMarcaPorIdAsync(model.Id, false);
             if (marca == null) return NotFound();
 
             marca.Nome = model.Nome;
@@ -92,9 +98,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var marca = _context.Marcas.Find(id);
+            var marca = await BuscarMarcaPorIdAsync(id, false);
             if (marca == null) return NotFound();
 
             return View(marca);
@@ -104,7 +110,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var marca = _context.Marcas.Find(id);
+            var marca = await BuscarMarcaPorIdAsync(id, false);
             if (marca == null) return NotFound();
 
             _context.Marcas.Remove(marca);
@@ -116,7 +122,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var marca = _context.Marcas.IgnoreQueryFilters().FirstOrDefault(m => m.Id == id);
+            var marca = await BuscarMarcaPorIdAsync(id, true);
             if (marca == null) return NotFound();
 
             marca.Ativo = true;
@@ -124,6 +130,15 @@ namespace ChamadosTi.Controllers
             _context.Marcas.Update(marca);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<Marca?> BuscarMarcaPorIdAsync(int id, bool ignorarFiltros)
+        {
+            var query = _context.Marcas.AsQueryable();
+
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+
+            return await query.FirstOrDefaultAsync(m => m.Id == id);
         }
     }
 }

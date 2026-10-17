@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class EspecialidadesController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,19 +20,20 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Especialidade> especialidades;
 
             if (exibirInativos)
             {
-                // Aplica IgnoreQueryFilters() para ignorar o soft delete e busca APENAS os inativos
-                especialidades = _context.Especialidades.IgnoreQueryFilters().Where(e => !e.Ativo).ToList();
+                especialidades = await _context.Especialidades
+                    .IgnoreQueryFilters()
+                    .Where(e => !e.Ativo)
+                    .ToListAsync();
             }
             else
             {
-                // Query Filter padrão traz apenas ativos
-                especialidades = _context.Especialidades.ToList();
+                especialidades = await _context.Especialidades.ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
@@ -64,9 +65,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var esp = _context.Especialidades.Find(id);
+            var esp = await BuscarEspecialidadePorIdAsync(id, false);
             if (esp == null) return NotFound();
 
             var model = new EspecialidadeViewModel
@@ -85,7 +86,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var esp = _context.Especialidades.Find(model.Id);
+            var esp = await BuscarEspecialidadePorIdAsync(model.Id, false);
             if (esp == null) return NotFound();
 
             esp.Nome = model.Nome;
@@ -97,9 +98,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var esp = _context.Especialidades.Find(id);
+            var esp = await BuscarEspecialidadePorIdAsync(id, false);
             if (esp == null) return NotFound();
 
             return View(esp);
@@ -109,10 +110,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var esp = _context.Especialidades.Find(id);
+            var esp = await BuscarEspecialidadePorIdAsync(id, false);
             if (esp == null) return NotFound();
 
-            _context.Especialidades.Remove(esp); // Aciona o interceptador do seu DbContext
+            _context.Especialidades.Remove(esp);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -121,7 +122,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var esp = _context.Especialidades.IgnoreQueryFilters().FirstOrDefault(e => e.Id == id);
+            var esp = await BuscarEspecialidadePorIdAsync(id, true);
             if (esp == null) return NotFound();
 
             esp.Ativo = true;
@@ -129,6 +130,15 @@ namespace ChamadosTi.Controllers
             _context.Especialidades.Update(esp);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<Especialidade?> BuscarEspecialidadePorIdAsync(int id, bool ignorarFiltros)
+        {
+            var query = _context.Especialidades.AsQueryable();
+
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+
+            return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
     }
 }

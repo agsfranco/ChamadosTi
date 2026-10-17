@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ItensController : Controller
     {
         private readonly AppDbContext _context;
@@ -20,46 +20,39 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(bool exibirInativos = false)
+        public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             List<Item> itens;
 
             if (exibirInativos)
             {
-                itens = _context.Itens
+                itens = await _context.Itens
                     .IgnoreQueryFilters()
                     .Include(i => i.Tipos)
                     .Include(i => i.Marcas)
                     .Include(i => i.Setores)
                     .Where(i => !i.Ativo)
                     .OrderBy(i => i.Nome)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                itens = _context.Itens
+                itens = await _context.Itens
                     .Include(i => i.Tipos)
                     .Include(i => i.Marcas)
                     .Include(i => i.Setores)
                     .OrderBy(i => i.Nome)
-                    .ToList();
+                    .ToListAsync();
             }
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(itens);
         }
 
-        private void CarregaDropdowns()
-        {
-            ViewBag.Tipos = _context.Tipos.OrderBy(t => t.Nome).ToList();
-            ViewBag.Marcas = _context.Marcas.OrderBy(m => m.Nome).ToList();
-            ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();
-        }
-
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            CarregaDropdowns();
+            await CarregaDropdownsAsync();
             return View(new ItemViewModel());
         }
 
@@ -69,7 +62,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                CarregaDropdowns();
+                await CarregaDropdownsAsync();
                 return View(model);
             }
 
@@ -90,12 +83,12 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var item = _context.Itens.Find(id);
+            var item = await BuscarItemPorIdAsync(id, false, false);
             if (item == null) return NotFound();
 
-            CarregaDropdowns();
+            await CarregaDropdownsAsync();
 
             var model = new ItemViewModel
             {
@@ -116,11 +109,11 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                CarregaDropdowns();
+                await CarregaDropdownsAsync();
                 return View(model);
             }
 
-            var item = _context.Itens.Find(model.Id);
+            var item = await BuscarItemPorIdAsync(model.Id, false, false);
             if (item == null) return NotFound();
 
             item.TipoId = model.TipoId!.Value;
@@ -135,14 +128,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var item = _context.Itens
-                .Include(i => i.Tipos)
-                .Include(i => i.Marcas)
-                .Include(i => i.Setores)
-                .FirstOrDefault(i => i.Id == id);
-
+            var item = await BuscarItemPorIdAsync(id, false, true);
             if (item == null) return NotFound();
 
             return View(item);
@@ -152,10 +140,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = _context.Itens.Find(id);
+            var item = await BuscarItemPorIdAsync(id, false, false);
             if (item == null) return NotFound();
 
-            _context.Itens.Remove(item); // O SaveChanges interceptará e aplicará o Soft Delete padrão
+            _context.Itens.Remove(item);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -164,7 +152,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var item = _context.Itens.IgnoreQueryFilters().FirstOrDefault(i => i.Id == id);
+            var item = await BuscarItemPorIdAsync(id, true, false);
             if (item == null) return NotFound();
 
             item.Ativo = true;
@@ -172,6 +160,29 @@ namespace ChamadosTi.Controllers
             _context.Itens.Update(item);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task CarregaDropdownsAsync()
+        {
+            ViewBag.Tipos = await _context.Tipos.OrderBy(t => t.Nome).ToListAsync();
+            ViewBag.Marcas = await _context.Marcas.OrderBy(m => m.Nome).ToListAsync();
+            ViewBag.Setores = await _context.Setores.OrderBy(s => s.Nome).ToListAsync();
+        }
+
+        private async Task<Item?> BuscarItemPorIdAsync(int id, bool ignorarFiltros, bool incluirRelacionamentos)
+        {
+            var query = _context.Itens.AsQueryable();
+
+            if (ignorarFiltros) query = query.IgnoreQueryFilters();
+            
+            if (incluirRelacionamentos)
+            {
+                query = query.Include(i => i.Tipos)
+                             .Include(i => i.Marcas)
+                             .Include(i => i.Setores);
+            }
+
+            return await query.FirstOrDefaultAsync(i => i.Id == id);
         }
     }
 }
