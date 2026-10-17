@@ -1,4 +1,4 @@
-using ChamadosTi.ViewModels.Components.ModalMessage;
+using ChamadosTi.ViewModels.Component.ModalMessage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamadosTi.ViewComponents

@@ -1,4 +1,4 @@
-namespace ChamadosTi.ViewModels.Components.Enums
+namespace ChamadosTi.ViewModels.Component.Enums
 {
     public enum TipoModal
     {

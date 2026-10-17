@@ -1,0 +1,37 @@
+@model ChamadosTi.ViewModels.Component.MenuUsuario.MenuUsuarioViewModel
+@inject SignInManager<IdentityUser> SignInManager
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<ul class="navbar-nav align-items-center gap-2">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a class="nav-link fw-semibold text-dark p-0 d-flex align-items-center gap-1 small" 
+           asp-controller="Account" asp-action="CompleteProfile">
+            <i class="bi bi-person-circle text-muted"></i>
+            <span>@Localizer["a_Greeting"].Value, <span class="text-primary">@Model.NomeExibicao!</span></span>
+        </a>
+    </li>
+    <li class="nav-item ms-2">
+        <form class="d-inline m-0" asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm px-3 d-flex align-items-center gap-1 fw-medium" style="font-size: 0.78rem;">
+                <i class="bi bi-box-arrow-right"></i> @Localizer["button_Sair"]
+            </button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark fw-medium px-2 small d-flex align-items-center gap-1" asp-controller="Account" asp-action="Register">
+            <i class="bi bi-person-plus"></i> @Localizer["a_CriarConta"]
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="btn btn-primary btn-sm px-3 d-flex align-items-center gap-1 fw-medium" style="font-size: 0.78rem;" asp-controller="Account" asp-action="Login">
+            <i class="bi bi-box-arrow-in-right"></i> @Localizer["a_Entrar"]
+        </a>
+    </li>
+}
+</ul>

@@ -1,6 +1,6 @@
-using ChamadosTi.ViewModels.Components.Enums;
+using ChamadosTi.ViewModels.Component.Enums;
 
-namespace ChamadosTi.ViewModels.Components.ModalMessage
+namespace ChamadosTi.ViewModels.Component.ModalMessage
 {
     public class ModalMessageViewModel
     {
