@@ -48,15 +48,9 @@ namespace ChamadosTi.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SetorViewModel model)
+        public async Task<IActionResult> Create(Setor model)
         {
             if (!ModelState.IsValid) return View(model);
-
-            if (await ValidarTiDuplicadoAsync(model.Id, model.Ti))
-            {
-                ModelState.AddModelError("Ti", _localizer["Error_TiJaExistente"]);
-                return View(model);
-            } 
 
             var novoSetor = new Setor
             {
@@ -65,6 +59,11 @@ namespace ChamadosTi.Controllers
                 Ti = model.Ti,
                 Ativo = true
             };
+
+            if (novoSetor.Ti)
+            {
+                await DesmarcarOutrosSetoresTiAsync(0);
+            }
 
             _context.Setores.Add(novoSetor);
             await _context.SaveChangesAsync();
@@ -94,14 +93,19 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            if (await ValidarTiDuplicadoAsync(model.Id, model.Ti))
-            {
-                ModelState.AddModelError("Ti", _localizer["Error_TiJaExistente"]);
-                return View(model);
-            } 
-
             var setor = await BuscarSetorPorIdAsync(model.Id, false);
             if (setor == null) return NotFound();
+
+            if (setor.Ti && !model.Ti)
+            {
+                ModelState.AddModelError("Ti", _localizer["Error_SetorTiNaoPodeDeixarDeSerTi"]);
+                return View(model);
+            }
+
+            if (model.Ti)
+            {
+                await DesmarcarOutrosSetoresTiAsync(setor.Id);
+            }
 
             setor.Nome = model.Nome;
             setor.Descricao = model.Descricao;
@@ -112,21 +116,36 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var setor = await BuscarSetorPorIdAsync(id, false);
             if (setor == null) return NotFound();
 
-            return View(setor);
+            if (setor.Ti)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_SetorTiNaoPodeSerExcluido"].ToString();
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Setores.Remove(setor);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var setor = await BuscarSetorPorIdAsync(id, false);
             if (setor == null) return NotFound();
+
+            if (setor.Ti)
+            {
+                TempData["ErrorMessage"] = _localizer["Error_SetorTiExc"].ToString();
+                return RedirectToAction(nameof(Index));
+            }
 
             _context.Setores.Remove(setor);
             await _context.SaveChangesAsync();
@@ -159,6 +178,13 @@ namespace ChamadosTi.Controllers
         {
             if (!ehTi) return false;
             return await _context.Setores.AnyAsync(x => x.Id != id && x.Ti && x.Ativo);
+        }
+
+        private async Task DesmarcarOutrosSetoresTiAsync(int setorAtualId)
+        {
+            await _context.Setores
+                .Where(s => s.Ti && s.Id != setorAtualId)
+                .ExecuteUpdateAsync(set => set.SetProperty(s => s.Ti, false));
         }
     }
 }

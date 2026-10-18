@@ -5,6 +5,7 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   
-  <data name="Error_TiJaExistente" xml:space="preserve"><value>The support sector is already configured.</value>
-  </data>
+  <data name="Error_TiJaExistente" xml:space="preserve"><value>The support sector is already configured.</value></data>
+  <data name="Error_SetorTiNaoPodeSerExcluido" xml:space="preserve"><value>The Support department cannot be deleted!</value></data>
+  <data name="Error_SetorTiNaoPodeDeixarDeSerTi" xml:space="preserve"><value>The Support department cannot stop being the system IT provider!</value></data>
 </root>
