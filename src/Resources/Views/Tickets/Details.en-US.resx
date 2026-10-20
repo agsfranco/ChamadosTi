@@ -67,10 +67,18 @@
   <data name="Log_TecnicoAtribuido" xml:space="preserve"><value>Analyst Assigned To Support</value></data>
   <data name="Log_PrazoResposta" xml:space="preserve"><value>Response Target SLA Window</value></data>
   <data name="Log_PrazoResolucao" xml:space="preserve"><value>Resolution Target SLA Window</value></data>
-  <data name="Log_PrioridadeAlterada" xml:space="preserve"><value>Severity Level Reclassified To</value></data>
+  <data name="Log_PrioridadeAlterada" xml:space="preserve"><value>Severity Level Reclassified</value></data>
   <data name="Log_PrazoResolucaoEstendido" xml:space="preserve"><value>New Resolution SLA (Pause Compensated)</value></data>
   <data name="Log_PrazoRespostaEstendido" xml:space="preserve"><value>New Response SLA (Pause Compensated)</value></data>
   <data name="Log_DerivadoDoTicket" xml:space="preserve"><value>Source Ticket Origin ID</value></data>
   <data name="Log_ItensAlterados" xml:space="preserve"><value>Ticket Linked Assets Modified</value></data>
   <data name="Log_ErrorCorrompido" xml:space="preserve"><value>System Audit Trail Entry Corrupted</value></data>
+  <data name="Log_Indefinido" xml:space="preserve"><value>Unidentified action registered in the system</value></data>
+  <data name="Log_ChamadoAssumido" xml:space="preserve"><value>Ticket ownership assumed</value></data>
+  <data name="Log_AberturaChamado" xml:space="preserve"><value>Ticket opened</value></data>
+  <data name="Log_NovaInteracao" xml:space="preserve"><value>Message logged</value></data>
+  <data name="Log_ChamadoResolvido" xml:space="preserve"><value>Ticket resolved and closed</value></data>
+  <data name="Log_ChamadoPendente" xml:space="preserve"><value>Ticket paused</value></data>
+  <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Ticket resumed</value></data>
+  <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Ticket canceled</value></data>
 </root>

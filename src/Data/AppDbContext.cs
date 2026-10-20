@@ -266,8 +266,10 @@ namespace ChamadosTi.Data
                 new Status { Id = 2, Codigo = (int)TicketStatus.EmAtendimento, Nome = "Status_EmAtendimento" },
                 new Status { Id = 3, Codigo = (int)TicketStatus.Pendente, Nome = "Status_Pendente" },
                 new Status { Id = 4, Codigo = (int)TicketStatus.Resolvido, Nome = "Status_Resolvido" },
-                new Status { Id = 5, Codigo = (int)TicketStatus.Fechado, Nome = "Status_Fechado" }
+                new Status { Id = 5, Codigo = (int)TicketStatus.Fechado, Nome = "Status_Fechado" },
+                new Status { Id = 6, Codigo = (int)TicketStatus.Cancelado, Nome = "Status_Cancelado" }
             );
+
             
             AplicaSoftDelete(builder);
         }

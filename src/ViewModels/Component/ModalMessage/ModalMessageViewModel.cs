@@ -7,6 +7,7 @@ namespace ChamadosTi.ViewModels.Component.ModalMessage
         public string ModalId { get; set; } = "ModalPadraoId";
         public string Titulo { get; set; } = "";
         public string Mensagem { get; set; } = "";
+        public string? Controller { get; set; }
         public string? Action { get; set; }
         public string? RouteId { get; set; }
         public string? Method { get; set; }

@@ -29,7 +29,6 @@ namespace ChamadosTi.Controllers
             _usuarioService = usuarioService;
         }
 
-        // GET: Tickets
         public async Task<IActionResult> Index()
         {
             var tickets = await _context.Tickets
@@ -43,7 +42,6 @@ namespace ChamadosTi.Controllers
 
             return View(tickets);
         }
-
         [HttpGet]
         public async Task<IActionResult> Create(int? origemId)
         {
@@ -55,7 +53,6 @@ namespace ChamadosTi.Controllers
 
             ViewBag.Categorias = await GetListaCategoriasAsync();
             ViewBag.Itens = await GetListaItensAsync(usuarioSistema.SetorId);
-
             ViewBag.OrigemId = origemId;
 
             return View(new TicketCreateViewModel());
@@ -65,7 +62,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TicketCreateViewModel model, int? origemId)
         {
-            var usuarioLogado = await GetUsuarioAsync();;
+            var usuarioLogado = await GetUsuarioAsync();
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -102,9 +99,7 @@ namespace ChamadosTi.Controllers
             }
 
             var dataAberturaUtc = DateTime.UtcNow;
-
             var todosFeriados = await GetFeriadosAsync(DateOnly.FromDateTime(dataAberturaUtc));
-            
             var horariosSetores = await GetHorariosSetoresAsync(usuarioLogado);
 
             var prazoRespostaUtc = SlaCalculator.CalcularPrazoSlaReal(todosFeriados, horariosSetores, dataAberturaUtc, prioridadePadrao.TempoRespostaPadrao);
@@ -149,23 +144,21 @@ namespace ChamadosTi.Controllers
                 { TicketAcaoLog.Log_PrazoResolucao.ToString(), novoTicket.PrazoResolucaoSLA.ToString("g") }
             };
 
-            if(origemId is int idValido)
+            if (origemId is int idValido)
             {
                 dicionarioCampos.Add(TicketAcaoLog.Log_DerivadoDoTicket.ToString(), idValido.ToString());
             }
             
-            var auditoriaTicket =  MontarAuditoriaTicket(TicketAcaoLog.Log_AberturaChamado, usuarioLogado.Nome, novoTicket.Id, null, dicionarioCampos);
+            var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_AberturaChamado, usuarioLogado.Nome, novoTicket.Id, null, dicionarioCampos);
             _context.AuditoriasTickets.Add(auditoriaTicket);
-            
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Tickets");
         }
-
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var usuarioSistema= await GetUsuarioAsync();
+            var usuarioSistema = await GetUsuarioAsync();
             if (usuarioSistema is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -193,7 +186,7 @@ namespace ChamadosTi.Controllers
 
             var auditoriasOriginais = await GetAuditoriasTicketAsync(ticket.Id);
             ViewBag.AuditoriasOriginais = auditoriasOriginais;
-            ViewBag.LogsHistorico = await GetLogsAuditoriaAsync(ticket.Id,auditoriasOriginais);
+            ViewBag.LogsHistorico = await GetLogsAuditoriaAsync(ticket.Id, auditoriasOriginais);
             ViewBag.Prioridades = await GetListaPrioridadesAsync(); 
             ViewBag.ItensSetor = await GetListaItensAsync(ticket.SetorId);
             ViewBag.EhTecnico = User.IsInRole(UsuarioRole.Tecnico.ToString());
@@ -212,7 +205,6 @@ namespace ChamadosTi.Controllers
             }
 
             var ticket = await GetTicketStatusAsync(id);
-
             if (ticket == null)
             {
                 return NotFound();
@@ -241,9 +233,8 @@ namespace ChamadosTi.Controllers
                 { TicketAcaoLog.Log_TecnicoAtribuido.ToString(), tecnicoSistema.Nome }
             };
 
-            var auditoriaTicket =  MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoAssumido, tecnicoSistema.Nome, ticket.Id, null, camposModificados);
+            var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoAssumido, tecnicoSistema.Nome, ticket.Id, null, camposModificados);
             _context.AuditoriasTickets.Add(auditoriaTicket);
-            
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoAssumido"].Value;
@@ -254,7 +245,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdicionarComentario(int ticketId, string mensagemTexto)
         {
-            var usuarioLogado= await GetUsuarioAsync();
+            var usuarioLogado = await GetUsuarioAsync();
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -273,23 +264,21 @@ namespace ChamadosTi.Controllers
             }
 
             var dadosLog = new Dictionary<string, string> {
-                {TicketAcaoLog.Log_NovaInteracao.ToString(),mensagemTexto.Trim()}
+                { TicketAcaoLog.Log_NovaInteracao.ToString(), mensagemTexto.Trim() }
             };
 
             var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_NovaInteracao, usuarioLogado.Nome, ticketId, null, dadosLog);
-
             _context.AuditoriasTickets.Add(auditoriaTicket);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = _localizer["Success_ComentarioAdicionado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticketId });
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaPendente(int id)
         {
-            var tecnicoSistema= await GetUsuarioAsync();
+            var tecnicoSistema = await GetUsuarioAsync();
             if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(id);
@@ -305,12 +294,11 @@ namespace ChamadosTi.Controllers
             if (statusPendente == null) return NotFound();
 
             ticket.StatusId = statusPendente.Id;
-
             _context.Tickets.Update(ticket);
 
             _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoPendente, tecnicoSistema.Nome, ticket.Id));
-
             await _context.SaveChangesAsync();
+
             TempData["SuccessMessage"] = _localizer["Success_ChamadoPendente"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
@@ -319,7 +307,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RetomarAtendimento(int id)
         {
-            var tecnicoSistema= await GetUsuarioAsync();
+            var tecnicoSistema = await GetUsuarioAsync();
             if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(id);
@@ -335,7 +323,6 @@ namespace ChamadosTi.Controllers
             if (statusAtendimento == null) return NotFound();
 
             var dataRetomadaUtc = DateTime.UtcNow;
-
             var ultimaAuditoriaPausa = await _context.AuditoriasTickets
                                                      .Where(a => a.TicketId == id && a.Log.Contains("Status_Pendente"))
                                                      .OrderByDescending(a => a.RegistradoEm)
@@ -356,16 +343,14 @@ namespace ChamadosTi.Controllers
                     ticket.PrazoResolucaoSLA = ticket.PrazoResolucaoSLA.AddMinutes(minutosParaEstender);
                     dicionarioModificacoesLog.Add(TicketAcaoLog.Log_PrazoResolucaoEstendido.ToString(), ticket.PrazoResolucaoSLA.ToString("o"));
                 }
-
             }            
 
             ticket.StatusId = statusAtendimento.Id;
-            
             _context.Tickets.Update(ticket);
 
             _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoRetomado, tecnicoSistema.Nome, ticket.Id, null, dicionarioModificacoesLog));
-
             await _context.SaveChangesAsync();
+
             TempData["SuccessMessage"] = _localizer["Success_ChamadoRetomado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
@@ -374,7 +359,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaResolvido(int id, string justificativaTexto)
         {
-            var tecnicoSistema= await GetUsuarioAsync();
+            var tecnicoSistema = await GetUsuarioAsync();
             if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
 
             if (string.IsNullOrWhiteSpace(justificativaTexto))
@@ -404,11 +389,9 @@ namespace ChamadosTi.Controllers
             };
 
             _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoResolvido, tecnicoSistema.Nome, ticket.Id, justificativaTexto.Trim(), camposModificados));
-
             await _context.SaveChangesAsync();
             
             TempData["SuccessMessage"] = _localizer["Success_ChamadoResolvido"].Value;
-            
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
@@ -416,7 +399,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancelar(int id, string justificativaTexto)
         {
-            var usuarioLogado= await GetUsuarioAsync();
+            var usuarioLogado = await GetUsuarioAsync();
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             if (string.IsNullOrWhiteSpace(justificativaTexto))
@@ -446,14 +429,11 @@ namespace ChamadosTi.Controllers
             };
 
             _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoCancelado, usuarioLogado.Nome, ticket.Id, justificativaTexto.Trim(), camposModificados));
-
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoCancelado"].Value;
-
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AlterarPrioridade(int ticketId, [FromForm(Name = "PrioridadeId")] int prioridadeId)
@@ -474,7 +454,6 @@ namespace ChamadosTi.Controllers
             if (prioridade == null) return NotFound();
 
             var feriados = await GetFeriadosAsync(DateOnly.FromDateTime(ticket.DataAbertura));
-            
             var horariosSetores = await GetHorariosSetoresAsync(usuarioLogado);
 
             var prazoResolucaoUtc = SlaCalculator.CalcularPrazoSlaReal(feriados, horariosSetores, ticket.DataAbertura, prioridade.TempoResolucaoPadrao);
@@ -482,7 +461,7 @@ namespace ChamadosTi.Controllers
             ticket.PrioridadeId = prioridade.Id;
             ticket.PrazoResolucaoSLA = prazoResolucaoUtc;
 
-            var camposModificados = new Dictionary <string,string>();
+            var camposModificados = new Dictionary<string, string>();
 
             if (ticket.Status.Codigo == (int)TicketStatus.Aberto)
             {
@@ -495,13 +474,10 @@ namespace ChamadosTi.Controllers
             camposModificados.Add(TicketAcaoLog.Log_PrioridadeAlterada.ToString(), prioridade.Nome);            
 
             _context.Tickets.Update(ticket);
-
             _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_PrioridadeAlterada, usuarioLogado.Nome, ticket.Id, null, camposModificados));
-            
             await _context.SaveChangesAsync();
             
             TempData["SuccessMessage"] = _localizer["Success_PrioridadeAlterada"].Value;
-            
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
@@ -543,20 +519,12 @@ namespace ChamadosTi.Controllers
                 { TicketAcaoLog.Log_ItensAlterados.ToString(), itensIdsSelecionados != null ? string.Join(", ", itensIdsSelecionados) : "Nenhum" }
             };
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(
-                TicketAcaoLog.Log_ItensAlterados, 
-                usuarioLogado.Nome, 
-                ticket.Id, 
-                null, 
-                camposModificados
-            ));
-
+            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ItensAlterados, usuarioLogado.Nome, ticket.Id, null, camposModificados));
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = _localizer["Success_ItensAlterados"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
-
 
         private async Task<Usuario?> GetUsuarioAsync()
         {
@@ -566,12 +534,12 @@ namespace ChamadosTi.Controllers
                 return null;
             }
 
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == identityUserId);
+            return await _usuarioService.GetUsuarioLocalPorAspNetIdAsync(identityUserId);
         }
 
         private async Task<Status?> GetStatusAsync(int codigoStatus)
         {
-            return await  _context.Status.FirstOrDefaultAsync(s => s.Codigo == codigoStatus);
+            return await _context.Status.FirstOrDefaultAsync(s => s.Codigo == codigoStatus);
         }
 
         private async Task<Prioridade?> GetPrioridadePadraoAsync()
@@ -681,14 +649,14 @@ namespace ChamadosTi.Controllers
             return await _context.Setores.FirstOrDefaultAsync(s => s.Ti == true);
         }
 
-        private AuditoriaTicket MontarAuditoriaTicket(TicketAcaoLog acao, string usuarioLogadoNome, int ticketId, string? mensagem = null, Dictionary<string,string>? dicionarioCampos = null)
+        private AuditoriaTicket MontarAuditoriaTicket(TicketAcaoLog acao, string usuarioLogadoNome, int ticketId, string? message = null, Dictionary<string, string>? dicionarioCampos = null)
         {
             var dadosLog = new LogAuditoriaTicket
             {
                 Acao = acao,
                 Usuario = usuarioLogadoNome,
                 CamposModificados = dicionarioCampos,
-                Mensagem = mensagem
+                Mensagem = message
             };
 
             string jsonString = JsonSerializer.Serialize(dadosLog);

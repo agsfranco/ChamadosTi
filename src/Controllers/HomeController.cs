@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using ChamadosTi.Services;
+using ChamadosTi.Services.Interfaces;
 
 namespace ChamadosTi.Controllers
 {
@@ -16,12 +18,14 @@ namespace ChamadosTi.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<HomeController> _localizer;
+        private readonly IUsuarioService _usuarioService;
 
-        public HomeController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<HomeController> localizer)
+        public HomeController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<HomeController> localizer, IUsuarioService usuarioService)
         {
             _context = context;
             _userManager = userManager;
             _localizer = localizer;
+            _usuarioService = usuarioService;
         }
 
         public async Task<IActionResult> Index()
@@ -34,7 +38,8 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            var usuarioLocal = await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == identityUserId);
+            var usuarioLocal = await _usuarioService.GetUsuarioCompletoPorAspNetIdAsync(identityUserId);
+
             if (usuarioLocal == null)
             {
                 return RedirectToAction("Login", "Account");

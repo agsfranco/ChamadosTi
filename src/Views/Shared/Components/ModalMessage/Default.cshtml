@@ -33,7 +33,7 @@
             </div>
             @if(!string.IsNullOrWhiteSpace(@Model.Action))
             {
-                <form asp-action="@Model.Action" asp-route-id="@Model.RouteId" method="@Model.Method">
+                <form asp-controller="@Model.Controller" asp-action="@Model.Action" asp-route-id="@Model.RouteId" method="@Model.Method">
                     @Html.AntiForgeryToken()
                     <div class="modal-body p-4">
                         <p class="text-muted small mb-3">@Model.Mensagem</p>

@@ -66,18 +66,6 @@ namespace ChamadosTi.Data
                 await context.SaveChangesAsync();
             }
 
-            if (!await context.Status.AnyAsync())
-            {
-                context.Status.AddRange(new List<Status>
-                {
-                    new Status { Codigo = (int)TicketStatus.Aberto, Nome = "Status_Aberto" },
-                    new Status { Codigo = (int)TicketStatus.EmAtendimento, Nome = "Status_EmAtendimento" },
-                    new Status { Codigo = (int)TicketStatus.Pendente, Nome = "Status_Pendente" },
-                    new Status { Codigo = (int)TicketStatus.Resolvido, Nome = "Status_Resolvido" },
-                    new Status { Codigo = (int)TicketStatus.Fechado, Nome = "Status_Fechado" }
-                });
-                await context.SaveChangesAsync();
-            }
             if (!await context.Especialidades.AnyAsync())
             {
                 var espSuporte = new Especialidade { Nome = "Suporte ao Usuário", Descricao = "Atendimento Service Desk, Sistemas e Software", Ativo = true };
