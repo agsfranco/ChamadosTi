@@ -1,5 +1,6 @@
 using ChamadosTi.Data;
 using ChamadosTi.Services;
+using ChamadosTi.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
@@ -50,6 +51,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 

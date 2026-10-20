@@ -8,9 +8,8 @@
             <p class="text-muted small text-center mb-4">@Localizer["Tickets_Create_Instructions"]</p>
 
             <form asp-controller="Tickets" asp-action="Create" method="post">
-                @Html.AntiForgeryToken()
-                
-                <input type="hidden" name="ticketOrigemId" value="@ViewBag.TicketOrigemId" />
+                @Html.AntiForgeryToken()                
+                <input type="hidden" name="origemId" value="@ViewBag.OrigemId" />
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 

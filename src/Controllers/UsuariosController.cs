@@ -1,6 +1,7 @@
 using ChamadosTi.Data;
 using ChamadosTi.Models;
 using ChamadosTi.Models.Enums;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Usuario;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,14 +17,17 @@ namespace ChamadosTi.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<UsuariosController> _localizer;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuariosController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<UsuariosController> localizer)
+        public UsuariosController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<UsuariosController> localizer, IUsuarioService usuarioService)
         {
             _context = context;
             _userManager = userManager;
             _localizer = localizer;
+            _usuarioService = usuarioService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
             var query = _context.Usuarios.Include(u => u.Setores).AsQueryable();
@@ -40,13 +44,20 @@ namespace ChamadosTi.Controllers
             var usuariosBase = await query.OrderBy(u => u.Nome).ToListAsync();
             var listaViewModels = new List<UsuarioIndexViewModel>();
 
+            var mapeamentoRolesIdentity = await (from ur in _context.UserRoles
+                                                join r in _context.Roles on ur.RoleId equals r.Id
+                                                join u in _context.Users on ur.UserId equals u.Id
+                                                select new { ur.UserId, u.Email, RoleName = r.Name })
+                                                .ToListAsync();
+
             foreach (var u in usuariosBase)
             {
-                var identityUser = await _userManager.FindByIdAsync(u.AspNetUserId);
-                var email = identityUser?.Email ?? string.Empty;
-                var ehTecnico = identityUser != null && await _userManager.IsInRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
-                var ehAdmin = identityUser != null && await _userManager.IsInRoleAsync(identityUser, UsuarioRole.Admin.ToString());
-                var ehAdminMaster = identityUser != null && await _userManager.IsInRoleAsync(identityUser, UsuarioRole.AdminMaster.ToString());
+                var perfilIdentity = mapeamentoRolesIdentity.Where(ri => ri.UserId == u.AspNetUserId).ToList();
+                
+                var email = perfilIdentity.FirstOrDefault()?.Email ?? string.Empty;
+                var ehTecnico = perfilIdentity.Any(ri => ri.RoleName == UsuarioRole.Tecnico.ToString());
+                var ehAdmin = perfilIdentity.Any(ri => ri.RoleName == UsuarioRole.Admin.ToString());
+                var ehAdminMaster = perfilIdentity.Any(ri => ri.RoleName == UsuarioRole.AdminMaster.ToString());
 
                 listaViewModels.Add(new UsuarioIndexViewModel
                 {
@@ -65,11 +76,12 @@ namespace ChamadosTi.Controllers
             return View(listaViewModels);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PromoverParaTecnico(int id)
         {
-            var usuario = await GetUsuario(id);
+            var usuario = await _usuarioService.GetUsuarioLocalPorIdAsync(id);
             if (usuario == null) return NotFound();
 
             var identityUser = await _userManager.FindByIdAsync(usuario.AspNetUserId);
@@ -96,7 +108,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoverDeTecnico(int id)
         {
-            var usuario = await GetUsuario(id);
+            var usuario = await _usuarioService.GetUsuarioLocalPorIdAsync(id);
             if (usuario == null) return NotFound();
 
             var identityUser = await _userManager.FindByIdAsync(usuario.AspNetUserId);
@@ -118,10 +130,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PromoverParaAdmin(int id)
         {
-            var identityUser = await ObterIdentityUserPorIdLocalAsync(id);
+            var identityUser = await _usuarioService.GetIdentityUserPorIdLocalAsync(id);
             if (identityUser == null) return NotFound();            
             
-            var usuario = await GetUsuario(id);
+            var usuario = await _usuarioService.GetUsuarioLocalPorIdAsync(id);
             if (usuario == null) return NotFound(); 
 
             var setorTi = await GetSetorTi();
@@ -146,7 +158,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoverDeAdmin(int id)
         {
-            var usuario = await GetUsuario(id);
+            var usuario = await _usuarioService.GetUsuarioLocalPorIdAsync(id);
             if (usuario == null) return NotFound();
 
             var aspNetUserId = _userManager.GetUserId(User);
@@ -170,7 +182,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Inativar(int id)
         {
-            var usuario = await GetUsuario(id);
+            var usuario = await _usuarioService.GetUsuarioLocalPorIdAsync(id);
             if (usuario == null) return NotFound();
 
             var logadoId = _userManager.GetUserId(User);
@@ -193,7 +205,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reativar(int id)
         {
-            var usuario = await GetUsuario(id);
+            var usuario = await _usuarioService.GetUsuarioLocalPorIdAsync(id);
             if (usuario == null) return NotFound();
 
             usuario.Ativo = true;
@@ -202,18 +214,6 @@ namespace ChamadosTi.Controllers
 
             TempData["SuccessMessage"] = _localizer["Success_UsuarioReativado"].Value;
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<IdentityUser?> ObterIdentityUserPorIdLocalAsync(int id)
-        {
-            var usuario = await GetUsuario(id);
-            if (usuario == null) return null;
-            return await _userManager.FindByIdAsync(usuario.AspNetUserId);
-        }
-
-        private async Task<Usuario?> GetUsuario(int id)
-        {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         private async Task<Setor?> GetSetorTi()

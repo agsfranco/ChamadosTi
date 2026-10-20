@@ -1,6 +1,7 @@
 using ChamadosTi.Data;
 using ChamadosTi.Models;
 using ChamadosTi.Models.Enums;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.Utils;
 using ChamadosTi.ViewModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
@@ -18,12 +19,14 @@ namespace ChamadosTi.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<TicketsController> _localizer;
+        private readonly IUsuarioService _usuarioService;
 
-        public TicketsController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer)
+        public TicketsController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer, IUsuarioService usuarioService)
         {
             _context = context;
             _userManager = userManager;
             _localizer = localizer;
+            _usuarioService = usuarioService;
         }
 
         // GET: Tickets
@@ -42,9 +45,9 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create(int? ticketOrigemId = null)
+        public async Task<IActionResult> Create(int? origemId)
         {
-            var usuarioSistema = await GetUsuarioAsync();;
+            var usuarioSistema = await GetUsuarioAsync();
             if (usuarioSistema is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -53,14 +56,14 @@ namespace ChamadosTi.Controllers
             ViewBag.Categorias = await GetListaCategoriasAsync();
             ViewBag.Itens = await GetListaItensAsync(usuarioSistema.SetorId);
 
-            ViewBag.TicketOrigemId = ticketOrigemId;
+            ViewBag.OrigemId = origemId;
 
             return View(new TicketCreateViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TicketCreateViewModel model, int? ticketOrigemId)
+        public async Task<IActionResult> Create(TicketCreateViewModel model, int? origemId)
         {
             var usuarioLogado = await GetUsuarioAsync();;
             if (usuarioLogado is null)
@@ -77,7 +80,6 @@ namespace ChamadosTi.Controllers
             {
                 ViewBag.Categorias = await GetListaCategoriasAsync();
                 ViewBag.Itens = await GetListaItensAsync(usuarioLogado.SetorId);
-                ViewBag.TicketOrigemId = ticketOrigemId;
                 return View(model);
             }
 
@@ -121,7 +123,7 @@ namespace ChamadosTi.Controllers
                 Titulo = model.Titulo,
                 Comentario = model.Comentario,
                 Ativo = true,
-                TicketOrigemId = ticketOrigemId 
+                TicketOrigemId = origemId 
             };            
         
             _context.Tickets.Add(novoTicket);
@@ -147,7 +149,7 @@ namespace ChamadosTi.Controllers
                 { TicketAcaoLog.Log_PrazoResolucao.ToString(), novoTicket.PrazoResolucaoSLA.ToString("g") }
             };
 
-            if(ticketOrigemId is int idValido)//Reclamando de possível null mesmo testando no if
+            if(origemId is int idValido)
             {
                 dicionarioCampos.Add(TicketAcaoLog.Log_DerivadoDoTicket.ToString(), idValido.ToString());
             }
@@ -194,6 +196,7 @@ namespace ChamadosTi.Controllers
             ViewBag.LogsHistorico = await GetLogsAuditoriaAsync(ticket.Id,auditoriasOriginais);
             ViewBag.Prioridades = await GetListaPrioridadesAsync(); 
             ViewBag.ItensSetor = await GetListaItensAsync(ticket.SetorId);
+            ViewBag.EhTecnico = User.IsInRole(UsuarioRole.Tecnico.ToString());
 
             return View(ticket);
         }

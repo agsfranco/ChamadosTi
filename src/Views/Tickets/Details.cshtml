@@ -169,13 +169,11 @@
 <div class="row">
     <!-- COLUNA DA ESQUERDA: Informações Principais, Inventário e Timeline -->
     <div class="col-lg-8 mb-4">
-        <!-- Descrição Inicial -->
         <div class="card shadow-sm border rounded bg-white p-4 mb-4">
             <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoDescricao"]</h5>
             <p class="card-text text-dark" style="white-space: pre-line;">@Model.Comentario</p>
         </div>
 
-        <!-- Equipamentos / Ativos Afetados -->
         <div class="card shadow-sm border rounded bg-white p-4 mb-4">
             <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoAtivos"]</h5>
             @if (Model.ItensTickets != null && Model.ItensTickets.Any())
@@ -207,10 +205,8 @@
                 <p class="text-muted small mb-0"><i class="bi bi-info-circle"></i> @Localizer["Details_SemAtivos"]</p>
             }
 
-            <!-- Procure o final da coluna da esquerda e chame o delegado abaixo do bloco de comentários -->
             @if (Model.Status.Codigo < (int)TicketStatus.Resolvido)
             {
-                <!-- Executa o delegado reativo: se houver ativos no setor, renderiza a seção na tela -->
                 @RenderizarFormularioAlterarItens(null)
             }
         </div>
@@ -229,7 +225,6 @@
                         bool ehComentario = log.Acao == TicketAcaoLog.Log_NovaInteracao;
                     
                         <div class="mb-4 position-relative">
-                            <!-- Ícone dinâmico: Balão de diálogo se for comentário, Check de sistema se for ação técnica -->
                             <div class="position-absolute start-0 translate-middle rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm" 
                                 style="width: 24px; height: 24px; left: -25px !important; top: 12px; bg-color: var(--bs-primary); background-color: @(ehComentario ? "#6c757d" : "#0d6efd");">
                                 <i class="bi @(ehComentario ? "bi-chat-text-fill" : "bi-check-circle-fill") small"></i>
@@ -244,7 +239,6 @@
                                 </div>
                                 <div class="text-secondary small mb-2">@Localizer["Log_ExecutedBy"]: <strong>@log.Usuario</strong></div>
                                 
-                                <!-- SE FOR COMENTÁRIO: Exibe a mensagem digitada formatada com quebra de linhas -->
                                 @if (!string.IsNullOrEmpty(log.Mensagem))
                                 {
                                     <div class="bg-white p-2 rounded border text-dark small mt-2 shadow-sm border-start border-1 border-secondary" style="white-space: pre-line;">
@@ -322,7 +316,6 @@
         }
         else
         {
-            <!-- Aviso visual de histórico bloqueado/encerrado -->
             <div class="alert alert-light border text-muted small p-3 rounded shadow-sm mt-4 text-center">
                 <i class="bi bi-lock-fill text-secondary me-2"></i>
                 @Localizer["Details_AvisoChamadoEncerradoComentarios"]
@@ -350,7 +343,7 @@
 
             <div class="mb-3 border-bottom pb-2">
                 <label class="text-muted small d-block mb-1">@Localizer["Details_LabelPrioridade"]</label>
-                @if(Model.Status.Codigo < (int)TicketStatus.Resolvido && 
+                @if(ViewBag.EhTecnico && Model.Status.Codigo < (int)TicketStatus.Resolvido && 
                     ViewBag.Prioridades != null &&
                     ((System.Collections.IEnumerable)ViewBag.Prioridades).Cast<object>().Any()){
                     <form asp-action="AlterarPrioridade" asp-controller="Tickets" method="post">
@@ -383,23 +376,20 @@
             @{
                 var agoraUtc = DateTime.UtcNow;
 
-                // LÓGICA DE CORES: SLA de Resposta
                 TimeSpan restResposta = Model.PrazoRespostaSLA - agoraUtc;
                 string corSlaResp = "text-secondary border-light-subtle bg-light";
                 string iconSlaResp = "bi-chat-left-dots";
                 
-                if (Model.UsuarioTecnicoId == null) // Só acende o alerta se nenhum técnico assumiu ainda
+                if (Model.UsuarioTecnicoId == null) 
                 {
                     if (restResposta.TotalMinutes < 0) { corSlaResp = "text-danger border-danger-subtle bg-danger-subtle fw-bold"; iconSlaResp = "bi-exclamation-octagon-fill"; }
                     else if (restResposta.TotalDays <= 1) { corSlaResp = "text-warning border-warning-subtle bg-warning-subtle fw-bold"; iconSlaResp = "bi-exclamation-triangle-fill"; }
                 }
 
-                // LÓGICA DE CORES: SLA de Resolução
                 TimeSpan restResolucao = Model.PrazoResolucaoSLA - agoraUtc;
                 string corSlaReso = "text-secondary border-light-subtle bg-light";
                 string iconSlaReso = "bi-clock";
                 
-                // Só acende o alerta se não estiver resolvido, fechado ou cancelado
                 if (Model.Status.Codigo < (int)TicketStatus.Resolvido)
                 {
                     if (restResolucao.TotalMinutes < 0) { corSlaReso = "text-danger border-danger-subtle bg-danger-subtle fw-bold"; iconSlaReso = "bi-exclamation-octagon-fill"; }
@@ -428,18 +418,27 @@
                  @switch (Model.Status.Codigo)
                 {
                     case (int)TicketStatus.Aberto:
-                        @RenderizarBotaoAssumir(null)
-                        <vc:modal-message model="@modelCancelar"></vc:modal-message>
+                        @if(ViewBag.EhTecnico) 
+                        {  
+                            @RenderizarBotaoAssumir(null) 
+                            <vc:modal-message model="@modelCancelar"></vc:modal-message>
+                        }
                     break;
 
                     case (int)TicketStatus.EmAtendimento:
-                        @RenderizarBotaoPendente(null)
-                        <vc:modal-message model="@modelConcluir"></vc:modal-message>
-                        <vc:modal-message model="@modelCancelar"></vc:modal-message>
+                        @if(ViewBag.EhTecnico) 
+                        {
+                            @RenderizarBotaoPendente(null)
+                            <vc:modal-message model="@modelConcluir"></vc:modal-message>
+                            <vc:modal-message model="@modelCancelar"></vc:modal-message>
+                        }
                     break;
 
                     case (int)TicketStatus.Pendente:
-                        @RenderizarBotaoRetomar(null)
+                        @if(ViewBag.EhTecnico) 
+                        {
+                            @RenderizarBotaoRetomar(null)
+                        }
                     break;
 
                     case (int)TicketStatus.Resolvido: 
