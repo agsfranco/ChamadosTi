@@ -68,6 +68,11 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            if (usuarioLogado.SetorId == null) 
+            {
+                return RedirectToAction("CompleteProfile", "Account");
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Categorias = await GetListaCategoriasAsync();
@@ -106,7 +111,7 @@ namespace ChamadosTi.Controllers
             var novoTicket = new Ticket
             {
                 UsuarioId = usuarioLogado.Id,
-                SetorId = usuarioLogado.SetorId,
+                SetorId = usuarioLogado.SetorId.Value,
                 CategoriaId = model.CategoriaId!.Value,
                 PrioridadeId = prioridadePadrao.Id,
                 StatusId = statusInicial.Id,
@@ -576,8 +581,9 @@ namespace ChamadosTi.Controllers
             return await _context.Prioridades.FirstOrDefaultAsync(p => p.Id == prioridadeId);
         }
 
-        private async Task<dynamic> GetListaItensAsync(int setorId)
+        private async Task<dynamic?> GetListaItensAsync(int? setorId)
         {
+            if (setorId == null) return null;
             return await _context.Itens
                                  .Include(i => i.Tipos)
                                  .Include(i => i.Marcas)
@@ -650,7 +656,7 @@ namespace ChamadosTi.Controllers
         private async Task<List<Horario>> GetHorariosSetoresAsync(Usuario usuarioLogado)
         {
             var setorTiDoSistema = await _context.Setores.FirstOrDefaultAsync(s => s.Ti == true);
-            int setorSlaId = setorTiDoSistema != null ? setorTiDoSistema.Id : usuarioLogado.SetorId;
+            var setorSlaId = setorTiDoSistema != null ? setorTiDoSistema.Id : usuarioLogado.SetorId;
 
             return await _context.SetoresHorarios
                          .Include(s => s.Horario)

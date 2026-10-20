@@ -13,7 +13,6 @@ namespace ChamadosTi.ViewModels.Account
         [Display(Name = "Setor")]
         public int? SetorId { get; set; }
 
-        // Novos campos adicionados para o fluxo de técnico
         public bool EhTecnico { get; set; }
 
         [Display(Name = "DadoTecnico")]

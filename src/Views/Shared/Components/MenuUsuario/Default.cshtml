@@ -7,13 +7,13 @@
 {
     <li class="nav-item">
         <a class="nav-link fw-semibold text-dark p-0 d-flex align-items-center gap-1 small" 
-           asp-controller="Account" asp-action="CompleteProfile">
+           asp-controller="@Model.Controller" asp-action="@Model.ActionCompleteProfile">
             <i class="bi bi-person-circle text-muted"></i>
             <span>@Localizer["a_Greeting"].Value, <span class="text-primary">@Model.NomeExibicao!</span></span>
         </a>
     </li>
     <li class="nav-item ms-2">
-        <form class="d-inline m-0" asp-controller="Account" asp-action="Logout" method="post">
+        <form class="d-inline m-0" asp-controller="@Model.Controller" asp-action="@Model.ActionLogout" method="post">
             @Html.AntiForgeryToken()
             <button type="submit" class="btn btn-outline-danger btn-sm px-3 d-flex align-items-center gap-1 fw-medium" style="font-size: 0.78rem;">
                 <i class="bi bi-box-arrow-right"></i> @Localizer["button_Sair"]
@@ -24,12 +24,12 @@
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark fw-medium px-2 small d-flex align-items-center gap-1" asp-controller="Account" asp-action="Register">
+        <a class="nav-link text-dark fw-medium px-2 small d-flex align-items-center gap-1" asp-controller="@Model.Controller" asp-action="@Model.ActionRegister">
             <i class="bi bi-person-plus"></i> @Localizer["a_CriarConta"]
         </a>
     </li>
     <li class="nav-item">
-        <a class="btn btn-primary btn-sm px-3 d-flex align-items-center gap-1 fw-medium" style="font-size: 0.78rem;" asp-controller="Account" asp-action="Login">
+        <a class="btn btn-primary btn-sm px-3 d-flex align-items-center gap-1 fw-medium" style="font-size: 0.78rem;" asp-controller="@Model.Controller" asp-action="@Model.ActionLogin">
             <i class="bi bi-box-arrow-in-right"></i> @Localizer["a_Entrar"]
         </a>
     </li>

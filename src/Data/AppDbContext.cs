@@ -120,7 +120,7 @@ namespace ChamadosTi.Data
                 p.HasOne(u => u.Setores)
                  .WithMany()
                  .HasForeignKey(u => u.SetorId)
-                 .IsRequired();
+                 .IsRequired(false);
 
                 p.HasOne(u => u.DadosTecnicos)
                  .WithMany()

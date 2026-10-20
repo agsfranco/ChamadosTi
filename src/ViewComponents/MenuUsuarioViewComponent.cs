@@ -17,9 +17,20 @@ namespace ChamadosTi.Components
             _userManager = userManager;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync( string controller, 
+                                                             string actionLogin, 
+                                                             string actionLogout, 
+                                                             string actionRegister, 
+                                                             string actionCompleteProfile)
         {
-            var model = new MenuUsuarioViewModel();
+            var model = new MenuUsuarioViewModel{
+                Controller = controller,
+                ActionLogin = actionLogin,
+                ActionLogout = actionLogout,
+                ActionRegister = actionRegister,
+                ActionCompleteProfile = actionCompleteProfile
+            };
+            
             var claimsPrincipal = UserClaimsPrincipal;
 
             if (claimsPrincipal.Identity != null && claimsPrincipal.Identity.IsAuthenticated)

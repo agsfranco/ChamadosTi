@@ -15,4 +15,9 @@
   <data name="Badge_Tecnico" xml:space="preserve"><value>IT Technical Analyst</value></data>
   <data name="Badge_Comum" xml:space="preserve"><value>Standard User</value></data>
   <data name="Button_Promover" xml:space="preserve"><value>Promote to Tech</value></data>
+  <data name="Btn_AtribuirAdmin" xml:space="preserve"><value>Make Admin</value></data>
+  <data name="Btn_RevogarAdmin" xml:space="preserve"><value>Revoke Admin</value></data>
+  <data name="Btn_AtribuirTecnico" xml:space="preserve"><value>Make Tech</value></data>
+  <data name="Btn_RevogarTecnico" xml:space="preserve"><value>Revoke Tech</value></data>
+  <data name="Btn_InativarUsuario" xml:space="preserve"><value>Inactivate</value></data>
 </root>

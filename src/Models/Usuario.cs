@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using ChamadosTi.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,13 +7,12 @@ namespace ChamadosTi.Models
     {
         public int Id { get; set; }
         public string AspNetUserId { get; set; } = null!;
-        public int SetorId { get; set; }        
+        public int? SetorId { get; set; }        
         public int? DadoTecnicoId { get; set; }
-        public bool EhTecnico { get; set; }
         public string Nome { get; set; } = null!;
-        public virtual Setor Setores { get; set; } = null!;
+        public virtual Setor? Setores { get; set; } = null!;
         public virtual DadoTecnico? DadosTecnicos { get; set; }
         public virtual IdentityUser AspNetUser { get; set; } = null!;
-        public bool Ativo { get; set; } = true;
+        public bool Ativo { get; set; } = true;        
     }
 }

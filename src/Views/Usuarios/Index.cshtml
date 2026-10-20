@@ -1,22 +1,9 @@
 @model IEnumerable<ChamadosTi.ViewModels.Usuario.UsuarioIndexViewModel>
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
-@{
-    ViewData["Title"] = Localizer["Usuarios_Index_Title"].Value;
-}
+@{ ViewData["Title"] = Localizer["Usuarios_Index_Title"]; }
 
-@{
-    Microsoft.AspNetCore.Html.IHtmlContent RenderizarBadgePerfil(bool ehTecnico)
-    {
-        string classeCor = ehTecnico ? "bg-success" : "bg-secondary";
-        string chaveTexto = ehTecnico ? "Badge_Tecnico" : "Badge_Comum";
-        
-        var html = $@"<span class='badge {classeCor} fw-bold px-3 py-2 shadow-sm'>{Localizer[chaveTexto].Value}</span>";
-        return new Microsoft.AspNetCore.Html.HtmlString(html);
-    }
-}
-
-<div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+<div class="d-flex justify-content-between align-items-center mt-4 mb-3">
     <h2>@ViewData["Title"]</h2>
 </div>
 
@@ -24,7 +11,7 @@
 {
     <div class="alert alert-success alert-dismissible fade show small shadow-sm mb-3" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-alert="close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
@@ -32,9 +19,21 @@
 {
     <div class="alert alert-danger alert-dismissible fade show small shadow-sm mb-3" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-alert="close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+
+<div class="mb-4">
+    <form asp-action="Index" method="get" class="d-inline-block">
+        <div class="form-check form-switch bg-white border rounded py-2 pe-3 ps-5 shadow-sm d-inline-flex align-items-center">
+            <input class="form-check-input" type="checkbox" id="chkExibirInativos" name="exibirInativos" value="true"
+                   @(ViewBag.ExibirInativos ? "checked" : "") onchange="this.form.submit()" style="cursor: pointer;" />
+            <label class="form-check-label text-secondary fw-medium ms-2" for="chkExibirInativos" style="cursor: pointer;">
+                @Localizer["Checkbox_ShowDeactivated"]
+            </label>
+        </div>
+    </form>
+</div>
 
 <div class="card shadow-sm bg-white rounded border">
     <div class="table-responsive">
@@ -42,38 +41,117 @@
             <thead class="table-light">
                 <tr>
                     <th scope="col" class="px-4">@Localizer["Table_Colaborador"]</th>
-                    <th scope="col">@Localizer["Table_Email"]</th>
+                    <th scope="col">@Localizer["Table_Email"]</th>                    
                     <th scope="col">@Localizer["Table_Setor"]</th>
-                    <th scope="col">@Localizer["Table_Perfil"]</th>
+                    <th scope="col" class="text-center">@Localizer["Table_Perfil"]</th>
                     <th scope="col" class="text-end px-4">@Localizer["Table_Acoes"]</th>
                 </tr>
             </thead>
             <tbody>
                 @if (!Model.Any())
                 {
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-4">@Localizer["No_Users_Found"]</td>
-                    </tr>
+                    <tr><td colspan="5" class="text-center text-muted py-4">@Localizer["No_Users_Found"]</td></tr>
                 }
-                @foreach (var usuario in Model)
+                @foreach (var item in Model)
                 {
-                    <tr>
-                        <td class="px-4 fw-bold text-dark">@usuario.Nome</td>
-                        <td class="text-secondary small">@usuario.Email</td>
-                        <td class="fw-medium text-secondary">@usuario.SetorNome</td>
-                        <td>
-                            @RenderizarBadgePerfil(usuario.EhTecnico)
-                        </td>
-                        <td class="text-end px-4">
-                            @if (!usuario.EhTecnico)
+                    <tr class="@(!item.Ativo ? "table-light text-muted opacity-75" : "")">
+                        <td class="fw-medium px-4">
+                            @item.Nome
+                            @if (!item.Ativo)
                             {
-                                <form asp-action="PromoverParaTecnico" asp-route-id="@usuario.Id" method="post" class="d-inline m-0">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-outline-primary fw-semibold px-3 shadow-sm">
-                                        <i class="bi bi-person-up me-1"></i> @Localizer["Button_Promover"]
-                                    </button>
-                                </form>
+                                <span class="badge bg-secondary text-white ms-2 small">@Localizer["Badge_Deactivated"]</span>
                             }
+                        </td>
+                        <td>@item.Email</td>
+                        <td>@item.SetorNome</td>
+                        <td class="text-center">
+                            @if (item.EhAdmin)
+                            {
+                                <span class="badge bg-danger bg-opacity-10 text-danger px-2.5 py-1.5 rounded fw-semibold me-1">Admin</span>
+                            }
+                            @if (item.EhTecnico)
+                            {
+                                <span class="badge bg-primary bg-opacity-10 text-primary px-2.5 py-1.5 rounded fw-semibold">Técnico</span>
+                            }
+                            @if (!item.EhAdmin && !item.EhTecnico)
+                            {
+                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 rounded">Comum</span>
+                            }
+                        </td>
+                        <td class="text-end px-4" style="width: 1%;">
+                            <div class="d-flex justify-content-end align-items-center gap-2" style="white-space: nowrap;">
+                                @if (item.Ativo)
+                                {
+                                    @if (!item.EhAdminMaster)
+                                    {
+                                        @if (item.EhAdmin)
+                                        {
+                                            <form asp-action="RemoverDeAdmin" asp-route-id="@item.Id" method="post" class="m-0">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center gap-1 shadow-sm" 
+                                                        style="min-width: 140px;" title="@Localizer["Tooltip_RemoverAdmin"]">
+                                                    <i class="bi bi-shield-slash-fill"></i>
+                                                    <span class="fw-semibold">@Localizer["Btn_RevogarAdmin"]</span>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="PromoverParaAdmin" asp-route-id="@item.Id" method="post" class="m-0">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 shadow-sm" 
+                                                        style="min-width: 140px;" title="@Localizer["Tooltip_PromoverAdmin"]">
+                                                    <i class="bi bi-shield-lock-fill"></i>
+                                                    <span>@Localizer["Btn_AtribuirAdmin"]</span>
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (item.EhTecnico)
+                                        {
+                                            <form asp-action="RemoverDeTecnico" asp-route-id="@item.Id" method="post" class="m-0">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-warning d-flex align-items-center justify-content-center gap-1 shadow-sm" 
+                                                        style="min-width: 150px;" title="@Localizer["Tooltip_RemoverTecnico"]">
+                                                    <i class="bi bi-person-dash-fill text-dark"></i>
+                                                    <span class="fw-semibold text-dark">@Localizer["Btn_RevogarTecnico"]</span>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="PromoverParaTecnico" asp-route-id="@item.Id" method="post" class="m-0">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 shadow-sm" 
+                                                        style="min-width: 150px;" title="@Localizer["Tooltip_PromoverTecnico"]">
+                                                    <i class="bi bi-person-up"></i>
+                                                    <span>@Localizer["Btn_AtribuirTecnico"]</span>
+                                                </button>
+                                            </form>
+                                        }
+
+                                        <form asp-action="Inativar" asp-route-id="@item.Id" method="post" class="m-0">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center gap-1 shadow-sm" 
+                                                    style="min-width: 95px;" title="@Localizer["Button_Delete"]">
+                                                <i class="bi bi-trash3"></i>
+                                                <span>@Localizer["Btn_InativarUsuario"]</span>
+                                            </button>
+                                        </form>
+                                    }
+                                }
+                                else
+                                {
+                                    <form asp-action="Reativar" asp-route-id="@item.Id" method="post" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success d-flex align-items-center justify-content-center gap-1 shadow-sm fw-bold" 
+                                                style="min-width: 401px;">
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                            <span>@Localizer["Button_Activate"]</span>
+                                        </button>
+                                    </form>
+                                }
+                            </div>
                         </td>
                     </tr>
                 }

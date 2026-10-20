@@ -553,15 +553,12 @@ namespace ChamadosTi.Data
                     b.Property<int?>("DadoTecnicoId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("EhTecnico")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("SetorId")
+                    b.Property<int?>("SetorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -942,8 +939,7 @@ namespace ChamadosTi.Data
                     b.HasOne("ChamadosTi.Models.Setor", "Setores")
                         .WithMany()
                         .HasForeignKey("SetorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AspNetUser");
 

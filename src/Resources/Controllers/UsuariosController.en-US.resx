@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Error_UsuarioNaoEncontrado" xml:space="preserve"><value>The requested user was not found.</value></data>
+  <data name="Error_JaEhTecnico" xml:space="preserve"><value>This employee already has an active technician profile.</value></data>
+  <data name="Error_JaEhAdmin" xml:space="preserve"><value>This employee already has Master Administrator credentials.</value></data>
+  <data name="Usuarios_Index_Title" xml:space="preserve"><value>User Control and Permissions</value></data>
+  <data name="Success_PromovidoTecnico" xml:space="preserve"><value>Employee successfully associated with the Technical profile!</value></data>
+  <data name="Success_RemovidoTecnico" xml:space="preserve"><value>Technical profile revoked and local specialties cleared successfully.</value></data>
+  <data name="Success_PromovidoAdmin" xml:space="preserve"><value>Employee successfully promoted to Master Administrator!</value></data>
+  <data name="Success_RemovidoAdmin" xml:space="preserve"><value>Master Administrator credentials successfully revoked.</value></data>
+  <data name="Success_UsuarioInativado" xml:space="preserve"><value>The employee account has been successfully inactivated!</value></data>
+  <data name="Success_UsuarioReativado" xml:space="preserve"><value>The employee account has been successfully reactivated!</value></data>
+  <data name="Error_SetorTiNaoEncontrado" xml:space="preserve"><value>Operation Denied: No department with an active IT profile was located.</value></data>
+  <data name="Error_AutoRemocaoAdminProibida" xml:space="preserve"><value>Operation Denied: You cannot revoke your own Administrator credentials!</value></data>
+  <data name="Error_AutoInativacaoProibida" xml:space="preserve"><value>Operation Denied: You cannot inactivate your own access!</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>View Inactive Employees</value></data>
+  <data name="Table_Nome" xml:space="preserve"><value>Employee Name</value></data>
+  <data name="Table_Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Table_Setor" xml:space="preserve"><value>Department</value></data>
+  <data name="Table_Perfis" xml:space="preserve"><value>Active Profiles</value></data>
+  <data name="Table_Acoes" xml:space="preserve"><value>Governance</value></data>
+  <data name="No_Records_Found" xml:space="preserve"><value>No users found.</value></data>
+  <data name="Badge_Deactivated" xml:space="preserve"><value>Inactive</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Inactivate</value></data>
+  <data name="Button_Activate" xml:space="preserve"><value>Reactivate</value></data>
+</root>

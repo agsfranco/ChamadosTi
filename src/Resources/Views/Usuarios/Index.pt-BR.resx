@@ -15,4 +15,9 @@
   <data name="Badge_Tecnico" xml:space="preserve"><value>Analista Técnico</value></data>
   <data name="Badge_Comum" xml:space="preserve"><value>Usuário Comum</value></data>
   <data name="Button_Promover" xml:space="preserve"><value>Promover a Técnico</value></data>
+  <data name="Btn_AtribuirAdmin" xml:space="preserve"><value>Tornar Admin</value></data>
+  <data name="Btn_RevogarAdmin" xml:space="preserve"><value>Remover Admin</value></data>
+  <data name="Btn_AtribuirTecnico" xml:space="preserve"><value>Tornar Técnico</value></data>
+  <data name="Btn_RevogarTecnico" xml:space="preserve"><value>Remover Técnico</value></data>
+  <data name="Btn_InativarUsuario" xml:space="preserve"><value>Inativar</value></data>
 </root>

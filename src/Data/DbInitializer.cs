@@ -2,8 +2,6 @@ using ChamadosTi.Models;
 using ChamadosTi.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
 
 namespace ChamadosTi.Data
 {
@@ -13,7 +11,7 @@ namespace ChamadosTi.Data
         {
             await context.Database.EnsureCreatedAsync();
 
-            string[] roles = { UsuarioRole.Admin.ToString(), UsuarioRole.Tecnico.ToString() };
+            string[] roles = { UsuarioRole.AdminMaster.ToString(), UsuarioRole.Admin.ToString(), UsuarioRole.Tecnico.ToString() };
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
@@ -22,7 +20,7 @@ namespace ChamadosTi.Data
                 }
             }
 
-            var setorTi = await context.Setores.IgnoreQueryFilters().FirstOrDefaultAsync(s => s.Ti);
+            var setorTi = await context.Setores.FirstOrDefaultAsync(s => s.Ti);
             if (setorTi == null)
             {
                 setorTi = new Setor
@@ -41,18 +39,19 @@ namespace ChamadosTi.Data
             {
                 var identityUser = new IdentityUser
                 {
-                    UserName = "Admin",
+                    UserName = "admin@chamadosti.com",
                     Email = "admin@chamadosti.com",
                     EmailConfirmed = true,
-                    NormalizedUserName = "ADMIN",
+                    NormalizedUserName = "ADMIN@CHAMADOSTI.COM",
                     NormalizedEmail = "ADMIN@CHAMADOSTI.COM"
                 };
 
                 var result = await userManager.CreateAsync(identityUser, "Admin@123456");
                 if (result.Succeeded)
                 {
+                    await userManager.AddToRoleAsync(identityUser, UsuarioRole.AdminMaster.ToString());
                     await userManager.AddToRoleAsync(identityUser, UsuarioRole.Admin.ToString());
-                    await userManager.AddToRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
+                    await userManager.AddToRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());                    
 
                     var usuarioLocal = new Usuario
                     {

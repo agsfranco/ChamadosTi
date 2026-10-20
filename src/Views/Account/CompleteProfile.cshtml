@@ -1,4 +1,5 @@
 @model ChamadosTi.ViewModels.Account.CompleteProfileViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = Localizer["CompleteProfile_Title"];
@@ -29,24 +30,21 @@
                     <span asp-validation-for="SetorId" class="text-danger small"></span>
                 </div>
 
-                @if (ViewBag.PermitirMudarStatusTecnico == true)
-                {
-                    <div class="form-check form-switch bg-light border rounded p-3 mb-3 shadow-sm d-flex align-items-center justify-content-between">
-                        <label class="form-check-label text-secondary fw-semibold ms-2" for="chkEhTecnico">
-                            @Localizer["Checkbox_EhTecnico"]
-                        </label>
-                        <input class="form-check-input me-1" type="checkbox" id="chkEhTecnico" asp-for="EhTecnico" style="cursor: pointer;" />
-                    </div>
-
-                    <div id="divDadoTecnico" class="mb-4 d-none">
-                        <label asp-for="DadoTecnicoId" class="form-label text-muted small px-2">@Localizer["Label_DadoTecnico"]</label>
-                        <select id="selectDadoTecnico" asp-for="DadoTecnicoId" class="form-select" 
-                                asp-items="@(new SelectList(ViewBag.DadosTecnicos, "Id", "DescricaoFormatada"))">
-                            <option value="">@Localizer["Select_DadoTecnico_Placeholder"]</option>
-                        </select>
-                        <span asp-validation-for="DadoTecnicoId" class="text-danger small"></span>
-                    </div>
-                }
+                <div class="form-check form-switch bg-light border rounded p-3 mb-3 shadow-sm d-flex align-items-center justify-content-between">
+                    <label class="form-check-label text-secondary fw-semibold ms-2" for="chkEhTecnico">
+                        @Localizer["Checkbox_EhTecnico"]
+                    </label>
+                    <input class="form-check-input me-1" type="checkbox" id="chkEhTecnico" asp-for="EhTecnico" style="cursor: pointer;" />
+                </div>
+                
+                <div id="divDadoTecnico" class="mb-4 d-none">
+                    <label asp-for="DadoTecnicoId" class="form-label text-muted small px-2">@Localizer["Label_DadoTecnico"]</label>
+                    <select id="selectDadoTecnico" asp-for="DadoTecnicoId" class="form-select" 
+                            asp-items="@(new SelectList(ViewBag.DadosTecnicos, "Id", "DescricaoFormatada"))">
+                        <option value="">@Localizer["Select_DadoTecnico_Placeholder"]</option>
+                    </select>
+                    <span asp-validation-for="DadoTecnicoId" class="text-danger small"></span>
+                </div>
 
                 <div class="mb-4 text-center">
                     <a asp-controller="Account" asp-action="GenerateResetTokenForLoggedUser" class="btn btn-outline-secondary btn-sm w-100">
@@ -64,27 +62,22 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const chkEhTecnico = document.getElementById("chkEhTecnico");
-            const divDadoTecnico = document.getElementById("divDadoTecnico");
-            const selectDadoTecnico = document.getElementById("selectDadoTecnico");
-
-            if (chkEhTecnico && divDadoTecnico) {
-                function alternarExibicao() {
-                    if (chkEhTecnico.checked) {
-                        divDadoTecnico.classList.remove("d-none");
-                    } else {
-                        divDadoTecnico.classList.add("d-none");
-                        if (selectDadoTecnico) {
-                            selectDadoTecnico.value = "";
-                        }
-                    }
+        $(document).ready(function() {
+            function alternarDivTecnico() {
+                if ($('#chkEhTecnico').is(':checked')) {
+                    $('#divDadoTecnico').removeClass("d-none");
+                } else {
+                    $('#divDadoTecnico').addClass("d-none"); 
+                    $('#selectDadoTecnico').val('');
                 }
-
-                alternarExibicao();
-
-                chkEhTecnico.addEventListener("change", alternarExibicao);
             }
+
+            alternarDivTecnico();
+
+            $('#chkEhTecnico').change(function() {
+                alternarDivTecnico();
+            });
         });
+
     </script>
 }

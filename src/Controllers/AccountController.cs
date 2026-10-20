@@ -1,5 +1,6 @@
 using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Models.Enums;
 using ChamadosTi.ViewModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
 
 namespace ChamadosTi.Controllers
 {
@@ -38,8 +38,13 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            if (User != null && User.Identity !=null && User.Identity.IsAuthenticated)
+            {
+                await _signInManager.SignOutAsync();
+                HttpContext.User = new System.Security.Claims.ClaimsPrincipal(new System.Security.Claims.ClaimsIdentity());
+            }
             return View();
         }
 
@@ -51,7 +56,6 @@ namespace ChamadosTi.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                // Busca a string traduzida do recurso para e-mail não confirmado
                 if (!await _userManager.IsEmailConfirmedAsync(user))
                 {
                     ModelState.AddModelError(string.Empty, _localizer["Error_EmailNotConfirmed"]);
@@ -102,17 +106,36 @@ namespace ChamadosTi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
 
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var requerConfirmacao = _identityOptions.SignIn.RequireConfirmedAccount;
+
+            var user = new IdentityUser 
+            { 
+                UserName = model.Email, 
+                Email = model.Email,
+                EmailConfirmed = !requerConfirmacao
+            };
+            
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                if (_identityOptions.SignIn.RequireConfirmedAccount)
+                var novoUsuarioLocal = new Usuario
+                {
+                    AspNetUserId = user.Id,
+                    Nome = model.Email.Split('@')[0],
+                    Ativo = true
+                };
+
+                _context.Usuarios.Add(novoUsuarioLocal);
+                await _context.SaveChangesAsync();
+
+                if (requerConfirmacao)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Action(
@@ -127,12 +150,9 @@ namespace ChamadosTi.Controllers
                     await _emailSender.SendEmailAsync(model.Email, assunto, corpo);
 
                     return RedirectToAction("RegisterConfirmation", new { email = model.Email });
-                } else {
-                    user.EmailConfirmed = true;
                 }
-                await _userManager.UpdateAsync(user);
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Login", "Account");
             }
 
             foreach (var error in result.Errors)
@@ -251,35 +271,33 @@ namespace ChamadosTi.Controllers
         public async Task<IActionResult> CompleteProfile()
         {
             var identityUserId = _userManager.GetUserId(User);
-            
-            ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();
-            
-            ViewBag.DadosTecnicos = _context.DadosTecnicos
-                .Include(d => d.Especialidades)
-                .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
-                .ThenBy(d => d.Nivel)
-                .Select(d => new {
-                    Id = d.Id,
-                    DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel
-                }).ToList();
+            if (string.IsNullOrEmpty(identityUserId)) return RedirectToAction("Login", "Account");
 
-            var totalUsuarios = _context.Usuarios.Count();
-            var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
-            
-            ViewBag.PermitirMudarStatusTecnico = totalUsuarios == 1 || (usuarioExistente != null && usuarioExistente.EhTecnico);
+            var usuarioLocal = await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == identityUserId);
+            var model = new CompleteProfileViewModel();
 
-            if (usuarioExistente == null)
+            if (usuarioLocal != null)
             {
-                return View(new CompleteProfileViewModel());
+                model.Nome = usuarioLocal.Nome;
+                model.SetorId = usuarioLocal.SetorId;
+                model.DadoTecnicoId = usuarioLocal.DadoTecnicoId;
+                model.EhTecnico = usuarioLocal.DadoTecnicoId != null;
             }
 
-            var model = new CompleteProfileViewModel
-            {
-                Nome = usuarioExistente.Nome,
-                SetorId = usuarioExistente.SetorId,
-                EhTecnico = usuarioExistente.EhTecnico,
-                DadoTecnicoId = usuarioExistente.DadoTecnicoId
-            };
+            ViewBag.Setores = await _context.Setores.Where(s => s.Ativo).OrderBy(s => s.Nome).ToListAsync();
+            
+            var dadosTecnicosLista = await _context.DadosTecnicos
+                .Include(d => d.Especialidades)
+                .Where(d => d.Ativo)
+                .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
+                .ToListAsync();
+
+            ViewBag.DadosTecnicos = dadosTecnicosLista.Select(d => new { 
+                Id = d.Id, 
+                DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
+            }).ToList().OrderBy(d => d.DescricaoFormatada);
+
+            var totalUsuarios = await _context.Usuarios.CountAsync();
 
             return View(model);
         }
@@ -290,18 +308,20 @@ namespace ChamadosTi.Controllers
         public async Task<IActionResult> CompleteProfile(CompleteProfileViewModel model)
         {
             var identityUserId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(identityUserId)) return RedirectToAction("Login", "Account");
 
-            if (string.IsNullOrEmpty(identityUserId))
+            var identityUser = await _userManager.FindByIdAsync(identityUserId);
+            if (identityUser == null) return RedirectToAction("Login", "Account");
+
+            var setorSelecionado = await _context.Setores.FindAsync(model.SetorId);
+            if (setorSelecionado == null)
             {
-                return RedirectToAction("Login", "Account");
+                ModelState.AddModelError("SetorId", _localizer["Error_SetorObrigatorio"]);
             }
 
-            var setorSelecionado = _context.Setores.Find(model.SetorId);
-
-            // TRAVA REGRA DE NEGÓCIO: Se o setor selecionado for o de suporte/TI, impede o salvamento caso não possua especialidade técnica
-            if (setorSelecionado != null && setorSelecionado.Ti)
+            if (setorSelecionado!.Ti)
             {
-                if (!model.EhTecnico || model.DadoTecnicoId == null)
+                if (model.DadoTecnicoId == null)
                 {
                     ModelState.AddModelError("SetorId", _localizer["Error_SetorTiExigeDadosTecnicos"]);
                 }
@@ -309,63 +329,57 @@ namespace ChamadosTi.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Setores = _context.Setores.OrderBy(s => s.Nome).ToList();
-                ViewBag.DadosTecnicos = _context.DadosTecnicos
+                ViewBag.Setores = await _context.Setores.Where(s => s.Ativo).OrderBy(s => s.Nome).ToListAsync();
+                
+                var dadosTecnicosLista = await _context.DadosTecnicos
                     .Include(d => d.Especialidades)
+                    .Where(d => d.Ativo)
                     .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
-                    .ThenBy(d => d.Nivel)
-                    .Select(d => new { 
-                        Id = d.Id, 
-                        DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
-                    }).ToList();
-                
-                var total = _context.Usuarios.Count();
-                var atual = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
-                ViewBag.PermitirMudarStatusTecnico = total == 0 || (atual != null && atual.EhTecnico);
-                
+                    .ToListAsync();
+
+                ViewBag.DadosTecnicos = dadosTecnicosLista.Select(d => new { 
+                    Id = d.Id, 
+                    DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
+                }).ToList();
+                                
                 return View(model);
             }
-
-            var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.AspNetUserId == identityUserId);
-            var totalUsuariosSistema = _context.Usuarios.Count();
-
+            
             if (!model.EhTecnico)
             {
                 model.DadoTecnicoId = null;
+                await _userManager.RemoveFromRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
             }
+            else
+            {
+                await _userManager.AddToRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
+            }
+
+            var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == identityUserId);
 
             if (usuarioExistente == null)
             {
-                bool definirComoTecnico = totalUsuariosSistema == 0 ? model.EhTecnico : false;
-
                 var novoUsuario = new Usuario
                 {
                     AspNetUserId = identityUserId,
                     Nome = model.Nome,
                     SetorId = model.SetorId!.Value,
-                    EhTecnico = definirComoTecnico,
-                    DadoTecnicoId = definirComoTecnico ? model.DadoTecnicoId : null,
+                    DadoTecnicoId = model.DadoTecnicoId,
                     Ativo = true
                 };
-
                 _context.Usuarios.Add(novoUsuario);
             }
             else
             {
                 usuarioExistente.Nome = model.Nome;
                 usuarioExistente.SetorId = model.SetorId!.Value;
-                
-                if (totalUsuariosSistema == 1 || usuarioExistente.EhTecnico)
-                {
-                    usuarioExistente.EhTecnico = model.EhTecnico;
-                    usuarioExistente.DadoTecnicoId = model.DadoTecnicoId;
-                }
-
+                usuarioExistente.DadoTecnicoId = model.DadoTecnicoId;
                 _context.Usuarios.Update(usuarioExistente);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Home");
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
         }
     }
 }

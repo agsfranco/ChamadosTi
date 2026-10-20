@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
 {
@@ -14,11 +15,13 @@ namespace ChamadosTi.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IStringLocalizer<HomeController> _localizer;
 
-        public HomeController(AppDbContext context, UserManager<IdentityUser> userManager)
+        public HomeController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<HomeController> localizer)
         {
             _context = context;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public async Task<IActionResult> Index()
@@ -37,9 +40,15 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            var identityUser = await _userManager.FindByIdAsync(identityUserId);
             var ehAdmin = User.IsInRole(UsuarioRole.Admin.ToString());
             var ehTecnico = User.IsInRole(UsuarioRole.Tecnico.ToString());
             var possuiAcessoGlobal = ehAdmin || ehTecnico;
+
+            if (usuarioLocal.SetorId == null || ((ehAdmin || ehTecnico) && usuarioLocal.DadoTecnicoId == null))
+            {
+                return RedirectToAction("CompleteProfile", "Account");
+            }
 
             var queryBase = _context.Tickets.Where(t => t.Ativo == true);
 

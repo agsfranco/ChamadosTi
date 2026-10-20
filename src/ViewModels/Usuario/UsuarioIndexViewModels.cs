@@ -1,5 +1,3 @@
-using System;
-
 namespace ChamadosTi.ViewModels.Usuario
 {
     public class UsuarioIndexViewModel
@@ -9,6 +7,8 @@ namespace ChamadosTi.ViewModels.Usuario
         public string Email { get; set; } = string.Empty;
         public string SetorNome { get; set; } = string.Empty;
         public bool EhTecnico { get; set; }
-        public DateTime? DataCadastro { get; set; }
+        public bool EhAdmin { get; set; }
+        public bool EhAdminMaster { get; set; }
+        public bool Ativo { get; set; }
     }
 }

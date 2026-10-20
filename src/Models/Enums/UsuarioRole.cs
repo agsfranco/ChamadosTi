@@ -2,7 +2,8 @@ namespace ChamadosTi.Models.Enums
 {
     public enum UsuarioRole
     {
+        Tecnico,
         Admin,
-        Tecnico
+        AdminMaster
     }
 }

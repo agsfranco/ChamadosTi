@@ -64,8 +64,8 @@ erDiagram
         string AspNetUserId FK
         int SetoresId FK
         int DadosTecnicosId FK
-        bit EhTecnico
         string Nome
+        bit Ativo
     }
 
     %% Prioridade e Prazos Configurados: Normal, Urgente

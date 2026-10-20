@@ -45,18 +45,16 @@
                 </button>
                 <div class="navbar-collapse collapse d-md-inline-flex justify-content-between">
                     <ul class="navbar-nav me-auto mb-2 mb-md-0 ms-2">
-                        <!-- Executa a função local de reuso eliminando código duplicado no HTML -->
                         @RenderizarItemMenu("Home", "Index", "bi-house-door-fill", "Navbar_Menu1")
                         @RenderizarItemMenu("Tickets", "Index", "bi-ticket-perforated-fill", "Navbar_Menu2")
                         @RenderizarItemMenu("Itens", "Index", "bi-hdd-rack-fill", "Navbar_Menu3")
                         @RenderizarItemMenu("Usuarios", "Index", "bi-people-fill", "Navbar_Menu4")
                     </ul>
 
-                    <!-- CONTEXTO SUPERIOR DIREITO: Sessão + Seletor de Idiomas no padrão de mercado -->
                     <div class="d-flex align-items-center gap-4">
                         <partial name="_SelectLanguagePartial" />
                         <div class="border-start h-25 bg-secondary opacity-25" style="width: 1px; min-height: 24px;"></div>
-                        <vc:menu-usuario />
+                        <vc:menu-usuario  controller="Account" action-login="Login" action-logout="logout" action-register="Register" action-complete-profile="CompleteProfile" />
                     </div>
                 </div>
             </div>
