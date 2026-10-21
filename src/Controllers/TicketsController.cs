@@ -53,7 +53,7 @@ namespace ChamadosTi.Controllers
             }
 
             ViewBag.Categorias = await GetListaCategoriasAsync();
-            ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+            ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
             ViewBag.OrigemId = origemId;
 
             return View(new TicketCreateViewModel());
@@ -77,7 +77,7 @@ namespace ChamadosTi.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -86,7 +86,7 @@ namespace ChamadosTi.Controllers
             {
                 ModelState.AddModelError("", _localizer["Error_SemPrioridade"]);
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -95,7 +95,7 @@ namespace ChamadosTi.Controllers
             {
                 ModelState.AddModelError("", _localizer["Error_SemStatusInicial"]);
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -232,7 +232,7 @@ namespace ChamadosTi.Controllers
                 }
             }
 
-            bool ehTecnico = _usuarioService.EhMembroEquipeTi(User);
+            bool ehTecnico = _usuarioService.EhTecnico(User);
 
             var auditoriasOriginais = await GetAuditoriasTicketAsync(ticket.Id);
             ViewBag.AuditoriasOriginais = auditoriasOriginais;

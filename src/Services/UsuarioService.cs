@@ -44,7 +44,7 @@ namespace ChamadosTi.Services
                                 .FirstOrDefaultAsync(u => u.AspNetUserId == aspNetUserId);
         }
 
-        public bool EhMembroEquipeTi(ClaimsPrincipal user)
+        public bool EhTecnico(ClaimsPrincipal user)
         {
             return user.IsInRole(UsuarioRole.Tecnico.ToString()) || 
                    user.IsInRole(UsuarioRole.Admin.ToString()) || 
