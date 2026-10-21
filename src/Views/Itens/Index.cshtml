@@ -39,7 +39,16 @@
                 {
                     <tr class="@(!item.Ativo ? "table-light text-muted opacity-75" : "")">
                         <td class="fw-medium px-4">
-                            @item.Nome
+                            @if (item.Ativo)
+                            {
+                                <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-primary">
+                                    @item.Nome
+                                </a>
+                            }
+                            else
+                            {
+                                @item.Nome
+                            }
                             @if (!item.Ativo)
                             {
                                 <span class="badge bg-secondary text-white ms-2 small">@Localizer["Badge_Deactivated"]</span>
@@ -51,6 +60,9 @@
                         <td class="text-end px-4">
                             @if (item.Ativo)
                             {
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="bi bi-eye"></i> @Localizer["Button_Details"]
+                                </a>
                                 <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">@Localizer["Button_Edit"]</a>
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">@Localizer["Button_Delete"]</a>
                             }

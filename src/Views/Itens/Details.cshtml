@@ -1,0 +1,90 @@
+@model ChamadosTi.Models.Item
+@using ChamadosTi.ViewModels.Ticket
+@{
+    ViewData["Title"] = Localizer["Items_Details_Title"].Value + " - " + Model.Nome;
+}
+
+<div class="mt-4 mb-4">
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> @Localizer["Details_BotaoVoltar"]
+    </a>
+    <h2>#@Model.Id - @Model.Nome</h2>
+    <span class="text-muted small">@Model.Tipos.Nome • @Model.Marcas.Nome</span>
+</div>
+
+<div class="row">
+    <!-- COLUNA DA ESQUERDA: Ficha Técnica do Equipamento -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border rounded bg-white p-4">
+            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Items_Details_Title"]</h5>
+            
+            <div class="mb-3">
+                <label class="text-muted small d-block">@Localizer["Details_TabelaAtivo"]</label>
+                <span class="text-dark fw-medium">@Model.Nome</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="text-muted small d-block">@Localizer["Details_TabelaTipo"]</label>
+                <span class="text-dark fw-medium">@Model.Tipos.Nome</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="text-muted small d-block">@Localizer["Details_TabelaMarca"]</label>
+                <span class="text-dark fw-medium">@Model.Marcas.Nome</span>
+            </div>
+
+            <div class="mb-0">
+                <label class="text-muted small d-block">@Localizer["Details_LabelSetor"]</label>
+                <span class="text-dark fw-medium">@(Model.Setores?.Nome ?? "N/A")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUNA DA DIREITA: Histórico Completo de Chamados Relacionados -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm border rounded bg-white p-4">
+            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Title_ChamadosVinculados"]</h5>
+            
+            @{
+                var chamados = ViewBag.ChamadosRelacionados as List<TicketHistoricoAtivoDTO>;
+            }
+            
+            @if (chamados != null && chamados.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">@Localizer["Table_ChamadoAnterior"]</th>
+                                <th scope="col">@Localizer["Table_DataAbertura"]</th>
+                                <th scope="col">@Localizer["Table_SolucaoAnterior"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ticket in chamados)
+                            {
+                                <tr>
+                                    <td class="fw-bold">
+                                        <a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" class="text-decoration-none">
+                                            #@ticket.Id - @ticket.Titulo
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-secondary border">@ticket.DataAbertura</span>
+                                    </td>
+                                    <td class="text-secondary text-truncate" style="max-width: 300px;">
+                                        @(ticket.ParecerTecnico ?? Localizer[ticket.StatusNome].Value)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0"><i class="bi bi-shield-check"></i> @Localizer["No_Tickets_Found"]</p>
+            }
+        </div>
+    </div>
+</div>

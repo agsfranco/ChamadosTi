@@ -15,4 +15,5 @@
   <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>Visualizar itens inativos</value></data>
   <data name="Badge_Deactivated" xml:space="preserve"><value>Inativo</value></data>
   <data name="Button_Activate" xml:space="preserve"><value>Ativar</value></data>
+  <data name="Button_Details" xml:space="preserve"><value>Visualizar</value></data>
 </root>

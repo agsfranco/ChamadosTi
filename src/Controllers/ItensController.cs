@@ -1,6 +1,7 @@
 using ChamadosTi.Data;
 using ChamadosTi.Models;
 using ChamadosTi.ViewModels.Item;
+using ChamadosTi.ViewModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,60 @@ namespace ChamadosTi.Controllers
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(itens);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var item = await BuscarItemPorIdAsync(id, ignorarFiltros: false, incluirRelacionamentos: true);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            var chamadosRelacionados = await _context.Tickets
+                .Include(t => t.Status)
+                .Include(t => t.AuditoriaTickets)
+                .Where(t => t.ItensTickets!.Any(it => it.ItemId == id))
+                .OrderByDescending(t => t.DataAbertura)
+                .ToListAsync();
+
+            var historicoDTO = new List<TicketHistoricoAtivoDTO>();
+
+            foreach (var ticket in chamadosRelacionados)
+            {
+                string parecer = string.Empty;
+                if (ticket.AuditoriaTickets != null && ticket.AuditoriaTickets.Any())
+                {
+                    var ultimaAuditoria = ticket.AuditoriaTickets
+                        .OrderByDescending(a => a.RegistradoEm)
+                        .FirstOrDefault(a => a.Log.Contains("Status_Resolvido") || a.Log.Contains("Status_Cancelado"));
+
+                    if (ultimaAuditoria != null && !string.IsNullOrEmpty(ultimaAuditoria.Log))
+                    {
+                        try
+                        {
+                            var logDecodificado = System.Text.Json.JsonSerializer.Deserialize<LogAuditoriaTicket>(ultimaAuditoria.Log);
+                            parecer = logDecodificado?.Mensagem ?? string.Empty;
+                        }
+                        catch { }
+                    }
+                }
+
+                historicoDTO.Add(new TicketHistoricoAtivoDTO
+                {
+                    Id = ticket.Id,
+                    Titulo = ticket.Titulo,
+                    DataAbertura = ticket.DataAbertura.ToLocalTime().ToString("d"),
+                    StatusNome = ticket.Status.Nome,
+                    ParecerTecnico = !string.IsNullOrEmpty(parecer) ? parecer : null
+                });
+            }
+
+            ViewBag.ChamadosRelacionados = historicoDTO;
+
+            return View(item);
         }
 
         [HttpGet]
