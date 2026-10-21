@@ -11,5 +11,6 @@ namespace ChamadosTi.Services.Interfaces
         public Task<IdentityUser?> GetIdentityUserPorIdLocalAsync(int id);
         public Task<Usuario?> GetUsuarioCompletoPorAspNetIdAsync(string aspNetUserId);
         bool EhTecnico(ClaimsPrincipal user);
+        bool EhAdmin(ClaimsPrincipal user);
     }
 }

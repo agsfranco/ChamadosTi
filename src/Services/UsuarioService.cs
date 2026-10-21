@@ -50,5 +50,11 @@ namespace ChamadosTi.Services
                    user.IsInRole(UsuarioRole.Admin.ToString()) || 
                    user.IsInRole(UsuarioRole.AdminMaster.ToString());
         }
+
+        public bool EhAdmin(ClaimsPrincipal user)
+        {
+            return user.IsInRole(UsuarioRole.Admin.ToString()) || 
+                   user.IsInRole(UsuarioRole.AdminMaster.ToString());
+        }
     }
 }
