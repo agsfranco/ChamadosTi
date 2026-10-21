@@ -102,7 +102,7 @@
 
     //Alteração de Ativos Afetados
     Func<object?, HelperResult> RenderizarFormularioAlterarItens = @<text>
-        @if (ViewBag.ItensSetor != null && ((System.Collections.IEnumerable)ViewBag.ItensSetor).Cast<object>().Any())
+        @if (ViewBag.Itens != null && ((System.Collections.IEnumerable)ViewBag.Itens).Cast<object>().Any())
         {
             <div class="card shadow-sm border rounded bg-white p-4 mt-4">
                 <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoAlterarAtivos"]</h5>
@@ -113,7 +113,7 @@
                     <div class="mb-3">
                         <label class="text-muted small fw-medium mb-1">@Localizer["Details_LabelSelecaoAtivos"]</label>
                         <select name="itensIdsSelecionados" class="form-select form-select-sm small text-dark" multiple style="height: 110px;"
-                                asp-items="@(new SelectList(ViewBag.ItensSetor, "Id", "Texto", Model.ItensTickets?.Select(it => it.ItemId)))">
+                                asp-items="@(new SelectList(ViewBag.Itens, "Id", "Texto", Model.ItensTickets?.Select(it => it.ItemId)))">
                         </select>
                         <span class="text-muted small d-block mt-1 lh-sm" style="font-size: 0.72rem;">
                             <i class="bi bi-info-circle"></i> @Localizer["Details_DicaSelecaoMultipla"]
@@ -212,7 +212,119 @@
                 @RenderizarFormularioAlterarItens(null)
             }
         </div>
+        
+        <!-- Card de histórico do Ativo -->
+        <div class="card shadow-sm border rounded bg-white p-4 mb-4">
+            <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Title_HistoricoEquipamento"]</h5>
+            
+            @{
+                var historicoIncidentes = ViewBag.HistoricoAtivo as List<TicketHistoricoAtivoDTO>;
+                bool possuiMultiplosAtivos = Model.ItensTickets != null && Model.ItensTickets.Count > 1;
+            }
 
+            @if (Model.ItensTickets != null && Model.ItensTickets.Any() && historicoIncidentes != null && historicoIncidentes.Any())
+            {
+                @if (possuiMultiplosAtivos)
+                {
+                    <!-- Abas do Bootstrap para Filtro de Ativos -->
+                    <ul class="nav nav-tabs mb-3 small" id="filtroHistoricoTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold text-primary" onclick="filtrarHistoricoPorAtivo('todos', this)" type="button">
+                                <i class="bi bi-layers-fill me-1"></i> @Localizer["Filter_TodosOsAtivos"]
+                            </button>
+                        </li>
+                        @foreach (var itemTicket in Model.ItensTickets)
+                        {
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link text-secondary" onclick="filtrarHistoricoPorAtivo('@itemTicket.ItemId', this)" type="button">
+                                    <i class="bi bi-cpu-fill me-1"></i> @itemTicket.Item.Nome
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small" id="tabelaHistoricoIncidentes">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">@Localizer["Table_ChamadoAnterior"]</th>
+                                <th scope="col">@Localizer["Table_DataAbertura"]</th>
+                                <th scope="col">@Localizer["Table_SolucaoAnterior"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var hTicket in historicoIncidentes)
+                            {
+                                var jsonIds = System.Text.Json.JsonSerializer.Serialize(hTicket.ItemIds);
+                                
+                                <tr class="linha-historico" data-ativos="@jsonIds">
+                                    <td class="fw-bold">
+                                        <a asp-action="Details" asp-route-id="@hTicket.Id" class="text-decoration-none">
+                                            #@hTicket.Id - @hTicket.Titulo
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-secondary border">@hTicket.DataAbertura</span>
+                                    </td>
+                                    <td class="text-secondary text-truncate" style="max-width: 250px;">
+                                        @(hTicket.ParecerTecnico ?? Localizer[hTicket.StatusNome].Value)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Mensagem de feedback caso a aba selecionada não possua históricos -->
+                <p class="text-muted small mb-0 mt-3 d-none" id="msgHistoricoVazio">
+                    <i class="bi bi-info-circle"></i> @Localizer["No_History_Found"]
+                </p>
+            }
+            else
+            {
+                <p class="text-muted small mb-0"><i class="bi bi-shield-check"></i> @Localizer["No_History_Found"]</p>
+            }
+        </div>
+
+        @if (possuiMultiplosAtivos)
+        {
+            <!-- Script Client-Side Eficiente para o Filtro de Linhas -->
+            <script>
+                function filtrarHistoricoPorAtivo(idAtivo, botaoClicado) {
+                    // 1. Alterna o estado visual ativo das abas
+                    document.querySelectorAll('#filtroHistoricoTabs .nav-link').forEach(btn => {
+                        btn.classList.remove('active', 'fw-bold', 'text-primary');
+                        btn.classList.add('text-secondary');
+                    });
+                    botaoClicado.classList.add('active', 'fw-bold', 'text-primary');
+                    botaoClicado.classList.remove('text-secondary');
+
+                    // 2. Filtra as linhas da tabela baseado na matriz de IDs do JSON
+                    const linhas = document.querySelectorAll('#tabelaHistoricoIncidentes .linha-historico');
+                    let possuiLinhasVisiveis = false;
+
+                    linhas.forEach(linha => {
+                        const idsArray = JSON.parse(linha.getAttribute('data-ativos') || '[]');
+                        
+                        if (idAtivo === 'todos' || idsArray.includes(parseInt(idAtivo))) {
+                            linha.classList.remove('d-none');
+                            possuiLinhasVisiveis = true;
+                        } else {
+                            linha.classList.add('d-none');
+                        }
+                    });
+
+                    // 3. Gerencia a visibilidade da mensagem de feedback vazio
+                    const msgVazio = document.getElementById('msgHistoricoVazio');
+                    if (possuiLinhasVisiveis) {
+                        msgVazio.classList.add('d-none');
+                    } else {
+                        msgVazio.classList.remove('d-none');
+                    }
+                }
+            </script>
+        }
 
         <!-- LINHA DO TEMPO (Timeline de Auditoria JSON Deserializada) -->
         <div class="card shadow-sm border rounded bg-white p-4">
@@ -322,7 +434,7 @@
                 <i class="bi bi-lock-fill text-secondary me-2"></i>
                 @Localizer["Details_AvisoChamadoEncerradoComentarios"]
             </div>
-        }
+        }        
     </div>
 
     <!-- COLUNA DA DIREITA: Painel Lateral de Metadados e Acordo de SLA -->

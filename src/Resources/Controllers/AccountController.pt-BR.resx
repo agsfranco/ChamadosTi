@@ -17,6 +17,6 @@
   <data name="Email_ConfirmBody" xml:space="preserve"><value>Por favor, confirme sua conta no sistema de chamados &lt;a href='{0}'&gt;clicando aqui&lt;/a&gt;.</value></data>
   <data name="Email_ResetSubject" xml:space="preserve"><value>Redefinição de Senha - ChamadosTI</value></data>
   <data name="Email_ResetBody" xml:space="preserve"><value>Você solicitou a alteração de sua senha. Redefina-a de forma segura &lt;a href='{0}'&gt;clicando aqui&lt;/a&gt;.</value></data>
-  <data name="Error_SetorTiExigePerfilTecnico" xml:space="preserve"><value>Para fazer parte do setor de TI, é obrigatório fazer parte do perfil Técnico.</value></data>
   <data name="Error_SetorObrigatorio" xml:space="preserve"><value>O Setor é obrigatório.</value></data>
+  <data name="Error_ObrigatorioSetorTi" xml:space="preserve"><value>Para ser técnico você precisa pertencer ao setor técnico de TI.</value></data>
 </root>

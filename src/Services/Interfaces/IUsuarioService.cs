@@ -1,6 +1,6 @@
 using ChamadosTi.Models;
-using ChamadosTi.Models.Enums;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace ChamadosTi.Services.Interfaces
 {
@@ -10,5 +10,6 @@ namespace ChamadosTi.Services.Interfaces
         public Task<Usuario?> GetUsuarioLocalPorAspNetIdAsync(string aspNetUserId);
         public Task<IdentityUser?> GetIdentityUserPorIdLocalAsync(int id);
         public Task<Usuario?> GetUsuarioCompletoPorAspNetIdAsync(string aspNetUserId);
+        bool EhMembroEquipeTi(ClaimsPrincipal user);
     }
 }

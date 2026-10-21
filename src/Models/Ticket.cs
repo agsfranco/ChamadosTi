@@ -27,5 +27,6 @@ namespace ChamadosTi.Models
         public virtual Status Status { get; set; } = null!;
         public virtual Ticket? TicketOrigem { get; set; }
         public virtual ICollection<ItemTicket>? ItensTickets { get; set; } = new List<ItemTicket>();
+        public virtual ICollection<AuditoriaTicket>? AuditoriaTickets { get; set; } = new List<AuditoriaTicket>();
     }
 }

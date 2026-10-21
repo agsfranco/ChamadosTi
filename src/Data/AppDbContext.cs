@@ -255,7 +255,7 @@ namespace ChamadosTi.Data
                 p.HasKey(at=>at.Id);
 
                 p.HasOne(at => at.Ticket)
-                 .WithMany()
+                 .WithMany(t => t.AuditoriaTickets)
                  .HasForeignKey(at => at.TicketId);
                 
                 p.Property(at => at.Log).HasMaxLength(-1);

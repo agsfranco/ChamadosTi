@@ -81,4 +81,10 @@
   <data name="Log_ChamadoPendente" xml:space="preserve"><value>Ticket paused</value></data>
   <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Ticket resumed</value></data>
   <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Ticket canceled</value></data>
+  <data name="Title_HistoricoEquipamento" xml:space="preserve"><value>Asset incident history</value></data>
+  <data name="Table_ChamadoAnterior" xml:space="preserve"><value>Ticket</value></data>
+  <data name="Table_SolucaoAnterior" xml:space="preserve"><value>Technical resolution</value></data>
+  <data name="No_History_Found" xml:space="preserve"><value>No previous incidents registered for this asset</value></data>
+  <data name="Table_DataAbertura" xml:space="preserve"><value>Opened Date</value></data>
+  <data name="Filter_TodosOsAtivos" xml:space="preserve"><value>All assets</value></data>
 </root>

@@ -17,6 +17,6 @@
   <data name="Email_ConfirmBody" xml:space="preserve"><value>Please confirm your ticketing system account by &lt;a href='{0}'&gt;clicking here&lt;/a&gt;.</value></data>
   <data name="Email_ResetSubject" xml:space="preserve"><value>Reset Your Password - TicketSystem</value></data>
   <data name="Email_ResetBody" xml:space="preserve"><value>You requested a password change. Please securely reset it by &lt;a href='{0}'&gt;clicking here&lt;/a&gt;.</value></data>
-  <data name="Error_SetorTiExigePerfilTecnico" xml:space="preserve"><value>To belong to the IT department, it is mandatory to belong to the Technical profile.</value></data>
   <data name="Error_SetorObrigatorio" xmlspace="preserve"><value>The field Sector is required.</value></data>
+  <data name="Error_ObrigatorioSetorTi" xml:space="preserve"><value>To be a technician you must belong to the IT Technical sector.</value></data>
 </root>

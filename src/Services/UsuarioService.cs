@@ -3,6 +3,8 @@ using ChamadosTi.Data;
 using ChamadosTi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using ChamadosTi.Models.Enums;
 
 namespace ChamadosTi.Services
 {
@@ -40,6 +42,13 @@ namespace ChamadosTi.Services
                                 .Include(u => u.Setores)
                                 .Include(u => u.DadosTecnicos)
                                 .FirstOrDefaultAsync(u => u.AspNetUserId == aspNetUserId);
+        }
+
+        public bool EhMembroEquipeTi(ClaimsPrincipal user)
+        {
+            return user.IsInRole(UsuarioRole.Tecnico.ToString()) || 
+                   user.IsInRole(UsuarioRole.Admin.ToString()) || 
+                   user.IsInRole(UsuarioRole.AdminMaster.ToString());
         }
     }
 }

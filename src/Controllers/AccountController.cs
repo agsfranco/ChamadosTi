@@ -327,6 +327,11 @@ namespace ChamadosTi.Controllers
                 }
             }
 
+            if (!setorSelecionado!.Ti && model.DadoTecnicoId != null)
+            {
+                ModelState.AddModelError("SetorId", _localizer["Error_ObrigatorioSetorTi"]);
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Setores = await _context.Setores.Where(s => s.Ativo).OrderBy(s => s.Nome).ToListAsync();

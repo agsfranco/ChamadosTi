@@ -42,17 +42,18 @@ namespace ChamadosTi.Controllers
 
             return View(tickets);
         }
+
         [HttpGet]
         public async Task<IActionResult> Create(int? origemId)
         {
-            var usuarioSistema = await GetUsuarioAsync();
-            if (usuarioSistema is null)
+            var usuarioLogado = await GetUsuarioAsync();
+            if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
             ViewBag.Categorias = await GetListaCategoriasAsync();
-            ViewBag.Itens = await GetListaItensAsync(usuarioSistema.SetorId);
+            ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
             ViewBag.OrigemId = origemId;
 
             return View(new TicketCreateViewModel());
@@ -76,7 +77,7 @@ namespace ChamadosTi.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -85,7 +86,7 @@ namespace ChamadosTi.Controllers
             {
                 ModelState.AddModelError("", _localizer["Error_SemPrioridade"]);
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -94,7 +95,7 @@ namespace ChamadosTi.Controllers
             {
                 ModelState.AddModelError("", _localizer["Error_SemStatusInicial"]);
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = _usuarioService.EhMembroEquipeTi(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -155,6 +156,7 @@ namespace ChamadosTi.Controllers
 
             return RedirectToAction("Index", "Tickets");
         }
+
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -165,35 +167,84 @@ namespace ChamadosTi.Controllers
             }
 
             var ticket = await _context.Tickets
-                                       .Include(t => t.Status)
-                                       .Include(t => t.Prioridades)
-                                       .Include(t => t.Categorias)
-                                       .Include(t => t.Usuarios) 
-                                       .Include(t => t.UsuariosTecnicos) 
-                                       .Include(t => t.Setores) 
-                                       .Include(t => t.ItensTickets!)
-                                       .ThenInclude(it => it.Item)
-                                       .ThenInclude(i => i.Marcas)
-                                       .Include(t => t.ItensTickets!)
-                                       .ThenInclude(it => it.Item)
-                                       .ThenInclude(i => i.Tipos)
-                                       .FirstOrDefaultAsync(t => t.Id == id);
+                                    .Include(t => t.Status)
+                                    .Include(t => t.Prioridades)
+                                    .Include(t => t.Categorias)
+                                    .Include(t => t.Usuarios) 
+                                    .Include(t => t.UsuariosTecnicos) 
+                                    .Include(t => t.Setores) 
+                                    .Include(t => t.ItensTickets!)
+                                    .ThenInclude(it => it.Item)
+                                    .ThenInclude(i => i.Marcas)
+                                    .Include(t => t.ItensTickets!)
+                                    .ThenInclude(it => it.Item)
+                                    .ThenInclude(i => i.Tipos)
+                                    .FirstOrDefaultAsync(t => t.Id == id);
 
             if (ticket == null)
             {
                 return NotFound();
             }
+    
+            var itensIdsVinculados = ticket.ItensTickets?.Select(it => it.ItemId).ToList() ?? new List<int>();
+            var historicoDTO = new List<TicketHistoricoAtivoDTO>();
+
+            if (itensIdsVinculados.Any())
+            {
+                var chamadosAnteriores = await _context.Tickets
+                    .Include(t => t.Status)
+                    .Include(t => t.ItensTickets)
+                    .Include(t => t.AuditoriaTickets)
+                    .Where(t => t.Id != ticket.Id && t.ItensTickets!.Any(it => itensIdsVinculados.Contains(it.ItemId)))
+                    .OrderByDescending(t => t.DataAbertura)
+                    .Take(10) //limita em 10
+                    .ToListAsync();
+
+                foreach (var hTicket in chamadosAnteriores)
+                {
+                    string parecer = string.Empty;
+                    if (hTicket.AuditoriaTickets != null && hTicket.AuditoriaTickets.Any())
+                    {
+                        var ultimaAuditoria = hTicket.AuditoriaTickets
+                            .OrderByDescending(a => a.RegistradoEm)
+                            .FirstOrDefault(a => a.Log.Contains("Status_Resolvido") || a.Log.Contains("Status_Cancelado"));
+
+                        if (ultimaAuditoria != null && !string.IsNullOrEmpty(ultimaAuditoria.Log))
+                        {
+                            try
+                            {
+                                var logDecodificado = System.Text.Json.JsonSerializer.Deserialize<LogAuditoriaTicket>(ultimaAuditoria.Log);
+                                parecer = logDecodificado?.Mensagem ?? string.Empty;
+                            }
+                            catch { }
+                        }
+                    }
+
+                    historicoDTO.Add(new TicketHistoricoAtivoDTO
+                    {
+                        Id = hTicket.Id,
+                        Titulo = hTicket.Titulo,
+                        DataAbertura = hTicket.DataAbertura.ToLocalTime().ToString("d"),
+                        StatusNome = hTicket.Status.Nome,
+                        ParecerTecnico = !string.IsNullOrEmpty(parecer) ? parecer : null,
+                        ItemIds = hTicket.ItensTickets?.Select(it => it.ItemId).ToList() ?? new List<int>() // Mapeia os IDs dos ativos
+                    });
+                }
+            }
+
+            bool ehTecnico = _usuarioService.EhMembroEquipeTi(User);
 
             var auditoriasOriginais = await GetAuditoriasTicketAsync(ticket.Id);
             ViewBag.AuditoriasOriginais = auditoriasOriginais;
             ViewBag.LogsHistorico = await GetLogsAuditoriaAsync(ticket.Id, auditoriasOriginais);
             ViewBag.Prioridades = await GetListaPrioridadesAsync(); 
-            ViewBag.ItensSetor = await GetListaItensAsync(ticket.SetorId);
-            ViewBag.EhTecnico = User.IsInRole(UsuarioRole.Tecnico.ToString());
+            ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(ticket.SetorId);
+            ViewBag.EhTecnico = ehTecnico;
+            ViewBag.HistoricoAtivo = historicoDTO;
 
             return View(ticket);
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assumir(int id)
@@ -552,19 +603,22 @@ namespace ChamadosTi.Controllers
             return await _context.Prioridades.FirstOrDefaultAsync(p => p.Id == prioridadeId);
         }
 
-        private async Task<dynamic?> GetListaItensAsync(int? setorId)
+        private async Task<dynamic?> GetListaItensAsync(int? setorId = null)
         {
-            if (setorId == null) return null;
-            return await _context.Itens
-                                 .Include(i => i.Tipos)
-                                 .Include(i => i.Marcas)
-                                 .Include(i => i.Setores)
-                                 .Where(i => i.SetorId == setorId)
-                                 .OrderBy(i => i.Nome)
-                                 .ThenBy(i => i.Tipos.Nome)
-                                 .ThenBy(i => i.Marcas.Nome)
-                                 .Select(i => new { Id = i.Id, Texto = i.Nome + " - " + i.Tipos.Nome + " - " + i.Marcas.Nome })
-                                 .ToListAsync();
+            var query = _context.Itens
+                                .Include(i => i.Tipos)
+                                .Include(i => i.Marcas)
+                                .Include(i => i.Setores)
+                                .AsQueryable();
+            if (setorId != null)
+            {
+                query = query.Where(i => i.SetorId == setorId);
+            }
+            return await query.OrderBy(i => i.Nome)
+                              .ThenBy(i => i.Tipos.Nome)
+                              .ThenBy(i => i.Marcas.Nome)
+                              .Select(i => new { Id = i.Id, Texto = i.Nome + " - " + i.Tipos.Nome + " - " + i.Marcas.Nome })
+                              .ToListAsync();
         }
 
         private async Task<dynamic> GetListaCategoriasAsync()

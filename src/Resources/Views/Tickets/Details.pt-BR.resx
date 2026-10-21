@@ -81,4 +81,10 @@
   <data name="Log_ChamadoPendente" xml:space="preserve"><value>Atendimento suspenso</value></data>
   <data name="Log_ChamadoRetomado" xml:space="preserve"><value>Atendimento retomado</value></data>
   <data name="Log_ChamadoCancelado" xml:space="preserve"><value>Atendimento cancelado</value></data>
+  <data name="Title_HistoricoEquipamento" xml:space="preserve"><value>Histórico de incidentes do ativo</value></data>
+  <data name="Table_ChamadoAnterior" xml:space="preserve"><value>Chamado</value></data>
+  <data name="Table_SolucaoAnterior" xml:space="preserve"><value>Parecer técnico</value></data>
+  <data name="Table_DataAbertura" xml:space="preserve"><value>Data da Abertura</value></data>
+  <data name="No_History_Found" xml:space="preserve"><value>Nenhum incidente anterior registrado para este ativo</value></data>
+  <data name="Filter_TodosOsAtivos" xml:space="preserve"><value>Todos os ativos</value></data>
 </root>

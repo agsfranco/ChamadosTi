@@ -428,6 +428,12 @@ namespace ChamadosTi.Data
                             Id = 5,
                             Codigo = 5,
                             Nome = "Status_Fechado"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Codigo = 6,
+                            Nome = "Status_Cancelado"
                         });
                 });
 
@@ -774,7 +780,7 @@ namespace ChamadosTi.Data
             modelBuilder.Entity("ChamadosTi.Models.AuditoriaTicket", b =>
                 {
                     b.HasOne("ChamadosTi.Models.Ticket", "Ticket")
-                        .WithMany()
+                        .WithMany("AuditoriaTickets")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1016,6 +1022,8 @@ namespace ChamadosTi.Data
 
             modelBuilder.Entity("ChamadosTi.Models.Ticket", b =>
                 {
+                    b.Navigation("AuditoriaTickets");
+
                     b.Navigation("ItensTickets");
                 });
 #pragma warning restore 612, 618
