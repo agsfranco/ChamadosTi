@@ -5,6 +5,7 @@
 @using ChamadosTi.ViewModels.Component.ModalMessage
 @using ChamadosTi.ViewModels.Ticket
 @using ChamadosTi.Data
+@using ChamadosTi.Services.Interfaces
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Options
 @using Microsoft.AspNetCore.Mvc.Localization
@@ -20,3 +21,4 @@
 @inject IOptions<RequestLocalizationOptions> LocOptions
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject IUsuarioService UsuarioService

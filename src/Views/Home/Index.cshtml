@@ -1,13 +1,8 @@
 @model ChamadosTi.ViewModels.Home.IndexViewModel
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-@using ChamadosTi.Models.Enums
 
 @{
     ViewData["Title"] = Localizer["Home_TituloPagina"].Value;
-    
-    bool ehAdmin = User.IsInRole(UsuarioRole.Admin.ToString());
-    bool ehTecnico = User.IsInRole(UsuarioRole.Tecnico.ToString());
-    bool possuiAcessoGlobal = ehAdmin || ehTecnico;
 
     Microsoft.AspNetCore.Html.IHtmlContent RenderizarCardKpi(string titulo, string valor, string icone, string classeCor)
     {
@@ -55,7 +50,7 @@
     <p class="text-muted small mb-0">@Localizer["Home_BoasVindasSubtitulo"]</p>
 </div>
 
-@if (possuiAcessoGlobal)
+@if (UsuarioService.EhTecnico(User) || UsuarioService.EhAdmin(User))
 {
     <h6 class="fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Home_SecaoIndicadores"]</h6>
     <div class="row mb-3">
@@ -73,7 +68,7 @@
     @RenderizarBotaoAtalho("Account", "CompleteProfile", "bi-person-vcard-fill", "Atalho_Perfil_Titulo", "Atalho_Perfil_Desc")
 </div>
 
-@if (ehAdmin)
+@if (UsuarioService.EhAdmin(User))
 {
     <h6 class="fw-bold text-danger mb-3 mt-2 small text-uppercase" style="letter-spacing: 0.5px;">
         <i class="bi bi-gear-fill me-1"></i> @Localizer["Home_SecaoAdmin"]

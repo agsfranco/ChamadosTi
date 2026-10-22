@@ -11,4 +11,9 @@
   <data name="Navbar_Menu3" xml:space="preserve"><value>Asset Inventory</value></data>
   <data name="Navbar_Menu4" xml:space="preserve"><value>User Management</value></data>
   <data name="Span_Copyright" xml:space="preserve"><value>All rights reserved.</value></data>
+  <data name="Navbar_MenuSla" xml:space="preserve"><value>SLA Dashboard</value></data>
+  <data name="Menu_Administracao" xml:space="preserve"><value>Administration</value></data>
+  <data name="Menu_GerenciarSetores" xml:space="preserve"><value>Manage Departments</value></data>
+  <data name="Menu_ParametrosSla" xml:space="preserve"><value>SLA Parameters</value></data>
+  <data name="Span_Empresa" xml:space="preserve"><value>ChamadosTi Ltda.</value></data>
 </root>

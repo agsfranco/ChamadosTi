@@ -20,4 +20,5 @@
   <data name="Btn_AtribuirTecnico" xml:space="preserve"><value>Make Tech</value></data>
   <data name="Btn_RevogarTecnico" xml:space="preserve"><value>Revoke Tech</value></data>
   <data name="Btn_InativarUsuario" xml:space="preserve"><value>Inactivate</value></data>
+  <data name="Checkbox_ShowDeactivated" xml:space="preserve"><value>View deactivated users</value></data>
 </root>
