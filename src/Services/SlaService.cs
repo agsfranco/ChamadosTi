@@ -58,12 +58,15 @@ namespace ChamadosTi.Services
                 taxaConformidade = Math.Round(((double)dentroDoPrazo / chamadosEncerrados.Count) * 100, 1);
             }
 
-            // 5. Linha do Tempo: Evolução de Aberturas (Últimos 7 dias)
+            // 5. Linha do Tempo: Evolução de Aberturas consolidada por Dia Real
             var evolucaoAberturas = todosTickets
-                .Where(t => t.DataAbertura >= agoraUtc.AddDays(-7))
-                .GroupBy(t => t.DataAbertura.ToLocalTime().ToString("dd/MM"))
+                .Where(t => t.DataAbertura >= dataInicioUtc && t.DataAbertura <= dataFimUtc)
+                .GroupBy(t => t.DataAbertura.ToLocalTime().Date) // <-- Agrupa pela data pura, sem horas!
                 .OrderBy(g => g.Key)
-                .ToDictionary(g => g.Key, g => g.Count());
+                .ToDictionary(
+                    g => g.Key.ToString("dd/MM"), // <-- Transforma em string curta apenas na saída
+                    g => g.Count()
+                );
 
             // 6. Performance por Analista Técnico
             var analistasPerformance = todosTickets

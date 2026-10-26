@@ -13,7 +13,7 @@ namespace ChamadosTi.Models
         public int StatusId { get; set; }
         public int? TicketOrigemId { get; set; }
         public DateTime DataAbertura { get; set; } = System.DateTime.UtcNow;
-        public DateTime DataFechamento { get; set; }
+        public DateTime? DataFechamento { get; set; }
         public DateTime PrazoRespostaSLA { get; set; }
         public DateTime PrazoResolucaoSLA { get; set; }
         public string Titulo { get; set; } = null!;
