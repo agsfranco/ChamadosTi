@@ -4,40 +4,29 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  
   <data name="Home_TituloPagina" xml:space="preserve"><value>Dashboard</value></data>
   <data name="Home_BoasVindasTitulo" xml:space="preserve"><value>IT Operations Hub</value></data>
   <data name="Home_BoasVindasSubtitulo" xml:space="preserve"><value>Welcome back. Use the dashboards below to manage your tickets and equipment.</value></data>
   <data name="Home_SecaoIndicadores" xml:space="preserve"><value>Queue Performance Metrics</value></data>
   <data name="Home_SecaoComum" xml:space="preserve"><value>Common Area &amp; Support</value></data>
   <data name="Home_SecaoAdmin" xml:space="preserve"><value>Control Panel &amp; Administrative Governance</value></data>
-  
   <data name="Kpi_Abertos" xml:space="preserve"><value>New Tickets</value></data>
   <data name="Kpi_Atendimento" xml:space="preserve"><value>In Progress</value></data>
   <data name="Kpi_Pendentes" xml:space="preserve"><value>Pending Callback</value></data>
   <data name="Kpi_SlaVencidos" xml:space="preserve"><value>SLA Breached</value></data>
-  
   <data name="Atalho_NovoTicket_Titulo" xml:space="preserve"><value>Open New Ticket</value></data>
   <data name="Atalho_NovoTicket_Desc" xml:space="preserve"><value>Register a new technical incident or service request.</value></data>
   <data name="Atalho_Fila_Titulo" xml:space="preserve"><value>Service Desk Queue</value></data>
   <data name="Atalho_Fila_Desc" xml:space="preserve"><value>View and perform triage on the active ticket queue.</value></data>
   <data name="Atalho_Perfil_Titulo" xml:space="preserve"><value>My Technical Profile</value></data>
   <data name="Atalho_Perfil_Desc" xml:space="preserve"><value>Update your registration data, specialties, and password.</value></data>
-  <data name="Atalho_Usuarios_Titulo" xml:space="preserve"><value>Employee Management</value></data>
   <data name="Atalho_Usuarios_Desc" xml:space="preserve"><value>Manage permissions, departments, and analyst promotions.</value></data>
-  <data name="Atalho_Ativos_Titulo" xml:space="preserve"><value>Asset Inventory</value></data>
   <data name="Atalho_Ativos_Desc" xml:space="preserve"><value>Check the full catalog of mapped hardware and brands.</value></data>
-  <data name="Atalho_Setores_Titulo" xml:space="preserve"><value>Company Departments</value></data>
   <data name="Atalho_Setores_Desc" xml:space="preserve"><value>Map sectors and associate if they have IT support active.</value></data>
-  <data name="Atalho_Horarios_Titulo" xml:space="preserve"><value>Shifts &amp; Schedules</value></data>
   <data name="Atalho_Horarios_Desc" xml:space="preserve"><value>Configure operational business hours windows for SLA.</value></data>
-  <data name="Atalho_Prioridades_Titulo" xml:space="preserve"><value>Severity Matrix</value></data>
   <data name="Atalho_Prioridades_Desc" xml:space="preserve"><value>Parameterize default SLA response and resolution times.</value></data>
-  <data name="Atalho_Feriados_Titulo" xml:space="preserve"><value>Suspension Calendar</value></data>
   <data name="Atalho_Feriados_Desc" xml:space="preserve"><value>Register national and local holidays for SLA pause rules.</value></data>
-  <data name="Atalho_Categorias_Titulo" xml:space="preserve"><value>Category Trees</value></data>
   <data name="Atalho_Categorias_Desc" xml:space="preserve"><value>Manage service catalog categories, brands, and asset types.</value></data>
-  <data name="Atalho_DadosTecnicos_Titulo" xml:space="preserve"><value>Expertise Matrix</value></data>
   <data name="Atalho_DadosTecnicos_Desc" xml:space="preserve"><value>Configure technical skills required by the Service Desk.</value></data>
   <data name="Home_Index_Title" xml:space="preserve"><value>Dashboard - Service Desk</value></data>
   <data name="Home_Welcome_Title" xml:space="preserve"><value>Welcome to the Service Desk</value></data>
@@ -53,4 +42,12 @@
   <data name="Section_Security_Title" xml:space="preserve"><value>Account Security</value></data>
   <data name="Section_Security_Text" xml:space="preserve"><value>Keep your corporate credentials protected by updating your password periodically.</value></data>
   <data name="Button_ChangePassword" xml:space="preserve"><value>Change Password</value></data>
+  <data name="Atalho_Usuarios_Titulo" xml:space="preserve"><value>Employee and Permissions Management</value></data>
+  <data name="Atalho_Ativos_Titulo" xml:space="preserve"><value>Items and Assets Inventory</value></data>
+  <data name="Atalho_Setores_Titulo" xml:space="preserve"><value>Registered Departments</value></data>
+  <data name="Atalho_Horarios_Titulo" xml:space="preserve"><value>Operating Hours</value></data>
+  <data name="Atalho_Prioridades_Titulo" xml:space="preserve"><value>Service Priorities</value></data>
+  <data name="Atalho_Feriados_Titulo" xml:space="preserve"><value>Holidays Calendar</value></data>
+  <data name="Atalho_Categorias_Titulo" xml:space="preserve"><value>Ticket Categories</value></data>
+  <data name="Atalho_DadosTecnicos_Titulo" xml:space="preserve"><value>Registered Support Levels</value></data>
 </root>
