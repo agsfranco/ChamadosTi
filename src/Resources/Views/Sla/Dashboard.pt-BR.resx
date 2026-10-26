@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Sla_Dashboard_Title" xml:space="preserve"><value>Indicadores Gerenciais de SLA</value></data>
+  <data name="Sla_Dashboard_Subtitle" xml:space="preserve"><value>Monitore volumes de atendimento, conformidade de prazos e eficiência operacional em tempo real</value></data>
+  <data name="Kpi_Backlog_Titulo" xml:space="preserve"><value>Fila Ativa (Backlog)</value></data>
+  <data name="Kpi_Vencidos_Titulo" xml:space="preserve"><value>Prazos Estourados</value></data>
+  <data name="Kpi_Conformidade_Titulo" xml:space="preserve"><value>Índice de Acerto (SLA)</value></data>
+  <data name="Kpi_Mttr_Titulo" xml:space="preserve"><value>Tempo de Resolução (MTTR)</value></data>
+  <data name="Grafico_Evolucao_Titulo" xml:space="preserve"><value>Evolução de Entrada de Incidentes (Últimos 7 dias)</value></data>
+  <data name="Grafico_Prioridade_Titulo" xml:space="preserve"><value>Demandas por Criticidade</value></data>
+  <data name="Grafico_Status_Titulo" xml:space="preserve"><value>Chamados por Estado de Atendimento</value></data>
+  <data name="Grid_Performance_Titulo" xml:space="preserve"><value>Performance e Produtividade por Analista Técnico</value></data>
+  <data name="Grid_Coluna_Analista" xml:space="preserve"><value>Analista</value></data>
+  <data name="Grid_Coluna_Assumidos" xml:space="preserve"><value>Assumidos</value></data>
+  <data name="Grid_Coluna_Resolvidos" xml:space="preserve"><value>Resolvidos</value></data>
+  <data name="Grid_Coluna_Sla" xml:space="preserve"><value>Conformidade</value></data>
+  <data name="Grafico_Dataset_Chamados" xml:space="preserve"><value>Quantidade de Chamados</value></data>
+  <data name="Filtro_DataInicio_Label" xml:space="preserve"><value>Data Inicial</value></data>
+  <data name="Filtro_DataFim_Label" xml:space="preserve"><value>Data Final</value></data>
+  <data name="Filtro_Botao_Filtrar" xml:space="preserve"><value>Filtrar Período</value></data>
+  </root>

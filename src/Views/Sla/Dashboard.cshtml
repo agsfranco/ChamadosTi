@@ -1,0 +1,212 @@
+@model ChamadosTi.ViewModels.Sla.SlaDashboardViewModel
+@{
+    ViewData["Title"] = Localizer["Sla_Dashboard_Title"].Value;
+}
+
+<!-- Cabeçalho Principal -->
+<div class="bg-white border rounded shadow-sm p-4 mb-4 mt-3">
+    <h3 class="fw-bold text-primary mb-1"><i class="bi bi-bar-chart-line-fill me-1"></i> @Localizer["Sla_Dashboard_Title"]</h3>
+    <p class="text-muted small mb-0">@Localizer["Sla_Dashboard_Subtitle"]</p>
+</div>
+
+<!-- 🔍 Barra de Filtros por Período -->
+<div class="card shadow-sm border rounded bg-white p-3 mb-4">
+    <form asp-controller="Sla" asp-action="Dashboard" method="get" class="row g-3 align-items-end">
+        <div class="col-md-4 col-sm-6">
+            <label for="dataInicio" class="form-label text-muted small fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">@Localizer["Filtro_DataInicio_Label"]</label>
+            <input type="date" id="dataInicio" name="dataInicio" class="form-select form-select-sm small text-dark" value="@ViewBag.DataInicioFiltro" />
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <label for="dataFim" class="form-label text-muted small fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">@Localizer["Filtro_DataFim_Label"]</label>
+            <input type="date" id="dataFim" name="dataFim" class="form-select form-select-sm small text-dark" value="@ViewBag.DataFimFiltro" />
+        </div>
+        <div class="col-md-4 col-12 text-md-start text-end">
+            <button type="submit" class="btn btn-sm btn-primary px-4 shadow-sm fw-semibold w-100 w-md-auto py-2">
+                <i class="bi bi-filter-left me-1"></i> @Localizer["Filtro_Botao_Filtrar"]
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- 📊 Cards de Indicadores Rápidos (KPIs) -->
+<div class="row mb-4">
+    <!-- Card Backlog -->
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border border-light-subtle rounded bg-white p-3 d-flex flex-row align-items-center justify-content-between">
+            <div>
+                <label class="text-muted small d-block mb-1 text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.5px;">@Localizer["Kpi_Backlog_Titulo"]</label>
+                <span class="fs-3 fw-bold text-dark">@Model.TotalBacklog</span>
+            </div>
+            <div class="rounded-circle p-3 bg-light text-primary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
+                <i class="bi bi-folder-fill fs-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card SLA Vencidos -->
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border border-light-subtle rounded bg-white p-3 d-flex flex-row align-items-center justify-content-between">
+            <div>
+                <label class="text-muted small d-block mb-1 text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.5px;">@Localizer["Kpi_Vencidos_Titulo"]</label>
+                <span class="fs-3 fw-bold text-danger">@Model.TotalSlaVencidos</span>
+            </div>
+            <div class="rounded-circle p-3 bg-light text-danger d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
+                <i class="bi bi-exclamation-octagon-fill fs-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Taxa de Conformidade -->
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border border-light-subtle rounded bg-white p-3 d-flex flex-row align-items-center justify-content-between">
+            <div>
+                <label class="text-muted small d-block mb-1 text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.5px;">@Localizer["Kpi_Conformidade_Titulo"]</label>
+                <span class="fs-3 fw-bold text-success">@Model.TaxaConformidadeSla%</span>
+            </div>
+            <div class="rounded-circle p-3 bg-light text-success d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
+                <i class="bi bi-shield-check fs-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card MTTR (Tempo Médio) -->
+    <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border border-light-subtle rounded bg-white p-3 d-flex flex-row align-items-center justify-content-between">
+            <div>
+                <label class="text-muted small d-block mb-1 text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 0.5px;">@Localizer["Kpi_Mttr_Titulo"]</label>
+                <span class="fs-3 fw-bold text-dark">@Model.TempoMedioResolucaoFormatado</span>
+            </div>
+            <div class="rounded-circle p-3 bg-light text-secondary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
+                <i class="bi bi-clock-history fs-5"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 📈 Gráficos Visuais -->
+<div class="row mb-4">
+    <!-- Evolução de Entrada (Linha) -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm border rounded bg-white p-4 h-100">
+            <h5 class="card-title fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Grafico_Evolucao_Titulo"]</h5>
+            <div style="position: relative; height: 300px;">
+                <canvas id="chartEvolucaoAberturas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribuição por Prioridade (Pizza) -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border rounded bg-white p-4 h-100">
+            <h5 class="card-title fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Grafico_Prioridade_Titulo"]</h5>
+            <div style="position: relative; height: 300px;" class="d-flex align-items-center justify-content-center">
+                <canvas id="chartPrioridades"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <!-- Status dos Chamados (Barras) -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border rounded bg-white p-4 h-100">
+            <h5 class="card-title fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Grafico_Status_Titulo"]</h5>
+            <div style="position: relative; height: 300px;" class="d-flex align-items-center justify-content-center">
+                <canvas id="chartStatus"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 Grid Analítica de Performance dos Analistas -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm border rounded bg-white p-4 h-100">
+            <h5 class="card-title fw-bold text-secondary mb-3 small text-uppercase" style="letter-spacing: 0.5px;">@Localizer["Grid_Performance_Titulo"]</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">@Localizer["Grid_Coluna_Analista"]</th>
+                            <th scope="col" class="text-center">@Localizer["Grid_Coluna_Assumidos"]</th>
+                            <th scope="col" class="text-center">@Localizer["Grid_Coluna_Resolvidos"]</th>
+                            <th scope="col" class="text-end">@Localizer["Grid_Coluna_Sla"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PerformanceAnalistas == null || !Model.PerformanceAnalistas.Any())
+                        {
+                            <tr><td colspan="4" class="text-center text-muted py-4">@Localizer["No_Records_Found"]</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var analista in Model.PerformanceAnalistas)
+                            {
+                                var classeSla = analista.TaxaAcertoSla >= 90 ? "text-success" : analista.TaxaAcertoSla >= 75 ? "text-warning" : "text-danger";
+                                <tr>
+                                    <td class="fw-bold text-dark">@analista.NomeAnalista</td>
+                                    <td class="text-center text-secondary">@analista.ChamadosAssumidos</td>
+                                    <td class="text-center text-secondary">@analista.ChamadosResolvidos</td>
+                                    <td class="text-end fw-bold @classeSla">@analista.TaxaAcertoSla%</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/chart_js/chart.umd.min.js"></script>
+
+    <script>
+        // 1. Deserialização Segura dos Dados do C# para JSON Nativo JavaScript
+        const dadosStatus = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChamadosPorStatus));
+        const dadosPrioridades = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChamadosPorPrioridade));
+        const dadosEvolucao = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EvolucaoAberturasUltimosDias));
+
+        // 2. Renderização do Gráfico de Evolução de Entrada (Line Chart)
+        new Chart(document.getElementById('chartEvolucaoAberturas'), {
+            type: 'line',
+            data: {
+                labels: Object.keys(dadosEvolucao),
+                datasets: [{
+                    label: '@Localizer["Grafico_Dataset_Chamados"]',
+                    data: Object.values(dadosEvolucao),
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.05)',
+                    fill: true,
+                    tension: 0.25
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 3. Renderização do Gráfico de Prioridades (Pie Chart)
+        new Chart(document.getElementById('chartPrioridades'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(dadosPrioridades),
+                datasets: [{
+                    data: Object.values(dadosPrioridades),
+                    backgroundColor: ['#dc3545', '#ffc107', '#0d6efd', '#198754', '#6c757d']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 4. Renderização do Gráfico de Status (Doughnut Chart)
+        new Chart(document.getElementById('chartStatus'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(dadosStatus),
+                datasets: [{
+                    data: Object.values(dadosStatus),
+                    backgroundColor: ['#0dcaf0', '#0d6efd', '#ffc107', '#198754', '#6c757d', '#dc3545']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    </script>
+}
+

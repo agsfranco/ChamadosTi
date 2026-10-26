@@ -19,6 +19,7 @@ namespace ChamadosTi.Configuration
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+            builder.Services.AddScoped<ISlaService, SlaService>();            
 
             return builder;
         }

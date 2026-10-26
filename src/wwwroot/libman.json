@@ -27,6 +27,10 @@
         "font/fonts/bootstrap-icons.woff",
         "font/fonts/bootstrap-icons.woff2"
       ]
+    },
+    {
+      "library": "Chart.js@4.5.1",
+      "destination": "lib/Chart_js"
     }
   ]
 }
