@@ -164,8 +164,8 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var usuarioSistema = await GetUsuarioAsync();
-            if (usuarioSistema is null)
+            var usuarioLogado = await GetUsuarioAsync();
+            if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -185,7 +185,9 @@ namespace ChamadosTi.Controllers
                                     .ThenInclude(i => i.Tipos)
                                     .FirstOrDefaultAsync(t => t.Id == id);
 
-            if (ticket == null)
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
             {
                 return NotFound();
             }
@@ -254,14 +256,16 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assumir(int id)
         {
-            var tecnicoSistema = await GetUsuarioAsync();
-            if (tecnicoSistema is null)
+            var usuarioLogado = await GetUsuarioAsync();
+            if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
             var ticket = await GetTicketStatusAsync(id);
-            if (ticket == null)
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || !tecnico)
             {
                 return NotFound();
             }
@@ -279,17 +283,17 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction(nameof(Details), new { id = ticket.Id });
             }
 
-            ticket.UsuarioTecnicoId = tecnicoSistema.Id;
+            ticket.UsuarioTecnicoId = usuarioLogado.Id;
             ticket.StatusId = novoStatus.Id;
             _context.Tickets.Update(ticket);
 
             var camposModificados = new Dictionary<string, string>
             {
                 { TicketAcaoLog.Log_StatusAlterado.ToString(), "Status_EmAtendimento" },
-                { TicketAcaoLog.Log_TecnicoAtribuido.ToString(), tecnicoSistema.Nome }
+                { TicketAcaoLog.Log_TecnicoAtribuido.ToString(), usuarioLogado.Nome }
             };
 
-            var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoAssumido, tecnicoSistema.Nome, ticket.Id, null, camposModificados);
+            var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoAssumido, usuarioLogado.Nome, ticket.Id, null, camposModificados);
             _context.AuditoriasTickets.Add(auditoriaTicket);
             await _context.SaveChangesAsync();
 
@@ -338,11 +342,17 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaPendente(int id)
         {
-            var tecnicoSistema = await GetUsuarioAsync();
-            if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
+            var usuarioLogado = await GetUsuarioAsync();
+            if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(id);
-            if (ticket == null) return NotFound();
+
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || !tecnico || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
+            {
+                return NotFound();
+            }
 
             if (ticket.Status.Codigo != (int)TicketStatus.EmAtendimento)
             {
@@ -356,7 +366,7 @@ namespace ChamadosTi.Controllers
             ticket.StatusId = statusPendente.Id;
             _context.Tickets.Update(ticket);
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoPendente, tecnicoSistema.Nome, ticket.Id));
+            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoPendente, usuarioLogado.Nome, ticket.Id));
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoPendente"].Value;
@@ -368,11 +378,17 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RetomarAtendimento(int id)
         {
-            var tecnicoSistema = await GetUsuarioAsync();
-            if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
+            var usuarioLogado = await GetUsuarioAsync();
+            if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(id);
-            if (ticket == null) return NotFound();
+
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || !tecnico || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
+            {
+                return NotFound();
+            }
 
             if (ticket.Status.Codigo != (int)TicketStatus.Pendente)
             {
@@ -409,7 +425,7 @@ namespace ChamadosTi.Controllers
             ticket.StatusId = statusAtendimento.Id;
             _context.Tickets.Update(ticket);
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoRetomado, tecnicoSistema.Nome, ticket.Id, null, dicionarioModificacoesLog));
+            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoRetomado, usuarioLogado.Nome, ticket.Id, null, dicionarioModificacoesLog));
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoRetomado"].Value;
@@ -421,8 +437,8 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaResolvido(int id, string justificativaTexto)
         {
-            var tecnicoSistema = await GetUsuarioAsync();
-            if (tecnicoSistema is null) return RedirectToAction("Login", "Account");
+            var usuarioLogado = await GetUsuarioAsync();
+            if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             if (string.IsNullOrWhiteSpace(justificativaTexto))
             {
@@ -431,7 +447,12 @@ namespace ChamadosTi.Controllers
             }
 
             var ticket = await GetTicketStatusAsync(id);
-            if (ticket == null) return NotFound();
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
+            {
+                return NotFound();
+            }
 
             if (ticket.Status.Codigo != (int)TicketStatus.EmAtendimento && ticket.Status.Codigo != (int)TicketStatus.Pendente)
             {
@@ -450,7 +471,7 @@ namespace ChamadosTi.Controllers
                 { TicketAcaoLog.Log_StatusAlterado.ToString(), "Status_Resolvido" } 
             };
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoResolvido, tecnicoSistema.Nome, ticket.Id, justificativaTexto.Trim(), camposModificados));
+            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoResolvido, usuarioLogado.Nome, ticket.Id, justificativaTexto.Trim(), camposModificados));
             await _context.SaveChangesAsync();
             
             TempData["SuccessMessage"] = _localizer["Success_ChamadoResolvido"].Value;
@@ -472,7 +493,12 @@ namespace ChamadosTi.Controllers
             }
 
             var ticket = await GetTicketStatusAsync(id);
-            if (ticket == null) return NotFound();
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
+            {
+                return NotFound();
+            }
 
             if (ticket.Status.Codigo >= (int)TicketStatus.Resolvido)
             {
@@ -507,9 +533,14 @@ namespace ChamadosTi.Controllers
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(ticketId);
-            if (ticket == null) return NotFound();
+            bool tecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket.Status.Codigo >= (int)TicketStatus.Resolvido)
+            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
+            {
+                NotFound();
+            }
+
+            if (ticket!.Status.Codigo >= (int)TicketStatus.Resolvido)
             {
                 TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaAlterarPrioridade"].Value;
                 return RedirectToAction(nameof(Details), new { id = ticket.Id });
@@ -555,7 +586,12 @@ namespace ChamadosTi.Controllers
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(ticketId);
-            if (ticket == null) return NotFound();
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
+            {
+                return NotFound();
+            }
 
             if (ticket.Status.Codigo >= (int)TicketStatus.Resolvido)
             {
