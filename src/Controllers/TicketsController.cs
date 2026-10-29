@@ -310,8 +310,10 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction(nameof(Details), new { id = ticketId });
             }
 
-            var ticketExiste = await _context.Tickets.AnyAsync(t => t.Id == ticketId);
-            if (!ticketExiste)
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
+            bool tecnico = _usuarioService.EhTecnico(User);
+
+            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
             {
                 return NotFound();
             }
