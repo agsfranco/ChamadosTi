@@ -21,13 +21,15 @@ namespace ChamadosTi.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<TicketsController> _localizer;
         private readonly IUsuarioService _usuarioService;
+        private readonly TimeProvider _timeProvider;
 
-        public TicketsController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer, IUsuarioService usuarioService)
+        public TicketsController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer, IUsuarioService usuarioService, TimeProvider timeProvider)
         {
             _context = context;
             _userManager = userManager;
             _localizer = localizer;
             _usuarioService = usuarioService;
+            _timeProvider = timeProvider;
         }
 
         public async Task<IActionResult> Index()
@@ -100,7 +102,7 @@ namespace ChamadosTi.Controllers
                 return View(model);
             }
 
-            var dataAberturaUtc = DateTime.UtcNow;
+            var dataAberturaUtc = _timeProvider.GetUtcNow().UtcDateTime;
             var todosFeriados = await GetFeriadosAsync(DateOnly.FromDateTime(dataAberturaUtc));
             var horariosSetores = await GetHorariosSetoresAsync(usuarioLogado);
 
@@ -380,7 +382,7 @@ namespace ChamadosTi.Controllers
             var statusAtendimento = await GetStatusAsync((int)TicketStatus.EmAtendimento);
             if (statusAtendimento == null) return NotFound();
 
-            var dataRetomadaUtc = DateTime.UtcNow;
+            var dataRetomadaUtc = _timeProvider.GetUtcNow().UtcDateTime;
             var ultimaAuditoriaPausa = await _context.AuditoriasTickets
                                                      .Where(a => a.TicketId == id && a.Log.Contains(TicketAcaoLog.Log_ChamadoPendente.ToString()))
                                                      .OrderByDescending(a => a.RegistradoEm)
@@ -440,7 +442,7 @@ namespace ChamadosTi.Controllers
             if (statusResolvido == null) return NotFound();
 
             ticket.StatusId = statusResolvido.Id;
-            ticket.DataFechamento = DateTime.UtcNow; 
+            ticket.DataFechamento = _timeProvider.GetUtcNow().UtcDateTime; 
             _context.Tickets.Update(ticket);
 
             var camposModificados = new Dictionary<string, string> { 
@@ -481,7 +483,7 @@ namespace ChamadosTi.Controllers
             if (statusCancelado == null) return NotFound();
 
             ticket.StatusId = statusCancelado.Id;
-            ticket.DataFechamento = DateTime.UtcNow; 
+            ticket.DataFechamento = _timeProvider.GetUtcNow().UtcDateTime; 
             _context.Tickets.Update(ticket);
 
             var camposModificados = new Dictionary<string, string> { 
@@ -740,7 +742,7 @@ namespace ChamadosTi.Controllers
             {
                 TicketId = ticketId,
                 Log = jsonString,
-                RegistradoEm = DateTime.UtcNow,
+                RegistradoEm = _timeProvider.GetUtcNow().UtcDateTime,
                 Ativo = true
             };
         }
