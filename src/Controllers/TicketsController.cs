@@ -537,7 +537,7 @@ namespace ChamadosTi.Controllers
 
             if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
             {
-                NotFound();
+                return NotFound();
             }
 
             if (ticket!.Status.Codigo >= (int)TicketStatus.Resolvido)
