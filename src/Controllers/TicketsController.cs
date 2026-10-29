@@ -454,7 +454,7 @@ namespace ChamadosTi.Controllers
                 return NotFound();
             }
 
-            if (ticket.Status.Codigo != (int)TicketStatus.EmAtendimento && ticket.Status.Codigo != (int)TicketStatus.Pendente)
+            if (ticket.Status.Codigo != (int)TicketStatus.EmAtendimento)
             {
                 TempData["ErrorMessage"] = _localizer["Error_StatusInvalidoParaTramitar"].Value;
                 return RedirectToAction(nameof(Details), new { id = ticket.Id });
