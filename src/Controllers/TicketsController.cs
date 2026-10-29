@@ -483,7 +483,6 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
-        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancelar(int id, string justificativaTexto)
@@ -500,9 +499,9 @@ namespace ChamadosTi.Controllers
             var ticket = await GetTicketStatusAsync(id);
             bool tecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket == null || 
-                (ticket.Status.Codigo > (int)TicketStatus.Aberto && tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || 
-                (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
+            if (ticket == null ||
+                (tecnico && ticket.Status.Codigo > (int)TicketStatus.Aberto && ticket.UsuarioTecnicoId != usuarioLogado.Id) ||
+                (!tecnico && (ticket.UsuarioId != usuarioLogado.Id || ticket.Status.Codigo != (int)TicketStatus.Aberto)))
             {
                 return NotFound();
             }

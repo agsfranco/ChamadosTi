@@ -534,11 +534,11 @@
                  @switch (Model.Status.Codigo)
                 {
                     case (int)TicketStatus.Aberto:
-                        @if(ViewBag.EhTecnico) 
-                        {  
-                            @RenderizarBotaoAssumir(null) 
-                            <vc:modal-message model="@modelCancelar"></vc:modal-message>
+                        @if(ViewBag.EhTecnico)
+                        {
+                            @RenderizarBotaoAssumir(null)
                         }
+                        <vc:modal-message model="@modelCancelar"></vc:modal-message>
                     break;
 
                     case (int)TicketStatus.EmAtendimento:
