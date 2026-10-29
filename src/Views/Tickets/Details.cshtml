@@ -407,7 +407,8 @@
             }
         </div>
         <!-- Formulário para envio de novas Interações / Comentários -->
-        @if (Model.Status.Codigo < (int)TicketStatus.Resolvido)
+        @if ((Model.Status.Codigo > (int)TicketStatus.Aberto && Model.Status.Codigo < (int)TicketStatus.Resolvido) &&
+              ViewBag.EhTecnico)
         {
             <div class="card shadow-sm border rounded bg-white p-4 mt-4">
                 <h5 class="card-title fw-bold text-secondary mb-3">@Localizer["Details_SecaoAdicionarComentario"]</h5>
@@ -457,7 +458,8 @@
 
             <div class="mb-3 border-bottom pb-2">
                 <label class="text-muted small d-block mb-1">@Localizer["Details_LabelPrioridade"]</label>
-                @if(ViewBag.EhTecnico && Model.Status.Codigo < (int)TicketStatus.Resolvido && 
+                @if((Model.Status.Codigo > (int)TicketStatus.Aberto && Model.Status.Codigo < (int)TicketStatus.Resolvido) &&
+                    ViewBag.EhTecnico && 
                     ViewBag.Prioridades != null &&
                     ((System.Collections.IEnumerable)ViewBag.Prioridades).Cast<object>().Any()){
                     <form asp-action="AlterarPrioridade" asp-controller="Tickets" method="post">

@@ -78,10 +78,12 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("CompleteProfile", "Account");
             }
 
+            var ehTecnico = _usuarioService.EhTecnico(User);
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -90,7 +92,7 @@ namespace ChamadosTi.Controllers
             {
                 ModelState.AddModelError("", _localizer["Error_SemPrioridade"]);
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -99,7 +101,7 @@ namespace ChamadosTi.Controllers
             {
                 ModelState.AddModelError("", _localizer["Error_SemStatusInicial"]);
                 ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -185,11 +187,16 @@ namespace ChamadosTi.Controllers
                                     .ThenInclude(i => i.Tipos)
                                     .FirstOrDefaultAsync(t => t.Id == id);
 
-            bool tecnico = _usuarioService.EhTecnico(User);
+            bool ehTecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
+            if (ticket == null || (!ehTecnico && ticket.UsuarioId != usuarioLogado.Id) )
             {
                 return NotFound();
+            }
+
+            if (ticket.Status.Codigo > (int)TicketStatus.Aberto)
+            {
+                ehTecnico = ehTecnico && ticket.UsuarioTecnicoId == usuarioLogado.Id;
             }
     
             var itensIdsVinculados = ticket.ItensTickets?.Select(it => it.ItemId).ToList() ?? new List<int>();
@@ -236,9 +243,7 @@ namespace ChamadosTi.Controllers
                         ItemIds = hTicket.ItensTickets?.Select(it => it.ItemId).ToList() ?? new List<int>() // Mapeia os IDs dos ativos
                     });
                 }
-            }
-
-            bool ehTecnico = _usuarioService.EhTecnico(User);
+            }            
 
             var auditoriasOriginais = await GetAuditoriasTicketAsync(ticket.Id);
             ViewBag.AuditoriasOriginais = auditoriasOriginais;

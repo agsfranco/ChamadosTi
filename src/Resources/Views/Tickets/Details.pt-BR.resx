@@ -29,7 +29,7 @@
   <data name="Details_SecaoAdicionarComentario" xml:space="preserve"><value>Adicionar Nova Interação</value></data>
   <data name="Details_PlaceholderComentario" xml:space="preserve"><value>Digite um novo comentário ou mensagem de atualização aqui...</value></data>
   <data name="Details_BotaoEnviarComentario" xml:space="preserve"><value>Enviar Mensagem</value></data>
-  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>Este chamado foi resolvido ou encerrado. Novas interações de texto estão bloqueadas.</value></data>
+  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>Novas interações de texto estão bloqueadas.</value></data>
   <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Status Atual do Ciclo de Vida</value></data>
   <data name="Details_BotaoPendente" xml:space="preserve"><value>Pausar Atendimento / Definir Pendente</value></data>
   <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolver Chamado</value></data>

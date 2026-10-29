@@ -29,7 +29,7 @@
   <data name="Details_SecaoAdicionarComentario" xml:space="preserve"><value>Add New Interaction</value></data>
   <data name="Details_PlaceholderComentario" xml:space="preserve"><value>Type a new comment or update message here...</value></data>
   <data name="Details_BotaoEnviarComentario" xml:space="preserve"><value>Send Message</value></data>
-  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>This ticket has been resolved or closed. New text interactions are locked.</value></data>
+  <data name="Details_AvisoChamadoEncerradoComentarios" xml:space="preserve"><value>New text interactions are locked.</value></data>
   <data name="Details_LabelStatusAtual" xml:space="preserve"><value>Current Lifespan Status</value></data>
   <data name="Details_BotaoPendente" xml:space="preserve"><value>Pause Support / Set Pending</value></data>
   <data name="Details_BotaoResolvido" xml:space="preserve"><value>Resolve / Fix Ticket</value></data>
