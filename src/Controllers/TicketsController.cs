@@ -3,6 +3,7 @@ using ChamadosTi.Models;
 using ChamadosTi.Models.Enums;
 using ChamadosTi.Services.Interfaces;
 using ChamadosTi.Utils;
+using ChamadosTi.ViewModels.Categoria;
 using ChamadosTi.ViewModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -245,6 +246,7 @@ namespace ChamadosTi.Controllers
             return View(ticket);
         }
         
+        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assumir(int id)
@@ -325,6 +327,8 @@ namespace ChamadosTi.Controllers
             TempData["SuccessMessage"] = _localizer["Success_ComentarioAdicionado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticketId });
         }
+
+        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaPendente(int id)
@@ -354,6 +358,7 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
+        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RetomarAtendimento(int id)
@@ -406,6 +411,7 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
+        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaResolvido(int id, string justificativaTexto)
@@ -446,6 +452,7 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
+        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancelar(int id, string justificativaTexto)
@@ -485,6 +492,8 @@ namespace ChamadosTi.Controllers
             TempData["SuccessMessage"] = _localizer["Success_ChamadoCancelado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
+
+        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AlterarPrioridade(int ticketId, [FromForm(Name = "PrioridadeId")] int prioridadeId)
@@ -532,6 +541,7 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
 
+        [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AlterarItens(int ticketId, List<int> itensIdsSelecionados)
@@ -621,9 +631,18 @@ namespace ChamadosTi.Controllers
                               .ToListAsync();
         }
 
-        private async Task<dynamic> GetListaCategoriasAsync()
+        private async Task<List<CategoriaDTO>> GetListaCategoriasAsync()
         {
-            return await _context.Categorias.OrderBy(c => c.Nome).ToListAsync();
+            var categorias = await _context.Categorias.OrderBy(c => c.Nome).ToListAsync();
+            var categoriaDTO = new List<CategoriaDTO>();
+            foreach (Categoria categoria in categorias)
+            {
+                categoriaDTO.Add(new CategoriaDTO { 
+                    Id = categoria.Id,
+                    Nome = categoria.Nome 
+                });
+            }
+            return categoriaDTO;
         }
 
         private async Task<List<AuditoriaTicket>> GetAuditoriasTicketAsync(int ticketId)

@@ -32,8 +32,7 @@ namespace ChamadosTi.Services
                 .ToListAsync();
 
             var resolvidoId = (int)TicketStatus.Resolvido;
-            var canceladoId = (int)TicketStatus.Cancelado;
-
+            
             // 2. Contadores dos Cards (O backlog e vencidos agora respeitam o escopo da janela de tempo filtrada)
             var backlog = todosTickets.Count(t => t.StatusId < resolvidoId);
             var vencidos = todosTickets.Count(t => t.StatusId < resolvidoId && t.PrazoResolucaoSLA < agoraUtc);

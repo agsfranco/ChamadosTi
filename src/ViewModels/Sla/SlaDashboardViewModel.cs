@@ -16,12 +16,4 @@ namespace ChamadosTi.ViewModels.Sla
         // Tabela Analítica de Performance
         public List<PerformanceAnalistaDTO> PerformanceAnalistas { get; set; } = new();
     }
-
-    public class PerformanceAnalistaDTO
-    {
-        public string NomeAnalista { get; set; } = null!;
-        public int ChamadosAssumidos { get; set; }
-        public int ChamadosResolvidos { get; set; }
-        public double TaxaAcertoSla { get; set; }
-    }
 }
