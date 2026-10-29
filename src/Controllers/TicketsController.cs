@@ -4,6 +4,7 @@ using ChamadosTi.Models.Enums;
 using ChamadosTi.Services.Interfaces;
 using ChamadosTi.Utils;
 using ChamadosTi.ViewModels.Categoria;
+using ChamadosTi.ViewModels.Item;
 using ChamadosTi.ViewModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -617,7 +618,7 @@ namespace ChamadosTi.Controllers
             return await _context.Prioridades.FirstOrDefaultAsync(p => p.Id == prioridadeId);
         }
 
-        private async Task<dynamic?> GetListaItensAsync(int? setorId = null)
+        private async Task<List<ItemDTO>> GetListaItensAsync(int? setorId = null)
         {
             var query = _context.Itens
                                 .Include(i => i.Tipos)
@@ -628,11 +629,22 @@ namespace ChamadosTi.Controllers
             {
                 query = query.Where(i => i.SetorId == setorId);
             }
-            return await query.OrderBy(i => i.Nome)
-                              .ThenBy(i => i.Tipos.Nome)
-                              .ThenBy(i => i.Marcas.Nome)
-                              .Select(i => new { Id = i.Id, Texto = i.Nome + " - " + i.Tipos.Nome + " - " + i.Marcas.Nome })
-                              .ToListAsync();
+            var itens = await query.OrderBy(i => i.Nome)
+                                   .ThenBy(i => i.Tipos.Nome)
+                                   .ThenBy(i => i.Marcas.Nome)
+                                   .ToListAsync();
+            
+            var itemDTO = new List<ItemDTO>();
+
+            foreach (Item item in itens)
+            {
+                itemDTO.Add( new ItemDTO {
+                    Id = item.Id,
+                    Texto = $"{item.Nome} - {item.Tipos.Nome} - {item.Marcas.Nome}"
+                });
+            }
+
+            return itemDTO;
         }
 
         private async Task<List<CategoriaDTO>> GetListaCategoriasAsync()
