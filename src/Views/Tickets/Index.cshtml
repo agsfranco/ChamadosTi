@@ -7,6 +7,21 @@
     <a asp-action="Create" class="btn btn-primary">@Localizer["Button_NewTicket"]</a>
 </div>
 
+@if (ViewBag.EhTecnico)
+{
+    <div class="mb-4">
+        <form asp-action="Index" method="get" class="d-inline-block">
+            <div class="form-check form-switch bg-white border rounded py-2 pe-3 ps-5 shadow-sm d-inline-flex align-items-center">
+                <input class="form-check-input" type="checkbox" id="chkExibirTodos" name="exibirTodos" value="true"
+                       @(ViewBag.ExibirTodos ? "checked" : "") onchange="this.form.submit()" style="cursor: pointer;" />
+                <label class="form-check-label text-secondary fw-medium ms-2" for="chkExibirTodos" style="cursor: pointer;">
+                    @Localizer["Checkbox_ShowAllTickets"]
+                </label>
+            </div>
+        </form>
+    </div>
+}
+
 <div class="card shadow-sm bg-white rounded border">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
