@@ -500,7 +500,9 @@ namespace ChamadosTi.Controllers
             var ticket = await GetTicketStatusAsync(id);
             bool tecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
+            if (ticket == null || 
+                (ticket.Status.Codigo > (int)TicketStatus.Aberto && tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || 
+                (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
             {
                 return NotFound();
             }
@@ -540,7 +542,7 @@ namespace ChamadosTi.Controllers
             var ticket = await GetTicketStatusAsync(ticketId);
             bool tecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
+            if (ticket == null || (ticket.Status.Codigo > (int)TicketStatus.Aberto && tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
             {
                 return NotFound();
             }
@@ -593,7 +595,7 @@ namespace ChamadosTi.Controllers
             var ticket = await GetTicketStatusAsync(ticketId);
             bool tecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
+            if (ticket == null || (ticket.Status.Codigo > (int)TicketStatus.Aberto && tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
             {
                 return NotFound();
             }
