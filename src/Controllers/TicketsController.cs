@@ -380,7 +380,7 @@ namespace ChamadosTi.Controllers
 
             var dataRetomadaUtc = DateTime.UtcNow;
             var ultimaAuditoriaPausa = await _context.AuditoriasTickets
-                                                     .Where(a => a.TicketId == id && a.Log.Contains("Status_Pendente"))
+                                                     .Where(a => a.TicketId == id && a.Log.Contains(TicketAcaoLog.Log_ChamadoPendente.ToString()))
                                                      .OrderByDescending(a => a.RegistradoEm)
                                                      .FirstOrDefaultAsync();
 
