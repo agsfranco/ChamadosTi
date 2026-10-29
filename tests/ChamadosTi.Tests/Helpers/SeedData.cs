@@ -129,7 +129,7 @@ namespace ChamadosTi.Tests.Helpers
             return ticket;
         }
 
-        private static Usuario CriarUsuario(AppDbContext contexto, string aspNetId, string nome, int setorId)
+        public static Usuario CriarUsuario(AppDbContext contexto, string aspNetId, string nome, int? setorId)
         {
             var identity = new IdentityUser
             {
