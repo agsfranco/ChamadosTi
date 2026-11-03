@@ -41,21 +41,27 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreateGet_UsuarioNaoCadastrado_RedirecionaParaLogin()
         {
+            // Arrange
             var fantasma = new Usuario { AspNetUserId = "nao-cadastrado", Nome = "Fantasma" };
             var controller = _fixture.CriarController(fantasma, ehTecnico: false);
 
+            // Act
             var result = await controller.Create((int?)null);
 
+            // Assert
             AssertRedirecionaPara(result, "Login", "Account");
         }
 
         [Fact]
         public async Task CreateGet_Tecnico_RecebeTodosOsItensECategorias()
         {
+            // Arrange
             var controller = _fixture.CriarController(_fixture.Dados.Tecnico, ehTecnico: true);
 
+            // Act
             var result = await controller.Create((int?)null);
 
+            // Assert
             Assert.IsType<TicketCreateViewModel>(Assert.IsType<ViewResult>(result).Model);
             var itens = (List<ItemDTO>)controller.ViewBag.Itens;
             Assert.Equal(2, itens.Count);
@@ -66,10 +72,13 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreateGet_Solicitante_RecebeApenasItensDoSeuSetor()
         {
+            // Arrange
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
 
+            // Act
             await controller.Create((int?)null);
 
+            // Assert
             var itens = (List<ItemDTO>)controller.ViewBag.Itens;
             var item = Assert.Single(itens);
             Assert.Equal(_fixture.Dados.ItemDoSetorComum.Id, item.Id);
@@ -79,10 +88,13 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreateGet_PreencheOrigemIdRecebido()
         {
+            // Arrange
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
 
+            // Act
             await controller.Create((int?)42);
 
+            // Assert
             Assert.Equal(42, (int?)controller.ViewBag.OrigemId);
         }
 
@@ -91,11 +103,14 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_UsuarioNaoCadastrado_RedirecionaParaLogin()
         {
+            // Arrange
             var fantasma = new Usuario { AspNetUserId = "nao-cadastrado", Nome = "Fantasma" };
             var controller = _fixture.CriarController(fantasma, ehTecnico: false);
 
+            // Act
             var result = await controller.Create(ModeloValido(_fixture.Dados.ItemDoSetorComum.Id), null);
 
+            // Assert
             AssertRedirecionaPara(result, "Login", "Account");
             Assert.Empty(_fixture.Contexto.Tickets);
         }
@@ -103,11 +118,14 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_UsuarioSemSetor_RedirecionaParaCompleteProfile()
         {
+            // Arrange
             var semSetor = SeedData.CriarUsuario(_fixture.Contexto, "sem-setor", "Sem Setor", setorId: null);
             var controller = _fixture.CriarController(semSetor, ehTecnico: false);
 
+            // Act
             var result = await controller.Create(ModeloValido(), null);
 
+            // Assert
             AssertRedirecionaPara(result, "CompleteProfile", "Account");
             Assert.Empty(_fixture.Contexto.Tickets);
         }
@@ -115,12 +133,15 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_ModelStateInvalido_RetornaViewComModeloERecarregaListas()
         {
+            // Arrange
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
             controller.ModelState.AddModelError("Titulo", "Obrigatório");
             var modelo = ModeloValido(_fixture.Dados.ItemDoSetorComum.Id);
 
+            // Act
             var result = await controller.Create(modelo, null);
 
+            // Assert
             var view = Assert.IsType<ViewResult>(result);
             Assert.Same(modelo, view.Model);
             Assert.NotNull(controller.ViewBag.Categorias);
@@ -131,6 +152,7 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_SemPrioridadePadrao_RetornaViewComErro()
         {
+            // Arrange
             foreach (var prioridade in _fixture.Contexto.Prioridades)
             {
                 prioridade.Padrao = false;
@@ -138,8 +160,10 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
             _fixture.Contexto.SaveChanges();
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
 
+            // Act
             var result = await controller.Create(ModeloValido(_fixture.Dados.ItemDoSetorComum.Id), null);
 
+            // Assert
             Assert.IsType<ViewResult>(result);
             Assert.True(ContemErro(controller, "Error_SemPrioridade"));
             Assert.Empty(_fixture.Contexto.Tickets);
@@ -148,12 +172,15 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_SemStatusAberto_RetornaViewComErro()
         {
+            // Arrange
             _fixture.Contexto.Status.Remove(_fixture.Contexto.Status.Single(s => s.Codigo == (int)TicketStatus.Aberto));
             _fixture.Contexto.SaveChanges();
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
 
+            // Act
             var result = await controller.Create(ModeloValido(_fixture.Dados.ItemDoSetorComum.Id), null);
 
+            // Assert
             Assert.IsType<ViewResult>(result);
             Assert.True(ContemErro(controller, "Error_SemStatusInicial"));
             Assert.Empty(_fixture.Contexto.Tickets);
@@ -164,11 +191,14 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_Valido_CriaTicketEmAbertoComDadosDoUsuario()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
 
+            // Act
             var result = await controller.Create(ModeloValido(dados.ItemDoSetorComum.Id), null);
 
+            // Assert
             AssertRedirecionaPara(result, "Index", "Tickets");
             var ticket = _fixture.Contexto.Tickets.Single();
             var statusAberto = _fixture.Contexto.Status.Single(s => s.Codigo == (int)TicketStatus.Aberto);
@@ -188,13 +218,16 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_Valido_CalculaPrazosPelaPrioridadePadrao()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
             var abertura = _fixture.Relogio.GetUtcNow().UtcDateTime;
             var horarios = _fixture.Contexto.Horarios.ToList();
 
+            // Act
             await controller.Create(ModeloValido(dados.ItemDoSetorComum.Id), null);
 
+            // Assert
             var ticket = _fixture.Contexto.Tickets.Single();
             // Mesmo cálculo da controller: o teste garante que a prioridade padrão e o relógio são usados.
             Assert.Equal(
@@ -209,11 +242,14 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_ComItens_VinculaItensAoTicket()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
 
+            // Act
             await controller.Create(ModeloValido(dados.ItemDoSetorComum.Id), null);
 
+            // Assert
             var ticket = _fixture.Contexto.Tickets.Single();
             var vinculo = Assert.Single(_fixture.Contexto.ItensTickets.Where(it => it.TicketId == ticket.Id));
             Assert.Equal(dados.ItemDoSetorComum.Id, vinculo.ItemId);
@@ -223,10 +259,13 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_SemItens_NaoVinculaItens()
         {
+            // Arrange
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
 
+            // Act
             await controller.Create(ModeloValido(), null);
 
+            // Assert
             Assert.Single(_fixture.Contexto.Tickets);
             Assert.Empty(_fixture.Contexto.ItensTickets);
         }
@@ -234,12 +273,15 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_ComOrigemId_GravaTicketOrigemEAuditoriaDerivado()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var origem = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Resolvido);
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
 
+            // Act
             await controller.Create(ModeloValido(), origem.Id);
 
+            // Assert
             var novo = _fixture.Contexto.Tickets.Single(t => t.Id != origem.Id);
             Assert.Equal(origem.Id, novo.TicketOrigemId);
             var auditoria = _fixture.Contexto.AuditoriasTickets.Single(a => a.TicketId == novo.Id);
@@ -250,11 +292,14 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task CreatePost_Valido_GravaAuditoriaDeAberturaComPrazos()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
 
+            // Act
             await controller.Create(ModeloValido(), null);
 
+            // Assert
             var ticket = _fixture.Contexto.Tickets.Single();
             var auditoria = Assert.Single(_fixture.Contexto.AuditoriasTickets.Where(a => a.TicketId == ticket.Id));
             var log = JsonSerializer.Deserialize<LogAuditoriaTicket>(auditoria.Log)!;

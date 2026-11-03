@@ -15,10 +15,13 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task Index_SemTickets_RetornaViewComListaVazia()
         {
+            // Arrange
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
 
+            // Act
             var result = await controller.Index();
 
+            // Assert
             var view = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<List<Ticket>>(view.Model);
             Assert.Empty(model);
@@ -27,6 +30,7 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task Index_RetornaTicketsOrdenadosPorDataAberturaDecrescente()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var dataBase = new DateTime(2026, 10, 27, 10, 0, 0, DateTimeKind.Utc);
 
@@ -35,8 +39,10 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
             SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Aberto, dataAberturaUtc: dataBase.AddDays(1));
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
 
+            // Act
             var result = await controller.Index();
 
+            // Assert
             var model = Assert.IsAssignableFrom<List<Ticket>>(Assert.IsType<ViewResult>(result).Model);
             Assert.Equal(
                 new[] { dataBase.AddDays(2), dataBase.AddDays(1), dataBase },
@@ -46,14 +52,17 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task Index_NaoExibeTicketsInativos()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var ticket = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Aberto);
             ticket.Ativo = false;
             _fixture.Contexto.SaveChanges();
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
 
+            // Act
             var result = await controller.Index();
 
+            // Assert
             var model = Assert.IsAssignableFrom<List<Ticket>>(Assert.IsType<ViewResult>(result).Model);
             Assert.Empty(model);
         }
@@ -64,11 +73,14 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task Index_UsuarioNaoCadastrado_RedirecionaParaLogin()
         {
+            // Arrange
             var fantasma = new Usuario { AspNetUserId = "nao-cadastrado", Nome = "Fantasma" };
             var controller = _fixture.CriarController(fantasma, ehTecnico: false);
 
+            // Act
             var result = await controller.Index();
 
+            // Assert
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Login", redirect.ActionName);
             Assert.Equal("Account", redirect.ControllerName);
@@ -77,14 +89,17 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task Index_Solicitante_VeApenasTicketsQueCriou_MesmoComExibirTodos()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var meu = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Aberto, solicitante: dados.Solicitante);
             SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Aberto, solicitante: dados.OutroSolicitante);
             var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
 
+            // Act
             var padrao = await controller.Index();
             var comExibirTodos = await controller.Index(exibirTodos: true);
 
+            // Assert
             Assert.Equal(new[] { meu.Id }, IdsDoModelo(padrao));
             Assert.Equal(new[] { meu.Id }, IdsDoModelo(comExibirTodos));
             Assert.False((bool)controller.ViewBag.EhTecnico);
@@ -93,6 +108,7 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task Index_TecnicoPadrao_VeCriadosAssumidosEAbertos_NaoVeEmAndamentoDeOutroTecnico()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var criadoPorMim = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Resolvido, solicitante: dados.Tecnico);
             var assumidoPorMim = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.EmAtendimento, tecnico: dados.Tecnico);
@@ -101,8 +117,10 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
             SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Pendente, solicitante: dados.OutroSolicitante, tecnico: dados.OutroTecnico);
             var controller = _fixture.CriarController(dados.Tecnico, ehTecnico: true);
 
+            // Act
             var result = await controller.Index();
 
+            // Assert
             Assert.Equal(new[] { criadoPorMim.Id, assumidoPorMim.Id, abertoDeOutro.Id }.OrderBy(id => id), IdsDoModelo(result));
             Assert.True((bool)controller.ViewBag.EhTecnico);
             Assert.False((bool)controller.ViewBag.ExibirTodos);
@@ -111,14 +129,17 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         [Fact]
         public async Task Index_TecnicoComExibirTodos_VeTodosOsTickets()
         {
+            // Arrange
             var dados = _fixture.Dados;
             var t1 = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Aberto, solicitante: dados.OutroSolicitante);
             var t2 = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.EmAtendimento, tecnico: dados.OutroTecnico);
             var t3 = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.Resolvido, solicitante: dados.Solicitante);
             var controller = _fixture.CriarController(dados.Tecnico, ehTecnico: true);
 
+            // Act
             var result = await controller.Index(exibirTodos: true);
 
+            // Assert
             Assert.Equal(new[] { t1.Id, t2.Id, t3.Id }.OrderBy(id => id), IdsDoModelo(result));
             Assert.True((bool)controller.ViewBag.ExibirTodos);
         }
