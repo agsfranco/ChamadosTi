@@ -27,4 +27,5 @@
   <data name="Status_Resolvido" xml:space="preserve"><value>Resolved</value></data>
   <data name="Status_Fechado" xml:space="preserve"><value>Closed / Concluded</value></data>
   <data name="Status_Cancelado" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Checkbox_ShowAllTickets" xml:space="preserve"><value>View all tickets</value></data>
 </root>

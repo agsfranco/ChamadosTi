@@ -27,4 +27,5 @@
   <data name="Status_Resolvido" xml:space="preserve"><value>Resolvido</value></data>
   <data name="Status_Fechado" xml:space="preserve"><value>Fechado / Concluído</value></data>
   <data name="Status_Cancelado" xml:space="preserve"><value>Cancelado</value></data>
+  <data name="Checkbox_ShowAllTickets" xml:space="preserve"><value>Visualizar todos os chamados</value></data>
 </root>

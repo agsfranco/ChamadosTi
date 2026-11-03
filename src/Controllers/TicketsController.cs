@@ -33,16 +33,37 @@ namespace ChamadosTi.Controllers
             _timeProvider = timeProvider;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool exibirTodos = false)
         {
-            var tickets = await _context.Tickets
+            var usuarioLogado = await GetUsuarioAsync();
+            if (usuarioLogado is null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            bool ehTecnico = _usuarioService.EhTecnico(User);
+            bool verTodos = ehTecnico && exibirTodos;
+
+            var query = _context.Tickets
                                 .Include(t => t.Status)
                                 .Include(t => t.Prioridades)
                                 .Include(t => t.Categorias)
-                                .Include(t => t.Usuarios) 
-                                .Include(t => t.UsuariosTecnicos) 
-                                .OrderByDescending(t => t.DataAbertura) 
-                                .ToListAsync();
+                                .Include(t => t.Usuarios)
+                                .Include(t => t.UsuariosTecnicos)
+                                .AsQueryable();
+
+            if (!verTodos)
+            {
+                query = ehTecnico
+                    ? query.Where(t => t.UsuarioId == usuarioLogado.Id || t.UsuarioTecnicoId == usuarioLogado.Id || t.Status.Codigo == (int)TicketStatus.Aberto)
+                    : query.Where(t => t.UsuarioId == usuarioLogado.Id);
+            }
+
+            var tickets = await query.OrderByDescending(t => t.DataAbertura)
+                                     .ToListAsync();
+
+            ViewBag.EhTecnico = ehTecnico;
+            ViewBag.ExibirTodos = verTodos;
 
             return View(tickets);
         }
@@ -454,7 +475,7 @@ namespace ChamadosTi.Controllers
             var ticket = await GetTicketStatusAsync(id);
             bool tecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
+            if (ticket == null || !tecnico || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
             {
                 return NotFound();
             }
@@ -624,7 +645,7 @@ namespace ChamadosTi.Controllers
 
             var camposModificados = new Dictionary<string, string>
             {
-                { TicketAcaoLog.Log_ItensAlterados.ToString(), itensIdsSelecionados != null ? string.Join(", ", itensIdsSelecionados) : "Nenhum" }
+                { TicketAcaoLog.Log_ItensAlterados.ToString(), itensIdsSelecionados != null && itensIdsSelecionados.Any() ? string.Join(", ", itensIdsSelecionados) : "Nenhum" }
             };
 
             _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ItensAlterados, usuarioLogado.Nome, ticket.Id, null, camposModificados));
