@@ -475,7 +475,7 @@ namespace ChamadosTi.Controllers
             var ticket = await GetTicketStatusAsync(id);
             bool tecnico = _usuarioService.EhTecnico(User);
 
-            if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
+            if (ticket == null || !tecnico || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id))
             {
                 return NotFound();
             }
@@ -645,7 +645,7 @@ namespace ChamadosTi.Controllers
 
             var camposModificados = new Dictionary<string, string>
             {
-                { TicketAcaoLog.Log_ItensAlterados.ToString(), itensIdsSelecionados != null ? string.Join(", ", itensIdsSelecionados) : "Nenhum" }
+                { TicketAcaoLog.Log_ItensAlterados.ToString(), itensIdsSelecionados != null && itensIdsSelecionados.Any() ? string.Join(", ", itensIdsSelecionados) : "Nenhum" }
             };
 
             _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ItensAlterados, usuarioLogado.Nome, ticket.Id, null, camposModificados));

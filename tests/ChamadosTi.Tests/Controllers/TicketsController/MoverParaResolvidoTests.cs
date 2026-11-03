@@ -103,6 +103,23 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         }
 
         [Fact]
+        public async Task MoverParaResolvido_Solicitante_MesmoComTicketProprio_RetornaNotFound()
+        {
+            // Arrange
+            var dados = _fixture.Dados;
+            var ticket = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.EmAtendimento, solicitante: dados.Solicitante, tecnico: dados.Tecnico);
+            var controller = _fixture.CriarController(dados.Solicitante, ehTecnico: false);
+
+            // Act
+            var result = await controller.MoverParaResolvido(ticket.Id, "Trocada a fonte");
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+            Assert.Equal(_fixture.Contexto.Status.Single(s => s.Codigo == (int)TicketStatus.EmAtendimento).Id, _fixture.Contexto.Tickets.Single().StatusId);
+            Assert.Empty(_fixture.Contexto.AuditoriasTickets);
+        }
+
+        [Fact]
         public async Task MoverParaResolvido_StatusDiferenteDeEmAtendimento_RedirecionaParaDetailsComErro()
         {
             // Arrange

@@ -131,6 +131,23 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
         }
 
         [Fact]
+        public async Task AlterarItens_ListaVazia_GravaAuditoriaComNenhum()
+        {
+            // Arrange
+            var dados = _fixture.Dados;
+            var ticket = SeedData.CriarTicket(_fixture.Contexto, dados, TicketStatus.EmAtendimento, tecnico: dados.Tecnico);
+            var controller = _fixture.CriarController(dados.Tecnico, ehTecnico: true);
+
+            // Act
+            await controller.AlterarItens(ticket.Id, new List<int>());
+
+            // Assert
+            var auditoria = Assert.Single(_fixture.Contexto.AuditoriasTickets.Where(a => a.TicketId == ticket.Id));
+            var log = JsonSerializer.Deserialize<LogAuditoriaTicket>(auditoria.Log)!;
+            Assert.Equal("Nenhum", log.CamposModificados![TicketAcaoLog.Log_ItensAlterados.ToString()]);
+        }
+
+        [Fact]
         public async Task AlterarItens_GravaAuditoriaComIdsSelecionados()
         {
             // Arrange
