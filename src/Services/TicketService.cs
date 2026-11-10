@@ -145,9 +145,12 @@ namespace ChamadosTi.Services
             return (prazoResposta, prazoResolucao);
         }
 
-        // Abertura: grava o chamado, depois os itens e a auditoria (dois SaveChanges, como antes).
+        // Abertura: o chamado, seus itens e a auditoria são gravados numa única transação.
+        // Se qualquer parte falhar, nada é persistido (o ticket não fica sem itens ou auditoria).
         public async Task CriarAsync(Ticket ticket, IEnumerable<int>? itensIds, string usuarioNome, Dictionary<string, string> campos)
         {
+            await using var transacao = await _context.Database.BeginTransactionAsync();
+
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
 
@@ -166,6 +169,8 @@ namespace ChamadosTi.Services
 
             AdicionarAuditoria(TicketAcaoLog.Log_AberturaChamado, usuarioNome, ticket.Id, null, campos);
             await _context.SaveChangesAsync();
+
+            await transacao.CommitAsync();
         }
 
         // Mudança de estado: atualiza o chamado e registra a auditoria em um único SaveChanges.
