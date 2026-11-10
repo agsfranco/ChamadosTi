@@ -1,6 +1,7 @@
 using ChamadosTi.Data;
 using ChamadosTi.Models;
 using ChamadosTi.Models.Enums;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,14 +20,16 @@ namespace ChamadosTi.Controllers
         private readonly IStringLocalizer<AccountController> _localizer;
         private readonly IEmailSender _emailSender;
         private readonly AppDbContext _context;
+        private readonly IUsuarioService _usuarioService;
         private readonly IdentityOptions _identityOptions;
 
         public AccountController(
-            SignInManager<IdentityUser> signInManager, 
+            SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             IStringLocalizer<AccountController> localizer,
             IEmailSender emailSender,
             AppDbContext context,
+            IUsuarioService usuarioService,
             IOptions<IdentityOptions> identityOptions)
         {
             _signInManager = signInManager;
@@ -34,6 +37,7 @@ namespace ChamadosTi.Controllers
             _localizer = localizer;
             _emailSender = emailSender;
             _context = context;
+            _usuarioService = usuarioService;
             _identityOptions = identityOptions.Value;
         }
 
@@ -70,7 +74,7 @@ namespace ChamadosTi.Controllers
                 var identityUser = await _userManager.FindByEmailAsync(model.Email);
                 if (identityUser is not null)
                 {
-                    var perfilCompleto = _context.Usuarios.Any(u => u.AspNetUserId == identityUser.Id);
+                    var perfilCompleto = await _usuarioService.PossuiPerfilAsync(identityUser.Id);
                 
                     if (!perfilCompleto)
                     {
@@ -132,8 +136,7 @@ namespace ChamadosTi.Controllers
                     Ativo = true
                 };
 
-                _context.Usuarios.Add(novoUsuarioLocal);
-                await _context.SaveChangesAsync();
+                await _usuarioService.CriarAsync(novoUsuarioLocal);
 
                 if (requerConfirmacao)
                 {
@@ -273,7 +276,7 @@ namespace ChamadosTi.Controllers
             var identityUserId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(identityUserId)) return RedirectToAction("Login", "Account");
 
-            var usuarioLocal = await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == identityUserId);
+            var usuarioLocal = await _usuarioService.ObterPorAspNetIdAsync(identityUserId);
             var model = new CompleteProfileViewModel();
 
             if (usuarioLocal != null)
@@ -296,8 +299,6 @@ namespace ChamadosTi.Controllers
                 Id = d.Id, 
                 DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
             }).ToList().OrderBy(d => d.DescricaoFormatada);
-
-            var totalUsuarios = await _context.Usuarios.CountAsync();
 
             return View(model);
         }
@@ -350,39 +351,7 @@ namespace ChamadosTi.Controllers
                 return View(model);
             }
             
-            if (!model.EhTecnico)
-            {
-                model.DadoTecnicoId = null;
-                await _userManager.RemoveFromRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(identityUser, UsuarioRole.Tecnico.ToString());
-            }
-
-            var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == identityUserId);
-
-            if (usuarioExistente == null)
-            {
-                var novoUsuario = new Usuario
-                {
-                    AspNetUserId = identityUserId,
-                    Nome = model.Nome,
-                    SetorId = model.SetorId!.Value,
-                    DadoTecnicoId = model.DadoTecnicoId,
-                    Ativo = true
-                };
-                _context.Usuarios.Add(novoUsuario);
-            }
-            else
-            {
-                usuarioExistente.Nome = model.Nome;
-                usuarioExistente.SetorId = model.SetorId!.Value;
-                usuarioExistente.DadoTecnicoId = model.DadoTecnicoId;
-                _context.Usuarios.Update(usuarioExistente);
-            }
-
-            await _context.SaveChangesAsync();
+            await _usuarioService.SalvarPerfilAsync(identityUser, model.Nome, model.SetorId!.Value, model.DadoTecnicoId, model.EhTecnico);
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }

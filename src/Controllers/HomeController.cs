@@ -38,7 +38,7 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            var usuarioLocal = await _usuarioService.GetUsuarioCompletoPorAspNetIdAsync(identityUserId);
+            var usuarioLocal = await _usuarioService.ObterCompletoPorAspNetIdAsync(identityUserId);
 
             if (usuarioLocal == null)
             {

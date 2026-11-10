@@ -62,7 +62,7 @@ namespace ChamadosTi.Tests.Helpers
                 .Returns<string>(chave => new LocalizedString(chave, chave));
 
             UsuarioService
-                .Setup(s => s.GetUsuarioLocalPorAspNetIdAsync(It.IsAny<string>()))
+                .Setup(s => s.ObterPorAspNetIdAsync(It.IsAny<string>()))
                 .Returns<string>(aspNetId => Contexto.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == aspNetId));
         }
 

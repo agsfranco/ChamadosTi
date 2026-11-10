@@ -663,7 +663,7 @@ namespace ChamadosTi.Controllers
                 return null;
             }
 
-            return await _usuarioService.GetUsuarioLocalPorAspNetIdAsync(identityUserId);
+            return await _usuarioService.ObterPorAspNetIdAsync(identityUserId);
         }
 
         private async Task<Status?> GetStatusAsync(int codigoStatus)
