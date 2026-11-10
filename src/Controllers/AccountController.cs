@@ -318,18 +318,17 @@ namespace ChamadosTi.Controllers
             {
                 ModelState.AddModelError("SetorId", _localizer["Error_SetorObrigatorio"]);
             }
-
-            if (setorSelecionado!.Ti)
+            else
             {
-                if (model.DadoTecnicoId == null)
+                if (setorSelecionado.Ti && model.DadoTecnicoId == null)
                 {
                     ModelState.AddModelError("SetorId", _localizer["Error_SetorTiExigeDadosTecnicos"]);
                 }
-            }
 
-            if (!setorSelecionado!.Ti && model.DadoTecnicoId != null)
-            {
-                ModelState.AddModelError("SetorId", _localizer["Error_ObrigatorioSetorTi"]);
+                if (!setorSelecionado.Ti && model.DadoTecnicoId != null)
+                {
+                    ModelState.AddModelError("SetorId", _localizer["Error_ObrigatorioSetorTi"]);
+                }
             }
 
             if (!ModelState.IsValid)
