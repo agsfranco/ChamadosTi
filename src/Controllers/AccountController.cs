@@ -19,8 +19,9 @@ namespace ChamadosTi.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<AccountController> _localizer;
         private readonly IEmailSender _emailSender;
-        private readonly AppDbContext _context;
         private readonly IUsuarioService _usuarioService;
+        private readonly ISetorService _setorService;
+        private readonly IDadoTecnicoService _dadoTecnicoService;
         private readonly IdentityOptions _identityOptions;
 
         public AccountController(
@@ -28,16 +29,18 @@ namespace ChamadosTi.Controllers
             UserManager<IdentityUser> userManager,
             IStringLocalizer<AccountController> localizer,
             IEmailSender emailSender,
-            AppDbContext context,
             IUsuarioService usuarioService,
+            ISetorService setorService,
+            IDadoTecnicoService dadoTecnicoService,
             IOptions<IdentityOptions> identityOptions)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _localizer = localizer;
             _emailSender = emailSender;
-            _context = context;
             _usuarioService = usuarioService;
+            _setorService = setorService;
+            _dadoTecnicoService = dadoTecnicoService;
             _identityOptions = identityOptions.Value;
         }
 
@@ -287,15 +290,11 @@ namespace ChamadosTi.Controllers
                 model.EhTecnico = usuarioLocal.DadoTecnicoId != null;
             }
 
-            ViewBag.Setores = await _context.Setores.Where(s => s.Ativo).OrderBy(s => s.Nome).ToListAsync();
-            
-            var dadosTecnicosLista = await _context.DadosTecnicos
-                .Include(d => d.Especialidades)
-                .Where(d => d.Ativo)
-                .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
-                .ToListAsync();
+            ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
 
-            ViewBag.DadosTecnicos = dadosTecnicosLista.Select(d => new { 
+            var dadosTecnicosLista = await _dadoTecnicoService.ListarAtivosParaPerfilAsync();
+
+            ViewBag.DadosTecnicos = dadosTecnicosLista.Select(d => new {
                 Id = d.Id, 
                 DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
             }).ToList().OrderBy(d => d.DescricaoFormatada);
@@ -314,7 +313,7 @@ namespace ChamadosTi.Controllers
             var identityUser = await _userManager.FindByIdAsync(identityUserId);
             if (identityUser == null) return RedirectToAction("Login", "Account");
 
-            var setorSelecionado = await _context.Setores.FindAsync(model.SetorId);
+            var setorSelecionado = model.SetorId == null ? null : await _setorService.ObterPorIdAsync(model.SetorId.Value);
             if (setorSelecionado == null)
             {
                 ModelState.AddModelError("SetorId", _localizer["Error_SetorObrigatorio"]);
@@ -335,13 +334,9 @@ namespace ChamadosTi.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Setores = await _context.Setores.Where(s => s.Ativo).OrderBy(s => s.Nome).ToListAsync();
-                
-                var dadosTecnicosLista = await _context.DadosTecnicos
-                    .Include(d => d.Especialidades)
-                    .Where(d => d.Ativo)
-                    .OrderBy(d => d.Especialidades != null ? d.Especialidades.Nome : "")
-                    .ToListAsync();
+                ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
+
+                var dadosTecnicosLista = await _dadoTecnicoService.ListarAtivosParaPerfilAsync();
 
                 ViewBag.DadosTecnicos = dadosTecnicosLista.Select(d => new { 
                     Id = d.Id, 

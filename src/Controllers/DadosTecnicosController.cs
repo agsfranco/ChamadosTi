@@ -1,9 +1,8 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.DadoTecnico;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -11,33 +10,20 @@ namespace ChamadosTi.Controllers
     [Authorize(Roles = "Admin")]
     public class DadosTecnicosController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IDadoTecnicoService _dadoTecnicoService;
+        private readonly IEspecialidadeService _especialidadeService;
         private readonly IStringLocalizer<DadosTecnicosController> _localizer;
 
-        public DadosTecnicosController(AppDbContext context, IStringLocalizer<DadosTecnicosController> localizer)
+        public DadosTecnicosController(IDadoTecnicoService dadoTecnicoService, IEspecialidadeService especialidadeService, IStringLocalizer<DadosTecnicosController> localizer)
         {
-            _context = context;
+            _dadoTecnicoService = dadoTecnicoService;
+            _especialidadeService = especialidadeService;
             _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
-            List<DadoTecnico> dadosTecnicos;
-
-            if (exibirInativos)
-            {
-                dadosTecnicos = await _context.DadosTecnicos
-                    .IgnoreQueryFilters()
-                    .Include(d => d.Especialidades)
-                    .Where(d => !d.Ativo)
-                    .ToListAsync();
-            }
-            else
-            {
-                dadosTecnicos = await _context.DadosTecnicos
-                    .Include(d => d.Especialidades)
-                    .ToListAsync();
-            }
+            var dadosTecnicos = await _dadoTecnicoService.ListarAsync(exibirInativos);
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(dadosTecnicos);
@@ -46,7 +32,7 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+            ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
             return View(new DadoTecnicoViewModel());
         }
 
@@ -56,7 +42,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+                ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
                 return View(model);
             }
 
@@ -67,18 +53,17 @@ namespace ChamadosTi.Controllers
                 Ativo = true
             };
 
-            _context.DadosTecnicos.Add(novoDado);
-            await _context.SaveChangesAsync();
+            await _dadoTecnicoService.CriarAsync(novoDado);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var dado = await BuscarDadoTecnicoPorIdAsync(id, false, false);
+            var dado = await _dadoTecnicoService.ObterPorIdAsync(id);
             if (dado == null) return NotFound();
 
-            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+            ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
 
             var model = new DadoTecnicoViewModel
             {
@@ -96,25 +81,24 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+                ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
                 return View(model);
             }
 
-            var dado = await BuscarDadoTecnicoPorIdAsync(model.Id, false, false);
+            var dado = await _dadoTecnicoService.ObterPorIdAsync(model.Id);
             if (dado == null) return NotFound();
 
             dado.EspecialidadeId = model.EspecialidadeId;
             dado.Nivel = model.Nivel;
 
-            _context.DadosTecnicos.Update(dado);
-            await _context.SaveChangesAsync();
+            await _dadoTecnicoService.AtualizarAsync(dado);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var dado = await BuscarDadoTecnicoPorIdAsync(id, false, true);
+            var dado = await _dadoTecnicoService.ObterPorIdAsync(id, incluirRelacionamentos: true);
             if (dado == null) return NotFound();
 
             return View(dado);
@@ -124,11 +108,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dado = await BuscarDadoTecnicoPorIdAsync(id, false, false);
+            var dado = await _dadoTecnicoService.ObterPorIdAsync(id);
             if (dado == null) return NotFound();
 
-            _context.DadosTecnicos.Remove(dado);
-            await _context.SaveChangesAsync();
+            await _dadoTecnicoService.RemoverAsync(dado);
             return RedirectToAction(nameof(Index));
         }
 
@@ -136,29 +119,11 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var dado = await BuscarDadoTecnicoPorIdAsync(id, true, false);
+            var dado = await _dadoTecnicoService.ObterPorIdAsync(id, ignorarFiltros: true);
             if (dado == null) return NotFound();
 
-            dado.Ativo = true;
-
-            _context.DadosTecnicos.Update(dado);
-            await _context.SaveChangesAsync();
+            await _dadoTecnicoService.AtivarAsync(dado);
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<DadoTecnico?> BuscarDadoTecnicoPorIdAsync(int id, bool ignorarFiltros, bool incluirEspecialidades)
-        {
-            var query = _context.DadosTecnicos.AsQueryable();
-
-            if (ignorarFiltros) query = query.IgnoreQueryFilters();
-            if (incluirEspecialidades) query = query.Include(d => d.Especialidades);
-
-            return await query.FirstOrDefaultAsync(d => d.Id == id);
-        }
-
-        private async Task<List<Especialidade>> CarregarEspecialidadesFormularioAsync()
-        {
-            return await _context.Especialidades.OrderBy(e => e.Nome).ToListAsync();
         }
     }
 }
