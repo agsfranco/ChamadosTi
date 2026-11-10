@@ -4,6 +4,6 @@ namespace ChamadosTi.Services.Interfaces
 {
     public interface IItemService : ICatalogoService<Item>
     {
-        Task<List<Ticket>> ObterChamadosRelacionadosAsync(int itemId);
+        Task<List<Item>> ListarParaSelecaoAsync(int? setorId);
     }
 }

@@ -18,14 +18,24 @@ namespace ChamadosTi.Services
                         .Include(i => i.Setores);
         }
 
-        public async Task<List<Ticket>> ObterChamadosRelacionadosAsync(int itemId)
+        // Itens para seleção em chamados, filtrados pelo setor quando informado.
+        public async Task<List<Item>> ListarParaSelecaoAsync(int? setorId)
         {
-            return await _context.Tickets
-                .Include(t => t.Status)
-                .Include(t => t.AuditoriaTickets)
-                .Where(t => t.ItensTickets!.Any(it => it.ItemId == itemId))
-                .OrderByDescending(t => t.DataAbertura)
-                .ToListAsync();
+            var query = _context.Itens
+                                .Include(i => i.Tipos)
+                                .Include(i => i.Marcas)
+                                .Include(i => i.Setores)
+                                .AsQueryable();
+
+            if (setorId != null)
+            {
+                query = query.Where(i => i.SetorId == setorId);
+            }
+
+            return await query.OrderBy(i => i.Nome)
+                              .ThenBy(i => i.Tipos.Nome)
+                              .ThenBy(i => i.Marcas.Nome)
+                              .ToListAsync();
         }
     }
 }

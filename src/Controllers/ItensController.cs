@@ -15,14 +15,16 @@ namespace ChamadosTi.Controllers
         private readonly ITipoService _tipoService;
         private readonly IMarcaService _marcaService;
         private readonly ISetorService _setorService;
+        private readonly ITicketService _ticketService;
         private readonly IStringLocalizer<ItensController> _localizer;
 
-        public ItensController(IItemService itemService, ITipoService tipoService, IMarcaService marcaService, ISetorService setorService, IStringLocalizer<ItensController> localizer)
+        public ItensController(IItemService itemService, ITipoService tipoService, IMarcaService marcaService, ISetorService setorService, ITicketService ticketService, IStringLocalizer<ItensController> localizer)
         {
             _itemService = itemService;
             _tipoService = tipoService;
             _marcaService = marcaService;
             _setorService = setorService;
+            _ticketService = ticketService;
             _localizer = localizer;
         }
 
@@ -40,7 +42,7 @@ namespace ChamadosTi.Controllers
             var item = await _itemService.ObterPorIdAsync(id, incluirRelacionamentos: true);
             if (item == null) return NotFound();
 
-            var chamadosRelacionados = await _itemService.ObterChamadosRelacionadosAsync(id);
+            var chamadosRelacionados = await _ticketService.ObterChamadosPorItemAsync(id);
 
             var historicoDTO = new List<TicketHistoricoAtivoDTO>();
 

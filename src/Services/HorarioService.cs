@@ -7,8 +7,11 @@ namespace ChamadosTi.Services
 {
     public class HorarioService : CatalogoService<Horario>, IHorarioService
     {
-        public HorarioService(AppDbContext context) : base(context)
+        private readonly ISetorService _setorService;
+
+        public HorarioService(AppDbContext context, ISetorService setorService) : base(context)
         {
+            _setorService = setorService;
         }
 
         protected override IQueryable<Horario> OrdenarListagem(IQueryable<Horario> query)
@@ -78,6 +81,19 @@ namespace ChamadosTi.Services
             }
 
             await RemoverAsync(horario);
+        }
+
+        // Horários do setor que define o SLA: o setor de TI do sistema ou, se não houver, o setor do usuário.
+        public async Task<List<Horario>> ObterHorariosSlaAsync(int? setorUsuarioId)
+        {
+            var setorTi = await _setorService.ObterSetorTiAsync();
+            var setorSlaId = setorTi != null ? setorTi.Id : setorUsuarioId;
+
+            return await _context.SetoresHorarios
+                                 .Include(s => s.Horario)
+                                 .Where(s => s.SetorId == setorSlaId)
+                                 .Select(s => s.Horario)
+                                 .ToListAsync();
         }
     }
 }

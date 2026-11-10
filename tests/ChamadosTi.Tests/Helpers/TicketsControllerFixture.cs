@@ -2,6 +2,7 @@ using System.Security.Claims;
 using ChamadosTi.Controllers;
 using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services;
 using ChamadosTi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -89,11 +90,23 @@ namespace ChamadosTi.Tests.Helpers
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "teste"));
             var httpContext = new DefaultHttpContext { User = principal };
 
+            // Serviços reais sobre o mesmo contexto SQLite; as assertions dos testes leem esse banco.
+            var setorService = new SetorService(Contexto);
+            var feriadoService = new FeriadoService(Contexto);
+            var horarioService = new HorarioService(Contexto, setorService);
+            var ticketService = new TicketService(Contexto, Relogio, feriadoService, horarioService);
+            var prioridadeService = new PrioridadeService(Contexto);
+            var categoriaService = new CategoriaService(Contexto);
+            var itemService = new ItemService(Contexto);
+
             var controller = new TicketsController(
-                Contexto,
+                ticketService,
                 UserManager.Object,
                 Localizer.Object,
                 UsuarioService.Object,
+                prioridadeService,
+                categoriaService,
+                itemService,
                 Relogio);
 
             controller.ControllerContext = new ControllerContext { HttpContext = httpContext };

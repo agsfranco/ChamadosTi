@@ -8,5 +8,6 @@ namespace ChamadosTi.Services.Interfaces
         Task CriarComSetoresAsync(Horario horario, IEnumerable<int>? setoresIds);
         Task AtualizarComSetoresAsync(Horario horario, IEnumerable<int>? setoresIds);
         Task RemoverComSetoresAsync(Horario horario);
+        Task<List<Horario>> ObterHorariosSlaAsync(int? setorUsuarioId);
     }
 }

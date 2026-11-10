@@ -15,17 +15,17 @@ namespace ChamadosTi.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<HomeController> _localizer;
         private readonly IUsuarioService _usuarioService;
+        private readonly ITicketService _ticketService;
 
-        public HomeController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<HomeController> localizer, IUsuarioService usuarioService)
+        public HomeController(UserManager<IdentityUser> userManager, IStringLocalizer<HomeController> localizer, IUsuarioService usuarioService, ITicketService ticketService)
         {
-            _context = context;
             _userManager = userManager;
             _localizer = localizer;
             _usuarioService = usuarioService;
+            _ticketService = ticketService;
         }
 
         public async Task<IActionResult> Index()
@@ -55,32 +55,14 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("CompleteProfile", "Account");
             }
 
-            var queryBase = _context.Tickets.Where(t => t.Ativo == true);
-
-            if (!possuiAcessoGlobal)
-            {
-                queryBase = queryBase.Where(t => t.UsuarioId == usuarioLocal.Id);
-            }
-
-            var novosAbertos = await queryBase
-                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.Aberto);
-
-            var emAtendimento = await queryBase
-                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.EmAtendimento);
-
-            var pendentes = await queryBase
-                .CountAsync(t => t.Status.Codigo == (int)TicketStatus.Pendente);
-
-            var slaVencidos = await queryBase
-                .CountAsync(t => t.Status.Codigo < (int)TicketStatus.Resolvido 
-                              && t.PrazoResolucaoSLA < agoraUtc);
+            var indicadores = await _ticketService.ContarIndicadoresAsync(possuiAcessoGlobal ? null : usuarioLocal.Id, agoraUtc);
 
             var modelDashboard = new IndexViewModel
             {
-                TotalNovosAbertos = novosAbertos,
-                TotalEmAtendimento = emAtendimento,
-                TotalPendentes = pendentes,
-                TotalSlaVencidos = slaVencidos
+                TotalNovosAbertos = indicadores.TotalNovosAbertos,
+                TotalEmAtendimento = indicadores.TotalEmAtendimento,
+                TotalPendentes = indicadores.TotalPendentes,
+                TotalSlaVencidos = indicadores.TotalSlaVencidos
             };
 
             return View(modelDashboard);

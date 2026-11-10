@@ -17,6 +17,11 @@ namespace ChamadosTi.Services
             return query;
         }
 
+        public async Task<Setor?> ObterSetorTiAsync()
+        {
+            return await _context.Setores.FirstOrDefaultAsync(s => s.Ti);
+        }
+
         // O setor de TI não pode deixar de ser TI.
         public bool PodeAlterarFlagTi(Setor setor, bool novoValorTi)
         {

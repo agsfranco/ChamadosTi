@@ -21,5 +21,14 @@ namespace ChamadosTi.Services
         {
             return await _context.Feriados.AnyAsync(f => f.Dia == dia && f.Id != id);
         }
+
+        // Feriados a partir de uma data, usados no cálculo de SLA.
+        public async Task<List<DateOnly>> ObterAPartirDeAsync(DateOnly data)
+        {
+            return await _context.Feriados
+                                 .Where(f => f.Dia >= data)
+                                 .Select(f => f.Dia)
+                                 .ToListAsync();
+        }
     }
 }

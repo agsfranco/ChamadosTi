@@ -1,4 +1,3 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
 using ChamadosTi.Models.Enums;
 using ChamadosTi.Services.Interfaces;
@@ -9,7 +8,6 @@ using ChamadosTi.ViewModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Text.Json;
 
@@ -18,18 +16,24 @@ namespace ChamadosTi.Controllers
     [Authorize]
     public class TicketsController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly ITicketService _ticketService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<TicketsController> _localizer;
         private readonly IUsuarioService _usuarioService;
+        private readonly IPrioridadeService _prioridadeService;
+        private readonly ICategoriaService _categoriaService;
+        private readonly IItemService _itemService;
         private readonly TimeProvider _timeProvider;
 
-        public TicketsController(AppDbContext context, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer, IUsuarioService usuarioService, TimeProvider timeProvider)
+        public TicketsController(ITicketService ticketService, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer, IUsuarioService usuarioService, IPrioridadeService prioridadeService, ICategoriaService categoriaService, IItemService itemService, TimeProvider timeProvider)
         {
-            _context = context;
+            _ticketService = ticketService;
             _userManager = userManager;
             _localizer = localizer;
             _usuarioService = usuarioService;
+            _prioridadeService = prioridadeService;
+            _categoriaService = categoriaService;
+            _itemService = itemService;
             _timeProvider = timeProvider;
         }
 
@@ -44,23 +48,7 @@ namespace ChamadosTi.Controllers
             bool ehTecnico = _usuarioService.EhTecnico(User);
             bool verTodos = ehTecnico && exibirTodos;
 
-            var query = _context.Tickets
-                                .Include(t => t.Status)
-                                .Include(t => t.Prioridades)
-                                .Include(t => t.Categorias)
-                                .Include(t => t.Usuarios)
-                                .Include(t => t.UsuariosTecnicos)
-                                .AsQueryable();
-
-            if (!verTodos)
-            {
-                query = ehTecnico
-                    ? query.Where(t => t.UsuarioId == usuarioLogado.Id || t.UsuarioTecnicoId == usuarioLogado.Id || t.Status.Codigo == (int)TicketStatus.Aberto)
-                    : query.Where(t => t.UsuarioId == usuarioLogado.Id);
-            }
-
-            var tickets = await query.OrderByDescending(t => t.DataAbertura)
-                                     .ToListAsync();
+            var tickets = await _ticketService.ListarParaUsuarioAsync(usuarioLogado.Id, ehTecnico, verTodos);
 
             ViewBag.EhTecnico = ehTecnico;
             ViewBag.ExibirTodos = verTodos;
@@ -94,7 +82,7 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            if (usuarioLogado.SetorId == null) 
+            if (usuarioLogado.SetorId == null)
             {
                 return RedirectToAction("CompleteProfile", "Account");
             }
@@ -127,11 +115,8 @@ namespace ChamadosTi.Controllers
             }
 
             var dataAberturaUtc = _timeProvider.GetUtcNow().UtcDateTime;
-            var todosFeriados = await GetFeriadosAsync(DateOnly.FromDateTime(dataAberturaUtc));
-            var horariosSetores = await GetHorariosSetoresAsync(usuarioLogado);
 
-            var prazoRespostaUtc = SlaCalculator.CalcularPrazoSlaReal(todosFeriados, horariosSetores, dataAberturaUtc, prioridadePadrao.TempoRespostaPadrao);
-            var prazoResolucaoUtc = SlaCalculator.CalcularPrazoSlaReal(todosFeriados, horariosSetores, dataAberturaUtc, prioridadePadrao.TempoResolucaoPadrao);
+            var (prazoRespostaUtc, prazoResolucaoUtc) = await _ticketService.CalcularPrazosSlaAsync(dataAberturaUtc, usuarioLogado.SetorId, prioridadePadrao.TempoRespostaPadrao, prioridadePadrao.TempoResolucaoPadrao);
 
             var novoTicket = new Ticket
             {
@@ -146,24 +131,8 @@ namespace ChamadosTi.Controllers
                 Titulo = model.Titulo,
                 Comentario = model.Comentario,
                 Ativo = true,
-                TicketOrigemId = origemId 
-            };            
-        
-            _context.Tickets.Add(novoTicket);
-            await _context.SaveChangesAsync();
-
-            if (model.ItensIdsSelecionados != null && model.ItensIdsSelecionados.Any())
-            {
-                foreach (var itemId in model.ItensIdsSelecionados)
-                {
-                    _context.ItensTickets.Add(new ItemTicket
-                    {
-                        TicketId = novoTicket.Id,
-                        ItemId = itemId,
-                        Ativo = true
-                    });
-                }
-            }                
+                TicketOrigemId = origemId
+            };
 
             var dicionarioCampos = new Dictionary<string, string>
             {
@@ -176,10 +145,8 @@ namespace ChamadosTi.Controllers
             {
                 dicionarioCampos.Add(TicketAcaoLog.Log_DerivadoDoTicket.ToString(), idValido.ToString());
             }
-            
-            var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_AberturaChamado, usuarioLogado.Nome, novoTicket.Id, null, dicionarioCampos);
-            _context.AuditoriasTickets.Add(auditoriaTicket);
-            await _context.SaveChangesAsync();
+
+            await _ticketService.CriarAsync(novoTicket, model.ItensIdsSelecionados, usuarioLogado.Nome, dicionarioCampos);
 
             return RedirectToAction("Index", "Tickets");
         }
@@ -193,20 +160,7 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            var ticket = await _context.Tickets
-                                    .Include(t => t.Status)
-                                    .Include(t => t.Prioridades)
-                                    .Include(t => t.Categorias)
-                                    .Include(t => t.Usuarios) 
-                                    .Include(t => t.UsuariosTecnicos) 
-                                    .Include(t => t.Setores) 
-                                    .Include(t => t.ItensTickets!)
-                                    .ThenInclude(it => it.Item)
-                                    .ThenInclude(i => i.Marcas)
-                                    .Include(t => t.ItensTickets!)
-                                    .ThenInclude(it => it.Item)
-                                    .ThenInclude(i => i.Tipos)
-                                    .FirstOrDefaultAsync(t => t.Id == id);
+            var ticket = await _ticketService.ObterDetalhesAsync(id);
 
             bool ehTecnico = _usuarioService.EhTecnico(User);
 
@@ -219,20 +173,13 @@ namespace ChamadosTi.Controllers
             {
                 ehTecnico = ehTecnico && ticket.UsuarioTecnicoId == usuarioLogado.Id;
             }
-    
+
             var itensIdsVinculados = ticket.ItensTickets?.Select(it => it.ItemId).ToList() ?? new List<int>();
             var historicoDTO = new List<TicketHistoricoAtivoDTO>();
 
             if (itensIdsVinculados.Any())
             {
-                var chamadosAnteriores = await _context.Tickets
-                    .Include(t => t.Status)
-                    .Include(t => t.ItensTickets)
-                    .Include(t => t.AuditoriaTickets)
-                    .Where(t => t.Id != ticket.Id && t.ItensTickets!.Any(it => itensIdsVinculados.Contains(it.ItemId)))
-                    .OrderByDescending(t => t.DataAbertura)
-                    .Take(10) //limita em 10
-                    .ToListAsync();
+                var chamadosAnteriores = await _ticketService.ObterChamadosAnterioresAsync(ticket.Id, itensIdsVinculados, 10);
 
                 foreach (var hTicket in chamadosAnteriores)
                 {
@@ -247,7 +194,7 @@ namespace ChamadosTi.Controllers
                         {
                             try
                             {
-                                var logDecodificado = System.Text.Json.JsonSerializer.Deserialize<LogAuditoriaTicket>(ultimaAuditoria.Log);
+                                var logDecodificado = JsonSerializer.Deserialize<LogAuditoriaTicket>(ultimaAuditoria.Log);
                                 parecer = logDecodificado?.Mensagem ?? string.Empty;
                             }
                             catch { }
@@ -264,19 +211,19 @@ namespace ChamadosTi.Controllers
                         ItemIds = hTicket.ItensTickets?.Select(it => it.ItemId).ToList() ?? new List<int>() // Mapeia os IDs dos ativos
                     });
                 }
-            }            
+            }
 
             var auditoriasOriginais = await GetAuditoriasTicketAsync(ticket.Id);
             ViewBag.AuditoriasOriginais = auditoriasOriginais;
-            ViewBag.LogsHistorico = await GetLogsAuditoriaAsync(ticket.Id, auditoriasOriginais);
-            ViewBag.Prioridades = await GetListaPrioridadesAsync(); 
+            ViewBag.LogsHistorico = DecodificarLogsAuditoria(auditoriasOriginais);
+            ViewBag.Prioridades = await _prioridadeService.ListarOrdenadasPorIdAsync();
             ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(ticket.SetorId);
             ViewBag.EhTecnico = ehTecnico;
             ViewBag.HistoricoAtivo = historicoDTO;
 
             return View(ticket);
         }
-        
+
         [Authorize(Roles = "Tecnico,Admin,AdminMaster")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -311,7 +258,6 @@ namespace ChamadosTi.Controllers
 
             ticket.UsuarioTecnicoId = usuarioLogado.Id;
             ticket.StatusId = novoStatus.Id;
-            _context.Tickets.Update(ticket);
 
             var camposModificados = new Dictionary<string, string>
             {
@@ -319,9 +265,7 @@ namespace ChamadosTi.Controllers
                 { TicketAcaoLog.Log_TecnicoAtribuido.ToString(), usuarioLogado.Nome }
             };
 
-            var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoAssumido, usuarioLogado.Nome, ticket.Id, null, camposModificados);
-            _context.AuditoriasTickets.Add(auditoriaTicket);
-            await _context.SaveChangesAsync();
+            await _ticketService.RegistrarTransicaoAsync(ticket, TicketAcaoLog.Log_ChamadoAssumido, usuarioLogado.Nome, null, camposModificados);
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoAssumido"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
@@ -343,7 +287,7 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction(nameof(Details), new { id = ticketId });
             }
 
-            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
+            var ticket = await _ticketService.ObterPorIdAsync(ticketId);
             bool tecnico = _usuarioService.EhTecnico(User);
 
             if (ticket == null || (tecnico && ticket.UsuarioTecnicoId != usuarioLogado.Id) || (!tecnico && ticket.UsuarioId != usuarioLogado.Id) )
@@ -355,9 +299,7 @@ namespace ChamadosTi.Controllers
                 { TicketAcaoLog.Log_NovaInteracao.ToString(), mensagemTexto.Trim() }
             };
 
-            var auditoriaTicket = MontarAuditoriaTicket(TicketAcaoLog.Log_NovaInteracao, usuarioLogado.Nome, ticketId, null, dadosLog);
-            _context.AuditoriasTickets.Add(auditoriaTicket);
-            await _context.SaveChangesAsync();
+            await _ticketService.RegistrarAuditoriaAsync(ticketId, TicketAcaoLog.Log_NovaInteracao, usuarioLogado.Nome, null, dadosLog);
 
             TempData["SuccessMessage"] = _localizer["Success_ComentarioAdicionado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticketId });
@@ -390,10 +332,8 @@ namespace ChamadosTi.Controllers
             if (statusPendente == null) return NotFound();
 
             ticket.StatusId = statusPendente.Id;
-            _context.Tickets.Update(ticket);
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoPendente, usuarioLogado.Nome, ticket.Id));
-            await _context.SaveChangesAsync();
+            await _ticketService.RegistrarTransicaoAsync(ticket, TicketAcaoLog.Log_ChamadoPendente, usuarioLogado.Nome, null, null);
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoPendente"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
@@ -426,10 +366,7 @@ namespace ChamadosTi.Controllers
             if (statusAtendimento == null) return NotFound();
 
             var dataRetomadaUtc = _timeProvider.GetUtcNow().UtcDateTime;
-            var ultimaAuditoriaPausa = await _context.AuditoriasTickets
-                                                     .Where(a => a.TicketId == id && a.Log.Contains(TicketAcaoLog.Log_ChamadoPendente.ToString()))
-                                                     .OrderByDescending(a => a.RegistradoEm)
-                                                     .FirstOrDefaultAsync();
+            var ultimaAuditoriaPausa = await _ticketService.ObterUltimaAuditoriaPausaAsync(id);
 
             var dicionarioModificacoesLog = new Dictionary<string, string>
             {
@@ -446,13 +383,11 @@ namespace ChamadosTi.Controllers
                     ticket.PrazoResolucaoSLA = ticket.PrazoResolucaoSLA.AddMinutes(minutosParaEstender);
                     dicionarioModificacoesLog.Add(TicketAcaoLog.Log_PrazoResolucaoEstendido.ToString(), ticket.PrazoResolucaoSLA.ToString("o"));
                 }
-            }            
+            }
 
             ticket.StatusId = statusAtendimento.Id;
-            _context.Tickets.Update(ticket);
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoRetomado, usuarioLogado.Nome, ticket.Id, null, dicionarioModificacoesLog));
-            await _context.SaveChangesAsync();
+            await _ticketService.RegistrarTransicaoAsync(ticket, TicketAcaoLog.Log_ChamadoRetomado, usuarioLogado.Nome, null, dicionarioModificacoesLog);
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoRetomado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
@@ -490,16 +425,14 @@ namespace ChamadosTi.Controllers
             if (statusResolvido == null) return NotFound();
 
             ticket.StatusId = statusResolvido.Id;
-            ticket.DataFechamento = _timeProvider.GetUtcNow().UtcDateTime; 
-            _context.Tickets.Update(ticket);
+            ticket.DataFechamento = _timeProvider.GetUtcNow().UtcDateTime;
 
-            var camposModificados = new Dictionary<string, string> { 
-                { TicketAcaoLog.Log_StatusAlterado.ToString(), "Status_Resolvido" } 
+            var camposModificados = new Dictionary<string, string> {
+                { TicketAcaoLog.Log_StatusAlterado.ToString(), "Status_Resolvido" }
             };
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoResolvido, usuarioLogado.Nome, ticket.Id, justificativaTexto.Trim(), camposModificados));
-            await _context.SaveChangesAsync();
-            
+            await _ticketService.RegistrarTransicaoAsync(ticket, TicketAcaoLog.Log_ChamadoResolvido, usuarioLogado.Nome, justificativaTexto.Trim(), camposModificados);
+
             TempData["SuccessMessage"] = _localizer["Success_ChamadoResolvido"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
@@ -537,15 +470,13 @@ namespace ChamadosTi.Controllers
             if (statusCancelado == null) return NotFound();
 
             ticket.StatusId = statusCancelado.Id;
-            ticket.DataFechamento = _timeProvider.GetUtcNow().UtcDateTime; 
-            _context.Tickets.Update(ticket);
+            ticket.DataFechamento = _timeProvider.GetUtcNow().UtcDateTime;
 
-            var camposModificados = new Dictionary<string, string> { 
+            var camposModificados = new Dictionary<string, string> {
                 { TicketAcaoLog.Log_StatusAlterado.ToString(), "Status_Cancelado" }
             };
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ChamadoCancelado, usuarioLogado.Nome, ticket.Id, justificativaTexto.Trim(), camposModificados));
-            await _context.SaveChangesAsync();
+            await _ticketService.RegistrarTransicaoAsync(ticket, TicketAcaoLog.Log_ChamadoCancelado, usuarioLogado.Nome, justificativaTexto.Trim(), camposModificados);
 
             TempData["SuccessMessage"] = _localizer["Success_ChamadoCancelado"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
@@ -576,10 +507,7 @@ namespace ChamadosTi.Controllers
             var prioridade = await GetPrioridadeAsync(prioridadeId);
             if (prioridade == null) return NotFound();
 
-            var feriados = await GetFeriadosAsync(DateOnly.FromDateTime(ticket.DataAbertura));
-            var horariosSetores = await GetHorariosSetoresAsync(usuarioLogado);
-
-            var prazoResolucaoUtc = SlaCalculator.CalcularPrazoSlaReal(feriados, horariosSetores, ticket.DataAbertura, prioridade.TempoResolucaoPadrao);
+            var (prazoRespostaUtc, prazoResolucaoUtc) = await _ticketService.CalcularPrazosSlaAsync(ticket.DataAbertura, usuarioLogado.SetorId, prioridade.TempoRespostaPadrao, prioridade.TempoResolucaoPadrao);
 
             ticket.PrioridadeId = prioridade.Id;
             ticket.PrazoResolucaoSLA = prazoResolucaoUtc;
@@ -588,18 +516,15 @@ namespace ChamadosTi.Controllers
 
             if (ticket.Status.Codigo == (int)TicketStatus.Aberto)
             {
-                var prazoRespostaUtc = SlaCalculator.CalcularPrazoSlaReal(feriados, horariosSetores, ticket.DataAbertura, prioridade.TempoRespostaPadrao);
                 camposModificados.Add(TicketAcaoLog.Log_PrazoResposta.ToString(), prazoRespostaUtc.ToString("g"));
                 ticket.PrazoRespostaSLA = prazoRespostaUtc;
             }
 
             camposModificados.Add(TicketAcaoLog.Log_PrazoResolucao.ToString(), prazoResolucaoUtc.ToString("g"));
-            camposModificados.Add(TicketAcaoLog.Log_PrioridadeAlterada.ToString(), prioridade.Nome);            
+            camposModificados.Add(TicketAcaoLog.Log_PrioridadeAlterada.ToString(), prioridade.Nome);
 
-            _context.Tickets.Update(ticket);
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_PrioridadeAlterada, usuarioLogado.Nome, ticket.Id, null, camposModificados));
-            await _context.SaveChangesAsync();
-            
+            await _ticketService.RegistrarTransicaoAsync(ticket, TicketAcaoLog.Log_PrioridadeAlterada, usuarioLogado.Nome, null, camposModificados);
+
             TempData["SuccessMessage"] = _localizer["Success_PrioridadeAlterada"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
         }
@@ -626,30 +551,12 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction(nameof(Details), new { id = ticket.Id });
             }
 
-            await _context.ItensTickets
-                          .Where(it => it.TicketId == ticketId)
-                          .ExecuteDeleteAsync();
-
-            if (itensIdsSelecionados != null && itensIdsSelecionados.Any())
-            {
-                foreach (var itemId in itensIdsSelecionados)
-                {
-                    _context.ItensTickets.Add(new ItemTicket
-                    {
-                        TicketId = ticketId,
-                        ItemId = itemId,
-                        Ativo = true
-                    });
-                }
-            }
-
             var camposModificados = new Dictionary<string, string>
             {
                 { TicketAcaoLog.Log_ItensAlterados.ToString(), itensIdsSelecionados != null && itensIdsSelecionados.Any() ? string.Join(", ", itensIdsSelecionados) : "Nenhum" }
             };
 
-            _context.AuditoriasTickets.Add(MontarAuditoriaTicket(TicketAcaoLog.Log_ItensAlterados, usuarioLogado.Nome, ticket.Id, null, camposModificados));
-            await _context.SaveChangesAsync();
+            await _ticketService.AlterarItensAsync(ticketId, itensIdsSelecionados, usuarioLogado.Nome, camposModificados);
 
             TempData["SuccessMessage"] = _localizer["Success_ItensAlterados"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
@@ -668,77 +575,48 @@ namespace ChamadosTi.Controllers
 
         private async Task<Status?> GetStatusAsync(int codigoStatus)
         {
-            return await _context.Status.FirstOrDefaultAsync(s => s.Codigo == codigoStatus);
+            return await _ticketService.ObterStatusPorCodigoAsync(codigoStatus);
         }
 
         private async Task<Prioridade?> GetPrioridadePadraoAsync()
         {
-            return await _context.Prioridades.FirstOrDefaultAsync(p => p.Padrao == true);
+            return await _prioridadeService.ObterPadraoAsync();
         }
 
         private async Task<Prioridade?> GetPrioridadeAsync(int prioridadeId)
         {
-            return await _context.Prioridades.FirstOrDefaultAsync(p => p.Id == prioridadeId);
+            return await _prioridadeService.ObterPorIdAsync(prioridadeId);
         }
 
         private async Task<List<ItemDTO>> GetListaItensAsync(int? setorId = null)
         {
-            var query = _context.Itens
-                                .Include(i => i.Tipos)
-                                .Include(i => i.Marcas)
-                                .Include(i => i.Setores)
-                                .AsQueryable();
-            if (setorId != null)
-            {
-                query = query.Where(i => i.SetorId == setorId);
-            }
-            var itens = await query.OrderBy(i => i.Nome)
-                                   .ThenBy(i => i.Tipos.Nome)
-                                   .ThenBy(i => i.Marcas.Nome)
-                                   .ToListAsync();
-            
-            var itemDTO = new List<ItemDTO>();
+            var itens = await _itemService.ListarParaSelecaoAsync(setorId);
 
-            foreach (Item item in itens)
+            return itens.Select(item => new ItemDTO
             {
-                itemDTO.Add( new ItemDTO {
-                    Id = item.Id,
-                    Texto = $"{item.Nome} - {item.Tipos.Nome} - {item.Marcas.Nome}"
-                });
-            }
-
-            return itemDTO;
+                Id = item.Id,
+                Texto = $"{item.Nome} - {item.Tipos.Nome} - {item.Marcas.Nome}"
+            }).ToList();
         }
 
         private async Task<List<CategoriaDTO>> GetListaCategoriasAsync()
         {
-            var categorias = await _context.Categorias.OrderBy(c => c.Nome).ToListAsync();
-            var categoriaDTO = new List<CategoriaDTO>();
-            foreach (Categoria categoria in categorias)
+            var categorias = await _categoriaService.ListarOrdenadosPorNomeAsync();
+
+            return categorias.Select(categoria => new CategoriaDTO
             {
-                categoriaDTO.Add(new CategoriaDTO { 
-                    Id = categoria.Id,
-                    Nome = categoria.Nome 
-                });
-            }
-            return categoriaDTO;
+                Id = categoria.Id,
+                Nome = categoria.Nome
+            }).ToList();
         }
 
         private async Task<List<AuditoriaTicket>> GetAuditoriasTicketAsync(int ticketId)
         {
-            return await _context.AuditoriasTickets
-                                 .Where(a => a.TicketId == ticketId)
-                                 .OrderBy(a => a.RegistradoEm)
-                                 .ToListAsync();
+            return await _ticketService.ObterAuditoriasAsync(ticketId);
         }
-        
-        private async Task<List<LogAuditoriaTicket>> GetLogsAuditoriaAsync(int ticketId, List<AuditoriaTicket>? auditoriasTicket)
-        {
-            if (auditoriasTicket is null)
-            {
-               auditoriasTicket = await GetAuditoriasTicketAsync(ticketId);
-            }
 
+        private static List<LogAuditoriaTicket> DecodificarLogsAuditoria(List<AuditoriaTicket> auditoriasTicket)
+        {
             var listaLogsDecodificados = new List<LogAuditoriaTicket>();
 
             foreach (var auditoria in auditoriasTicket)
@@ -756,10 +634,10 @@ namespace ChamadosTi.Controllers
                 }
                 catch (JsonException)
                 {
-                    listaLogsDecodificados.Add(new LogAuditoriaTicket 
-                    { 
-                        Acao = TicketAcaoLog.Log_ErrorCorrompido, 
-                        Usuario = "System" 
+                    listaLogsDecodificados.Add(new LogAuditoriaTicket
+                    {
+                        Acao = TicketAcaoLog.Log_ErrorCorrompido,
+                        Usuario = "System"
                     });
                 }
             }
@@ -768,58 +646,7 @@ namespace ChamadosTi.Controllers
 
         private async Task<Ticket?> GetTicketStatusAsync(int id)
         {
-            return await _context.Tickets.Include(t => t.Status).FirstOrDefaultAsync(t => t.Id == id);
-        }
-
-        private async Task<List<Prioridade>> GetListaPrioridadesAsync()
-        {
-            return await _context.Prioridades.OrderBy(p => p.Id).ToListAsync();
-        }
-
-        private async Task<List<Horario>> GetHorariosSetoresAsync(Usuario usuarioLogado)
-        {
-            var setorTiDoSistema = await _context.Setores.FirstOrDefaultAsync(s => s.Ti == true);
-            var setorSlaId = setorTiDoSistema != null ? setorTiDoSistema.Id : usuarioLogado.SetorId;
-
-            return await _context.SetoresHorarios
-                         .Include(s => s.Horario)
-                         .Where(s => s.SetorId == setorSlaId)
-                         .Select(s => s.Horario)
-                         .ToListAsync();
-        }
-
-        private async Task<List<DateOnly>> GetFeriadosAsync(DateOnly dataUtc)
-        {
-            return await _context.Feriados
-                         .Where(f => f.Dia >= dataUtc)
-                         .Select(f => f.Dia)
-                         .ToListAsync();
-        }
-
-        private async Task<Setor?> GetSetorTiAsync()
-        {
-            return await _context.Setores.FirstOrDefaultAsync(s => s.Ti == true);
-        }
-
-        private AuditoriaTicket MontarAuditoriaTicket(TicketAcaoLog acao, string usuarioLogadoNome, int ticketId, string? message = null, Dictionary<string, string>? dicionarioCampos = null)
-        {
-            var dadosLog = new LogAuditoriaTicket
-            {
-                Acao = acao,
-                Usuario = usuarioLogadoNome,
-                CamposModificados = dicionarioCampos,
-                Mensagem = message
-            };
-
-            string jsonString = JsonSerializer.Serialize(dadosLog);
-
-            return new AuditoriaTicket
-            {
-                TicketId = ticketId,
-                Log = jsonString,
-                RegistradoEm = _timeProvider.GetUtcNow().UtcDateTime,
-                Ativo = true
-            };
+            return await _ticketService.ObterComStatusAsync(id);
         }
     }
 }

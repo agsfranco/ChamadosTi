@@ -6,5 +6,6 @@ namespace ChamadosTi.Services.Interfaces
     {
         bool PodeAlterarFlagTi(Setor setor, bool novoValorTi);
         bool PodeSerExcluido(Setor setor);
+        Task<Setor?> ObterSetorTiAsync();
     }
 }
