@@ -185,9 +185,8 @@ namespace ChamadosTi.Services
 
         public async Task<ResultadoOperacaoUsuario> ReativarAsync(int id)
         {
-            // Mantido o comportamento original: ObterPorIdAsync aplica o filtro global (Ativo == true),
-            // então usuários inativos retornam NaoEncontrado. Pendência registrada para correção posterior.
-            var usuario = await ObterPorIdAsync(id);
+            // Ignora o filtro global de soft delete: o usuário a reativar está inativo por definição.
+            var usuario = await _context.Usuarios.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == id);
             if (usuario == null) return ResultadoOperacaoUsuario.NaoEncontrado;
 
             usuario.Ativo = true;
