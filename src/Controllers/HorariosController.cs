@@ -1,9 +1,8 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Horario;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -11,37 +10,20 @@ namespace ChamadosTi.Controllers
     [Authorize(Roles = "Admin")]
     public class HorariosController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IHorarioService _horarioService;
+        private readonly ISetorService _setorService;
         private readonly IStringLocalizer<HorariosController> _localizer;
 
-        public HorariosController(AppDbContext context, IStringLocalizer<HorariosController> localizer)
+        public HorariosController(IHorarioService horarioService, ISetorService setorService, IStringLocalizer<HorariosController> localizer)
         {
-            _context = context;
+            _horarioService = horarioService;
+            _setorService = setorService;
             _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
-            List<Horario> horarios;
-
-            if (exibirInativos)
-            {
-                horarios = await _context.Horarios
-                    .IgnoreQueryFilters()
-                    .Include(h => h.SetoresHorarios!)
-                        .ThenInclude(sh => sh.Setor)
-                    .Where(h => !h.Ativo)
-                    .OrderBy(h => h.DiaDaSemana)
-                    .ToListAsync();
-            }
-            else
-            {
-                horarios = await _context.Horarios
-                    .Include(h => h.SetoresHorarios!)
-                        .ThenInclude(sh => sh.Setor)
-                    .OrderBy(h => h.DiaDaSemana)
-                    .ToListAsync();
-            }
+            var horarios = await _horarioService.ListarAsync(exibirInativos);
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(horarios);
@@ -64,7 +46,7 @@ namespace ChamadosTi.Controllers
                 return View(model);
             }
 
-            if (model.JornadaFim <= model.JornadaInicio || model.AlmocoFim <= model.AlmocoInicio)
+            if (!_horarioService.JornadaValida(model.JornadaInicio, model.JornadaFim, model.AlmocoInicio, model.AlmocoFim))
             {
                 ModelState.AddModelError("", _localizer["Error_HorarioInvalido"]);
                 await CarregaSetoresAsync();
@@ -81,30 +63,14 @@ namespace ChamadosTi.Controllers
                 Ativo = true
             };
 
-            _context.Horarios.Add(novoHorario);
-            await _context.SaveChangesAsync();
-
-            if (model.SetoresIdsSelecionados != null && model.SetoresIdsSelecionados.Any())
-            {
-                foreach (var setorId in model.SetoresIdsSelecionados)
-                {
-                    _context.SetoresHorarios.Add(new SetorHorario
-                    {
-                        HorarioId = novoHorario.Id,
-                        SetorId = setorId,
-                        Ativo = true
-                    });
-                }
-                await _context.SaveChangesAsync();
-            }
-
+            await _horarioService.CriarComSetoresAsync(novoHorario, model.SetoresIdsSelecionados);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var horario = await BuscarHorarioPorIdAsync(id, false, true);
+            var horario = await _horarioService.ObterPorIdAsync(id, incluirRelacionamentos: true);
             if (horario == null) return NotFound();
 
             await CarregaSetoresAsync();
@@ -133,10 +99,10 @@ namespace ChamadosTi.Controllers
                 return View(model);
             }
 
-            var horario = await BuscarHorarioPorIdAsync(model.Id, false, true);
+            var horario = await _horarioService.ObterPorIdAsync(model.Id, incluirRelacionamentos: true);
             if (horario == null) return NotFound();
 
-            if (model.JornadaFim <= model.JornadaInicio || model.AlmocoFim <= model.AlmocoInicio)
+            if (!_horarioService.JornadaValida(model.JornadaInicio, model.JornadaFim, model.AlmocoInicio, model.AlmocoFim))
             {
                 ModelState.AddModelError("", _localizer["Error_HorarioInvalido"]);
                 await CarregaSetoresAsync();
@@ -149,33 +115,14 @@ namespace ChamadosTi.Controllers
             horario.AlmocoInicio = model.AlmocoInicio!.Value;
             horario.AlmocoFim = model.AlmocoFim!.Value;
 
-            if (horario.SetoresHorarios != null)
-            {
-                _context.SetoresHorarios.RemoveRange(horario.SetoresHorarios);
-            }
-
-            if (model.SetoresIdsSelecionados != null && model.SetoresIdsSelecionados.Any())
-            {
-                foreach (var setorId in model.SetoresIdsSelecionados)
-                {
-                    _context.SetoresHorarios.Add(new SetorHorario
-                    {
-                        HorarioId = horario.Id,
-                        SetorId = setorId,
-                        Ativo = true
-                    });
-                }
-            }
-
-            _context.Horarios.Update(horario);
-            await _context.SaveChangesAsync();
+            await _horarioService.AtualizarComSetoresAsync(horario, model.SetoresIdsSelecionados);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var horario = await BuscarHorarioPorIdAsync(id, false, false);
+            var horario = await _horarioService.ObterPorIdAsync(id);
             if (horario == null) return NotFound();
 
             return View(horario);
@@ -185,16 +132,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var horario = await BuscarHorarioPorIdAsync(id, false, true);
+            var horario = await _horarioService.ObterPorIdAsync(id, incluirRelacionamentos: true);
             if (horario == null) return NotFound();
 
-            if (horario.SetoresHorarios != null)
-            {
-                _context.SetoresHorarios.RemoveRange(horario.SetoresHorarios);
-            }
-
-            _context.Horarios.Remove(horario);
-            await _context.SaveChangesAsync();
+            await _horarioService.RemoverComSetoresAsync(horario);
             return RedirectToAction(nameof(Index));
         }
 
@@ -202,28 +143,16 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var horario = await BuscarHorarioPorIdAsync(id, true, false);
+            var horario = await _horarioService.ObterPorIdAsync(id, ignorarFiltros: true);
             if (horario == null) return NotFound();
 
-            horario.Ativo = true;
-            _context.Horarios.Update(horario);
-            await _context.SaveChangesAsync();
+            await _horarioService.AtivarAsync(horario);
             return RedirectToAction(nameof(Index));
         }
 
         private async Task CarregaSetoresAsync()
         {
-            ViewBag.Setores = await _context.Setores.OrderBy(s => s.Nome).ToListAsync();
-        }
-
-        private async Task<Horario?> BuscarHorarioPorIdAsync(int id, bool ignorarFiltros, bool incluirSetores)
-        {
-            var query = _context.Horarios.AsQueryable();
-
-            if (ignorarFiltros) query = query.IgnoreQueryFilters();
-            if (incluirSetores) query = query.Include(h => h.SetoresHorarios);
-
-            return await query.FirstOrDefaultAsync(h => h.Id == id);
+            ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
         }
     }
 }

@@ -27,6 +27,8 @@ namespace ChamadosTi.Configuration
             builder.Services.AddScoped<IPrioridadeService, PrioridadeService>();
             builder.Services.AddScoped<ISetorService, SetorService>();
             builder.Services.AddScoped<IItemService, ItemService>();
+            builder.Services.AddScoped<IHorarioService, HorarioService>();
+            builder.Services.AddScoped<IFeriadoService, FeriadoService>();
             builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);           
 
             return builder;
