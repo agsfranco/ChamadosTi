@@ -1,17 +1,10 @@
 {
   "permissions": {
+    "ask": [],
     "defaultMode": "default",
     "disableBypassPermissionsMode": "disable",
-    "disableAutoMode": "disable",
     "blockReadsOutsideWorkingDirectories": true,
-    "ask": [
-      "Edit",
-      "Write",
-      "NotebookEdit",
-      "Bash",
-      "WebFetch",
-      "WebSearch"
-    ]
+    "disableAutoMode": "disable"
   },
   "enableAllProjectMcpServers": false
 }
