@@ -31,8 +31,11 @@ namespace ChamadosTi.Services
             return !(jornadaFim <= jornadaInicio || almocoFim <= almocoInicio);
         }
 
+        // Horário e vínculos com setores são gravados numa única transação.
         public async Task CriarComSetoresAsync(Horario horario, IEnumerable<int>? setoresIds)
         {
+            await using var transacao = await _context.Database.BeginTransactionAsync();
+
             await CriarAsync(horario);
 
             if (setoresIds != null && setoresIds.Any())
@@ -48,6 +51,8 @@ namespace ChamadosTi.Services
                 }
                 await _context.SaveChangesAsync();
             }
+
+            await transacao.CommitAsync();
         }
 
         public async Task AtualizarComSetoresAsync(Horario horario, IEnumerable<int>? setoresIds)
