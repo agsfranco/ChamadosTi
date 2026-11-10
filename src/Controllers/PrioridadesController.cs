@@ -1,9 +1,8 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Prioridade;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -11,33 +10,18 @@ namespace ChamadosTi.Controllers
     [Authorize(Roles = "Admin")]
     public class PrioridadesController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IPrioridadeService _prioridadeService;
         private readonly IStringLocalizer<PrioridadesController> _localizer;
 
-        public PrioridadesController(AppDbContext context, IStringLocalizer<PrioridadesController> localizer)
+        public PrioridadesController(IPrioridadeService prioridadeService, IStringLocalizer<PrioridadesController> localizer)
         {
-            _context = context;
+            _prioridadeService = prioridadeService;
             _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
-            List<Prioridade> prioridades;
-
-            if (exibirInativos)
-            {
-                prioridades = await _context.Prioridades
-                    .IgnoreQueryFilters()
-                    .Where(p => !p.Ativo)
-                    .OrderBy(p => p.Nome)
-                    .ToListAsync();
-            }
-            else
-            {
-                prioridades = await _context.Prioridades
-                    .OrderBy(p => p.Nome)
-                    .ToListAsync();
-            }
+            var prioridades = await _prioridadeService.ListarAsync(exibirInativos);
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(prioridades);
@@ -55,7 +39,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            if (await ValidarPadraoDuplicadoAsync(model.Id, model.Padrao))
+            if (await _prioridadeService.PadraoDuplicadoAsync(model.Id, model.Padrao))
             {
                 ModelState.AddModelError("Padrao", _localizer["Error_PadraoJaExistente"]);
                 return View(model);
@@ -70,15 +54,14 @@ namespace ChamadosTi.Controllers
                 Ativo = true
             };
 
-            _context.Prioridades.Add(novaPrioridade);
-            await _context.SaveChangesAsync();
+            await _prioridadeService.CriarAsync(novaPrioridade);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var prioridade = await BuscarPrioridadePorIdAsync(id, false);
+            var prioridade = await _prioridadeService.ObterPorIdAsync(id);
             if (prioridade == null) return NotFound();
 
             var model = new PrioridadeViewModel
@@ -99,13 +82,13 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            if (await ValidarPadraoDuplicadoAsync(model.Id, model.Padrao))
+            if (await _prioridadeService.PadraoDuplicadoAsync(model.Id, model.Padrao))
             {
                 ModelState.AddModelError("Padrao", _localizer["Error_PadraoJaExistente"]);
                 return View(model);
-            }            
+            }
 
-            var prioridade = await BuscarPrioridadePorIdAsync(model.Id, false);
+            var prioridade = await _prioridadeService.ObterPorIdAsync(model.Id);
             if (prioridade == null) return NotFound();
 
             prioridade.Nome = model.Nome;
@@ -113,15 +96,14 @@ namespace ChamadosTi.Controllers
             prioridade.TempoResolucaoPadrao = model.TempoResolucaoPadrao;
             prioridade.Padrao = model.Padrao;
 
-            _context.Prioridades.Update(prioridade);
-            await _context.SaveChangesAsync();
+            await _prioridadeService.AtualizarAsync(prioridade);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var prioridade = await BuscarPrioridadePorIdAsync(id, false);
+            var prioridade = await _prioridadeService.ObterPorIdAsync(id);
             if (prioridade == null) return NotFound();
 
             return View(prioridade);
@@ -131,11 +113,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var prioridade = await BuscarPrioridadePorIdAsync(id, false);
+            var prioridade = await _prioridadeService.ObterPorIdAsync(id);
             if (prioridade == null) return NotFound();
 
-            _context.Prioridades.Remove(prioridade);
-            await _context.SaveChangesAsync();
+            await _prioridadeService.RemoverAsync(prioridade);
             return RedirectToAction(nameof(Index));
         }
 
@@ -143,27 +124,11 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var prioridade = await BuscarPrioridadePorIdAsync(id, true);
+            var prioridade = await _prioridadeService.ObterPorIdAsync(id, ignorarFiltros: true);
             if (prioridade == null) return NotFound();
 
-            prioridade.Ativo = true;
-
-            _context.Prioridades.Update(prioridade);
-            await _context.SaveChangesAsync();
+            await _prioridadeService.AtivarAsync(prioridade);
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<Prioridade?> BuscarPrioridadePorIdAsync(int id, bool ignorarFiltros)
-        {
-            var query = _context.Prioridades.AsQueryable();
-            if (ignorarFiltros) query = query.IgnoreQueryFilters();
-            return await query.FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-        private async Task<bool> ValidarPadraoDuplicadoAsync(int id, bool ehPadrao)
-        {
-            if (!ehPadrao) return false;
-            return await _context.Prioridades.AnyAsync(x => x.Id != id && x.Padrao && x.Ativo);
         }
     }
 }

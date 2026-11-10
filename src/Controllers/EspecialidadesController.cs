@@ -1,9 +1,8 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Especialidade;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -11,30 +10,18 @@ namespace ChamadosTi.Controllers
     [Authorize(Roles = "Admin")]
     public class EspecialidadesController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IEspecialidadeService _especialidadeService;
         private readonly IStringLocalizer<EspecialidadesController> _localizer;
 
-        public EspecialidadesController(AppDbContext context, IStringLocalizer<EspecialidadesController> localizer)
+        public EspecialidadesController(IEspecialidadeService especialidadeService, IStringLocalizer<EspecialidadesController> localizer)
         {
-            _context = context;
+            _especialidadeService = especialidadeService;
             _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
-            List<Especialidade> especialidades;
-
-            if (exibirInativos)
-            {
-                especialidades = await _context.Especialidades
-                    .IgnoreQueryFilters()
-                    .Where(e => !e.Ativo)
-                    .ToListAsync();
-            }
-            else
-            {
-                especialidades = await _context.Especialidades.ToListAsync();
-            }
+            var especialidades = await _especialidadeService.ListarAsync(exibirInativos);
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(especialidades);
@@ -59,15 +46,14 @@ namespace ChamadosTi.Controllers
                 Ativo = true
             };
 
-            _context.Especialidades.Add(novaEspecialidade);
-            await _context.SaveChangesAsync();
+            await _especialidadeService.CriarAsync(novaEspecialidade);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var esp = await BuscarEspecialidadePorIdAsync(id, false);
+            var esp = await _especialidadeService.ObterPorIdAsync(id);
             if (esp == null) return NotFound();
 
             var model = new EspecialidadeViewModel
@@ -86,21 +72,20 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var esp = await BuscarEspecialidadePorIdAsync(model.Id, false);
+            var esp = await _especialidadeService.ObterPorIdAsync(model.Id);
             if (esp == null) return NotFound();
 
             esp.Nome = model.Nome;
             esp.Descricao = model.Descricao;
 
-            _context.Especialidades.Update(esp);
-            await _context.SaveChangesAsync();
+            await _especialidadeService.AtualizarAsync(esp);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var esp = await BuscarEspecialidadePorIdAsync(id, false);
+            var esp = await _especialidadeService.ObterPorIdAsync(id);
             if (esp == null) return NotFound();
 
             return View(esp);
@@ -110,11 +95,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var esp = await BuscarEspecialidadePorIdAsync(id, false);
+            var esp = await _especialidadeService.ObterPorIdAsync(id);
             if (esp == null) return NotFound();
 
-            _context.Especialidades.Remove(esp);
-            await _context.SaveChangesAsync();
+            await _especialidadeService.RemoverAsync(esp);
             return RedirectToAction(nameof(Index));
         }
 
@@ -122,23 +106,11 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var esp = await BuscarEspecialidadePorIdAsync(id, true);
+            var esp = await _especialidadeService.ObterPorIdAsync(id, ignorarFiltros: true);
             if (esp == null) return NotFound();
 
-            esp.Ativo = true;
-
-            _context.Especialidades.Update(esp);
-            await _context.SaveChangesAsync();
+            await _especialidadeService.AtivarAsync(esp);
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<Especialidade?> BuscarEspecialidadePorIdAsync(int id, bool ignorarFiltros)
-        {
-            var query = _context.Especialidades.AsQueryable();
-
-            if (ignorarFiltros) query = query.IgnoreQueryFilters();
-
-            return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
     }
 }

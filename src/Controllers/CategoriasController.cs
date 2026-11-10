@@ -1,9 +1,8 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Categoria;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -11,35 +10,20 @@ namespace ChamadosTi.Controllers
     [Authorize(Roles = "Admin")]
     public class CategoriasController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly ICategoriaService _categoriaService;
+        private readonly IEspecialidadeService _especialidadeService;
         private readonly IStringLocalizer<CategoriasController> _localizer;
 
-        public CategoriasController(AppDbContext context, IStringLocalizer<CategoriasController> localizer)
+        public CategoriasController(ICategoriaService categoriaService, IEspecialidadeService especialidadeService, IStringLocalizer<CategoriasController> localizer)
         {
-            _context = context;
+            _categoriaService = categoriaService;
+            _especialidadeService = especialidadeService;
             _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
-            List<Categoria> categorias;
-
-            if (exibirInativos)
-            {
-                categorias = await _context.Categorias
-                    .IgnoreQueryFilters()
-                    .Include(c => c.Especialidades)
-                    .Where(c => !c.Ativo)
-                    .OrderBy(c => c.Nome)
-                    .ToListAsync();
-            }
-            else
-            {
-                categorias = await _context.Categorias
-                    .Include(c => c.Especialidades)
-                    .OrderBy(c => c.Nome)
-                    .ToListAsync();
-            }
+            var categorias = await _categoriaService.ListarAsync(exibirInativos);
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(categorias);
@@ -48,7 +32,7 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+            ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
             return View(new CategoriaViewModel());
         }
 
@@ -58,7 +42,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+                ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
                 return View(model);
             }
 
@@ -70,18 +54,17 @@ namespace ChamadosTi.Controllers
                 Ativo = true
             };
 
-            _context.Categorias.Add(novaCategoria);
-            await _context.SaveChangesAsync();
+            await _categoriaService.CriarAsync(novaCategoria);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var categoria = await BuscarCategoriaPorIdAsync(id, false, false);
+            var categoria = await _categoriaService.ObterPorIdAsync(id);
             if (categoria == null) return NotFound();
 
-            ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+            ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
 
             var model = new CategoriaViewModel
             {
@@ -100,26 +83,25 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = await CarregarEspecialidadesFormularioAsync();
+                ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
                 return View(model);
             }
 
-            var categoria = await BuscarCategoriaPorIdAsync(model.Id, false, false);
+            var categoria = await _categoriaService.ObterPorIdAsync(model.Id);
             if (categoria == null) return NotFound();
 
             categoria.EspecialidadeId = model.EspecialidadeId;
             categoria.Nome = model.Nome;
             categoria.Descricao = model.Descricao;
 
-            _context.Categorias.Update(categoria);
-            await _context.SaveChangesAsync();
+            await _categoriaService.AtualizarAsync(categoria);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var categoria = await BuscarCategoriaPorIdAsync(id, false, true);
+            var categoria = await _categoriaService.ObterPorIdAsync(id, incluirRelacionamentos: true);
             if (categoria == null) return NotFound();
 
             return View(categoria);
@@ -129,11 +111,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var categoria = await BuscarCategoriaPorIdAsync(id, false, false);
+            var categoria = await _categoriaService.ObterPorIdAsync(id);
             if (categoria == null) return NotFound();
 
-            _context.Categorias.Remove(categoria);
-            await _context.SaveChangesAsync();
+            await _categoriaService.RemoverAsync(categoria);
             return RedirectToAction(nameof(Index));
         }
 
@@ -141,29 +122,11 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var categoria = await BuscarCategoriaPorIdAsync(id, true, false);
+            var categoria = await _categoriaService.ObterPorIdAsync(id, ignorarFiltros: true);
             if (categoria == null) return NotFound();
 
-            categoria.Ativo = true;
-
-            _context.Categorias.Update(categoria);
-            await _context.SaveChangesAsync();
+            await _categoriaService.AtivarAsync(categoria);
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<Categoria?> BuscarCategoriaPorIdAsync(int id, bool ignorarFiltros, bool incluirEspecialidades)
-        {
-            var query = _context.Categorias.AsQueryable();
-            
-            if (ignorarFiltros) query = query.IgnoreQueryFilters();
-            if (incluirEspecialidades) query = query.Include(c => c.Especialidades);
-            
-            return await query.FirstOrDefaultAsync(c => c.Id == id);
-        }
-
-        private async Task<List<Especialidade>> CarregarEspecialidadesFormularioAsync()
-        {
-            return await _context.Especialidades.OrderBy(e => e.Nome).ToListAsync();
         }
     }
 }

@@ -1,9 +1,8 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Marca;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -11,33 +10,18 @@ namespace ChamadosTi.Controllers
     [Authorize(Roles = "Admin")]
     public class MarcasController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IMarcaService _marcaService;
         private readonly IStringLocalizer<MarcasController> _localizer;
 
-        public MarcasController(AppDbContext context, IStringLocalizer<MarcasController> localizer)
+        public MarcasController(IMarcaService marcaService, IStringLocalizer<MarcasController> localizer)
         {
-            _context = context;
+            _marcaService = marcaService;
             _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
-            List<Marca> marcas;
-
-            if (exibirInativos)
-            {
-                marcas = await _context.Marcas
-                    .IgnoreQueryFilters()
-                    .Where(m => !m.Ativo)
-                    .OrderBy(m => m.Nome)
-                    .ToListAsync();
-            }
-            else
-            {
-                marcas = await _context.Marcas
-                    .OrderBy(m => m.Nome)
-                    .ToListAsync();
-            }
+            var marcas = await _marcaService.ListarAsync(exibirInativos);
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(marcas);
@@ -61,15 +45,14 @@ namespace ChamadosTi.Controllers
                 Ativo = true
             };
 
-            _context.Marcas.Add(novaMarca);
-            await _context.SaveChangesAsync();
+            await _marcaService.CriarAsync(novaMarca);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var marca = await BuscarMarcaPorIdAsync(id, false);
+            var marca = await _marcaService.ObterPorIdAsync(id);
             if (marca == null) return NotFound();
 
             var model = new MarcaViewModel
@@ -87,20 +70,19 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var marca = await BuscarMarcaPorIdAsync(model.Id, false);
+            var marca = await _marcaService.ObterPorIdAsync(model.Id);
             if (marca == null) return NotFound();
 
             marca.Nome = model.Nome;
 
-            _context.Marcas.Update(marca);
-            await _context.SaveChangesAsync();
+            await _marcaService.AtualizarAsync(marca);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var marca = await BuscarMarcaPorIdAsync(id, false);
+            var marca = await _marcaService.ObterPorIdAsync(id);
             if (marca == null) return NotFound();
 
             return View(marca);
@@ -110,11 +92,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var marca = await BuscarMarcaPorIdAsync(id, false);
+            var marca = await _marcaService.ObterPorIdAsync(id);
             if (marca == null) return NotFound();
 
-            _context.Marcas.Remove(marca);
-            await _context.SaveChangesAsync();
+            await _marcaService.RemoverAsync(marca);
             return RedirectToAction(nameof(Index));
         }
 
@@ -122,23 +103,11 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var marca = await BuscarMarcaPorIdAsync(id, true);
+            var marca = await _marcaService.ObterPorIdAsync(id, ignorarFiltros: true);
             if (marca == null) return NotFound();
 
-            marca.Ativo = true;
-
-            _context.Marcas.Update(marca);
-            await _context.SaveChangesAsync();
+            await _marcaService.AtivarAsync(marca);
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<Marca?> BuscarMarcaPorIdAsync(int id, bool ignorarFiltros)
-        {
-            var query = _context.Marcas.AsQueryable();
-
-            if (ignorarFiltros) query = query.IgnoreQueryFilters();
-
-            return await query.FirstOrDefaultAsync(m => m.Id == id);
         }
     }
 }

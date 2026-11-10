@@ -1,10 +1,9 @@
-using ChamadosTi.Data;
 using ChamadosTi.Models;
+using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Item;
 using ChamadosTi.ViewModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace ChamadosTi.Controllers
@@ -12,39 +11,24 @@ namespace ChamadosTi.Controllers
     [Authorize(Roles = "Admin")]
     public class ItensController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IItemService _itemService;
+        private readonly ITipoService _tipoService;
+        private readonly IMarcaService _marcaService;
+        private readonly ISetorService _setorService;
         private readonly IStringLocalizer<ItensController> _localizer;
 
-        public ItensController(AppDbContext context, IStringLocalizer<ItensController> localizer)
+        public ItensController(IItemService itemService, ITipoService tipoService, IMarcaService marcaService, ISetorService setorService, IStringLocalizer<ItensController> localizer)
         {
-            _context = context;
+            _itemService = itemService;
+            _tipoService = tipoService;
+            _marcaService = marcaService;
+            _setorService = setorService;
             _localizer = localizer;
         }
 
         public async Task<IActionResult> Index(bool exibirInativos = false)
         {
-            List<Item> itens;
-
-            if (exibirInativos)
-            {
-                itens = await _context.Itens
-                    .IgnoreQueryFilters()
-                    .Include(i => i.Tipos)
-                    .Include(i => i.Marcas)
-                    .Include(i => i.Setores)
-                    .Where(i => !i.Ativo)
-                    .OrderBy(i => i.Nome)
-                    .ToListAsync();
-            }
-            else
-            {
-                itens = await _context.Itens
-                    .Include(i => i.Tipos)
-                    .Include(i => i.Marcas)
-                    .Include(i => i.Setores)
-                    .OrderBy(i => i.Nome)
-                    .ToListAsync();
-            }
+            var itens = await _itemService.ListarAsync(exibirInativos);
 
             ViewBag.ExibirInativos = exibirInativos;
             return View(itens);
@@ -53,19 +37,10 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var item = await BuscarItemPorIdAsync(id, ignorarFiltros: false, incluirRelacionamentos: true);
+            var item = await _itemService.ObterPorIdAsync(id, incluirRelacionamentos: true);
+            if (item == null) return NotFound();
 
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            var chamadosRelacionados = await _context.Tickets
-                .Include(t => t.Status)
-                .Include(t => t.AuditoriaTickets)
-                .Where(t => t.ItensTickets!.Any(it => it.ItemId == id))
-                .OrderByDescending(t => t.DataAbertura)
-                .ToListAsync();
+            var chamadosRelacionados = await _itemService.ObterChamadosRelacionadosAsync(id);
 
             var historicoDTO = new List<TicketHistoricoAtivoDTO>();
 
@@ -132,15 +107,14 @@ namespace ChamadosTi.Controllers
                 Ativo = true
             };
 
-            _context.Itens.Add(novoItem);
-            await _context.SaveChangesAsync();
+            await _itemService.CriarAsync(novoItem);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var item = await BuscarItemPorIdAsync(id, false, false);
+            var item = await _itemService.ObterPorIdAsync(id);
             if (item == null) return NotFound();
 
             await CarregaDropdownsAsync();
@@ -168,7 +142,7 @@ namespace ChamadosTi.Controllers
                 return View(model);
             }
 
-            var item = await BuscarItemPorIdAsync(model.Id, false, false);
+            var item = await _itemService.ObterPorIdAsync(model.Id);
             if (item == null) return NotFound();
 
             item.TipoId = model.TipoId!.Value;
@@ -177,15 +151,14 @@ namespace ChamadosTi.Controllers
             item.Nome = model.Nome;
             item.Comentario = model.Comentario;
 
-            _context.Itens.Update(item);
-            await _context.SaveChangesAsync();
+            await _itemService.AtualizarAsync(item);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var item = await BuscarItemPorIdAsync(id, false, true);
+            var item = await _itemService.ObterPorIdAsync(id, incluirRelacionamentos: true);
             if (item == null) return NotFound();
 
             return View(item);
@@ -195,11 +168,10 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await BuscarItemPorIdAsync(id, false, false);
+            var item = await _itemService.ObterPorIdAsync(id);
             if (item == null) return NotFound();
 
-            _context.Itens.Remove(item);
-            await _context.SaveChangesAsync();
+            await _itemService.RemoverAsync(item);
             return RedirectToAction(nameof(Index));
         }
 
@@ -207,37 +179,18 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ativar(int id)
         {
-            var item = await BuscarItemPorIdAsync(id, true, false);
+            var item = await _itemService.ObterPorIdAsync(id, ignorarFiltros: true);
             if (item == null) return NotFound();
 
-            item.Ativo = true;
-
-            _context.Itens.Update(item);
-            await _context.SaveChangesAsync();
+            await _itemService.AtivarAsync(item);
             return RedirectToAction(nameof(Index));
         }
 
         private async Task CarregaDropdownsAsync()
         {
-            ViewBag.Tipos = await _context.Tipos.OrderBy(t => t.Nome).ToListAsync();
-            ViewBag.Marcas = await _context.Marcas.OrderBy(m => m.Nome).ToListAsync();
-            ViewBag.Setores = await _context.Setores.OrderBy(s => s.Nome).ToListAsync();
-        }
-
-        private async Task<Item?> BuscarItemPorIdAsync(int id, bool ignorarFiltros, bool incluirRelacionamentos)
-        {
-            var query = _context.Itens.AsQueryable();
-
-            if (ignorarFiltros) query = query.IgnoreQueryFilters();
-            
-            if (incluirRelacionamentos)
-            {
-                query = query.Include(i => i.Tipos)
-                             .Include(i => i.Marcas)
-                             .Include(i => i.Setores);
-            }
-
-            return await query.FirstOrDefaultAsync(i => i.Id == id);
+            ViewBag.Tipos = await _tipoService.ListarOrdenadosPorNomeAsync();
+            ViewBag.Marcas = await _marcaService.ListarOrdenadosPorNomeAsync();
+            ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
         }
     }
 }
