@@ -55,7 +55,7 @@
                 <div class="mb-4">
                     <label asp-for="SetoresIdsSelecionados" class="form-label text-muted small px-2">@Localizer["Label_SetoresVinculados"]</label>
                     <select asp-for="SetoresIdsSelecionados" class="form-select" multiple style="height: 120px;"
-                            asp-items="@(new SelectList(ViewBag.Setores, "Id", "Nome"))">
+                            asp-items="@(new SelectList(Model.Setores, "Id", "Nome"))">
                     </select>
                     <div class="form-text small text-muted px-2">@Localizer["HelpText_MultipleSetores"]</div>
                 </div>

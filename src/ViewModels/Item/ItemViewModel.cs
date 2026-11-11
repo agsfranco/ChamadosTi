@@ -27,5 +27,9 @@ namespace ChamadosTi.ViewModels.Item
         public string? Comentario { get; set; }
 
         public bool Ativo { get; set; } = true;
+        // Opções dos dropdowns (preenchidas pela controller)
+        public IEnumerable<ChamadosTi.Models.Tipo> Tipos { get; set; } = new List<ChamadosTi.Models.Tipo>();
+        public IEnumerable<ChamadosTi.Models.Marca> Marcas { get; set; } = new List<ChamadosTi.Models.Marca>();
+        public IEnumerable<ChamadosTi.Models.Setor> Setores { get; set; } = new List<ChamadosTi.Models.Setor>();
     }
 }

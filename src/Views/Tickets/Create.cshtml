@@ -21,7 +21,7 @@
 
                 <div class="mb-3">
                     <label asp-for="CategoriaId" class="form-label text-muted small px-2">@Localizer["Label_Categoria"]</label>
-                    <select asp-for="CategoriaId" class="form-select" asp-items="@(new SelectList(ViewBag.Categorias, "Id", "Nome"))">
+                    <select asp-for="CategoriaId" class="form-select" asp-items="@(new SelectList(Model.Categorias, "Id", "Nome"))">
                         <option value="">@Localizer["Select_Categoria_Placeholder"]</option>
                     </select>
                     <span asp-validation-for="CategoriaId" class="text-danger small"></span>
@@ -30,10 +30,10 @@
                 <div class="mb-3">
                     <label asp-for="ItensIdsSelecionados" class="form-label text-muted small px-2">@Localizer["Label_ItensAfetados"]</label>
                     
-                    @if (ViewBag.Itens != null && ((System.Collections.IEnumerable)ViewBag.Itens).Cast<object>().Any())
+                    @if (Model.Itens.Any())
                     {
                         <select asp-for="ItensIdsSelecionados" class="form-select" multiple style="height: 120px;"
-                                asp-items="@(new SelectList(ViewBag.Itens, "Id", "Texto"))">
+                                asp-items="@(new SelectList(Model.Itens, "Id", "Texto"))">
                         </select>
                         <div class="form-text small text-muted px-2">@Localizer["HelpText_MultipleSelection"]</div>
                     }

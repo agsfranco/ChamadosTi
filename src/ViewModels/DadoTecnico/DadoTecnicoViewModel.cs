@@ -16,5 +16,7 @@ namespace ChamadosTi.ViewModels.DadoTecnico
         public string Nivel { get; set; } = string.Empty;
 
         public bool Ativo { get; set; } = true;
+        // Opções do dropdown de especialidade (preenchidas pela controller)
+        public IEnumerable<ChamadosTi.Models.Especialidade> Especialidades { get; set; } = new List<ChamadosTi.Models.Especialidade>();
     }
 }

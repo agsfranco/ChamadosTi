@@ -84,8 +84,9 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            await CarregaDropdownsAsync();
-            return View(new ItemViewModel());
+            var model = new ItemViewModel();
+            await CarregaDropdownsAsync(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -94,7 +95,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await CarregaDropdownsAsync();
+                await CarregaDropdownsAsync(model);
                 return View(model);
             }
 
@@ -119,10 +120,11 @@ namespace ChamadosTi.Controllers
             var item = await _itemService.ObterPorIdAsync(id);
             if (item == null) return NotFound();
 
-            await CarregaDropdownsAsync();
-
             var model = new ItemViewModel
             {
+                Tipos = await _tipoService.ListarOrdenadosPorNomeAsync(),
+                Marcas = await _marcaService.ListarOrdenadosPorNomeAsync(),
+                Setores = await _setorService.ListarOrdenadosPorNomeAsync(),
                 Id = item.Id,
                 TipoId = item.TipoId,
                 MarcaId = item.MarcaId,
@@ -140,7 +142,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await CarregaDropdownsAsync();
+                await CarregaDropdownsAsync(model);
                 return View(model);
             }
 
@@ -188,11 +190,11 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task CarregaDropdownsAsync()
+        private async Task CarregaDropdownsAsync(ItemViewModel model)
         {
-            ViewBag.Tipos = await _tipoService.ListarOrdenadosPorNomeAsync();
-            ViewBag.Marcas = await _marcaService.ListarOrdenadosPorNomeAsync();
-            ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
+            model.Tipos = await _tipoService.ListarOrdenadosPorNomeAsync();
+            model.Marcas = await _marcaService.ListarOrdenadosPorNomeAsync();
+            model.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
         }
     }
 }

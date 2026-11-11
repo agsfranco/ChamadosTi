@@ -36,5 +36,7 @@ namespace ChamadosTi.ViewModels.Horario
         // Lista de IDs dos setores vinculados a este turno específico
         [Display(Name = "SetoresVinculados")]
         public List<int> SetoresIdsSelecionados { get; set; } = new List<int>();
+        // Opções do dropdown de setores (preenchidas pela controller)
+        public IEnumerable<ChamadosTi.Models.Setor> Setores { get; set; } = new List<ChamadosTi.Models.Setor>();
     }
 }

@@ -17,7 +17,7 @@
 
                 <div class="mb-3">
                     <label asp-for="EspecialidadeId" class="form-label text-muted small px-2">@Localizer["Label_Especialidade"]</label>
-                    <select asp-for="EspecialidadeId" class="form-select" asp-items="@(new SelectList(ViewBag.Especialidades, "Id", "Nome"))">
+                    <select asp-for="EspecialidadeId" class="form-select" asp-items="@(new SelectList(Model.Especialidades, "Id", "Nome"))">
                         <option value="">@Localizer["Select_Placeholder"]</option>
                     </select>
                     <span asp-validation-for="EspecialidadeId" class="text-danger small"></span>

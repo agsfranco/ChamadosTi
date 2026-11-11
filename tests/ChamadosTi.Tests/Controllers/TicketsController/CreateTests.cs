@@ -62,11 +62,9 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
             var result = await controller.Create((int?)null);
 
             // Assert
-            Assert.IsType<TicketCreateViewModel>(Assert.IsType<ViewResult>(result).Model);
-            var itens = (List<ItemDTO>)controller.ViewBag.Itens;
-            Assert.Equal(2, itens.Count);
-            var categorias = (List<CategoriaDTO>)controller.ViewBag.Categorias;
-            Assert.Single(categorias);
+            var model = Assert.IsType<TicketCreateViewModel>(Assert.IsType<ViewResult>(result).Model);
+            Assert.Equal(2, model.Itens.Count);
+            Assert.Single(model.Categorias);
         }
 
         [Fact]
@@ -76,10 +74,10 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
             var controller = _fixture.CriarController(_fixture.Dados.Solicitante, ehTecnico: false);
 
             // Act
-            await controller.Create((int?)null);
+            var result = await controller.Create((int?)null);
 
             // Assert
-            var itens = (List<ItemDTO>)controller.ViewBag.Itens;
+            var itens = Assert.IsType<TicketCreateViewModel>(Assert.IsType<ViewResult>(result).Model).Itens;
             var item = Assert.Single(itens);
             Assert.Equal(_fixture.Dados.ItemDoSetorComum.Id, item.Id);
             Assert.Equal("Notebook Financeiro 01 - Notebook - Dell", item.Texto);
@@ -144,8 +142,8 @@ namespace ChamadosTi.Tests.Controllers.TicketsControllerTests
             // Assert
             var view = Assert.IsType<ViewResult>(result);
             Assert.Same(modelo, view.Model);
-            Assert.NotNull(controller.ViewBag.Categorias);
-            Assert.Single((List<ItemDTO>)controller.ViewBag.Itens);
+            Assert.NotNull(modelo.Categorias);
+            Assert.Single(modelo.Itens);
             Assert.Empty(_fixture.Contexto.Tickets);
         }
 

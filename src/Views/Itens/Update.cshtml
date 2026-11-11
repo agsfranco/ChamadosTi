@@ -18,7 +18,7 @@
 
                 <div class="mb-3">
                     <label asp-for="TipoId" class="form-label text-muted small px-2">@Localizer["Label_Tipo"]</label>
-                    <select asp-for="TipoId" class="form-select" asp-items="@(new SelectList(ViewBag.Tipos, "Id", "Nome"))">
+                    <select asp-for="TipoId" class="form-select" asp-items="@(new SelectList(Model.Tipos, "Id", "Nome"))">
                         <option value="">@Localizer["Select_Tipo_Placeholder"]</option>
                     </select>
                     <span asp-validation-for="TipoId" class="text-danger small"></span>
@@ -26,7 +26,7 @@
 
                 <div class="mb-3">
                     <label asp-for="MarcaId" class="form-label text-muted small px-2">@Localizer["Label_Marca"]</label>
-                    <select asp-for="MarcaId" class="form-select" asp-items="@(new SelectList(ViewBag.Marcas, "Id", "Nome"))">
+                    <select asp-for="MarcaId" class="form-select" asp-items="@(new SelectList(Model.Marcas, "Id", "Nome"))">
                         <option value="">@Localizer["Select_Marca_Placeholder"]</option>
                     </select>
                     <span asp-validation-for="MarcaId" class="text-danger small"></span>
@@ -34,7 +34,7 @@
 
                 <div class="mb-3">
                     <label asp-for="SetorId" class="form-label text-muted small px-2">@Localizer["Label_Setor"]</label>
-                    <select asp-for="SetorId" class="form-select" asp-items="@(new SelectList(ViewBag.Setores, "Id", "Nome"))">
+                    <select asp-for="SetorId" class="form-select" asp-items="@(new SelectList(Model.Setores, "Id", "Nome"))">
                         <option value="">@Localizer["Select_Setor_Placeholder"]</option>
                     </select>
                 </div>

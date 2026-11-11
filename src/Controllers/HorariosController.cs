@@ -32,8 +32,9 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            await CarregaSetoresAsync();
-            return View(new HorarioViewModel());
+            var model = new HorarioViewModel();
+            await CarregaSetoresAsync(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -42,14 +43,14 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await CarregaSetoresAsync();
+                await CarregaSetoresAsync(model);
                 return View(model);
             }
 
             if (!_horarioService.JornadaValida(model.JornadaInicio, model.JornadaFim, model.AlmocoInicio, model.AlmocoFim))
             {
                 ModelState.AddModelError("", _localizer["Error_HorarioInvalido"]);
-                await CarregaSetoresAsync();
+                await CarregaSetoresAsync(model);
                 return View(model);
             }
 
@@ -73,10 +74,9 @@ namespace ChamadosTi.Controllers
             var horario = await _horarioService.ObterPorIdAsync(id, incluirRelacionamentos: true);
             if (horario == null) return NotFound();
 
-            await CarregaSetoresAsync();
-
             var model = new HorarioViewModel
             {
+                Setores = await CarregarSetoresAsync(),
                 Id = horario.Id,
                 DiaDaSemana = horario.DiaDaSemana,
                 JornadaInicio = horario.JornadaInicio,
@@ -95,7 +95,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await CarregaSetoresAsync();
+                await CarregaSetoresAsync(model);
                 return View(model);
             }
 
@@ -105,7 +105,7 @@ namespace ChamadosTi.Controllers
             if (!_horarioService.JornadaValida(model.JornadaInicio, model.JornadaFim, model.AlmocoInicio, model.AlmocoFim))
             {
                 ModelState.AddModelError("", _localizer["Error_HorarioInvalido"]);
-                await CarregaSetoresAsync();
+                await CarregaSetoresAsync(model);
                 return View(model);
             }
 
@@ -150,9 +150,14 @@ namespace ChamadosTi.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task CarregaSetoresAsync()
+        private async Task CarregaSetoresAsync(HorarioViewModel model)
         {
-            ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
+            model.Setores = await CarregarSetoresAsync();
+        }
+
+        private async Task<IEnumerable<ChamadosTi.Models.Setor>> CarregarSetoresAsync()
+        {
+            return await _setorService.ListarOrdenadosPorNomeAsync();
         }
     }
 }

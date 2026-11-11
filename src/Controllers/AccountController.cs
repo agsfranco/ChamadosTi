@@ -3,6 +3,7 @@ using ChamadosTi.Models;
 using ChamadosTi.Models.Enums;
 using ChamadosTi.Services.Interfaces;
 using ChamadosTi.ViewModels.Account;
+using ChamadosTi.ViewModels.DadoTecnico;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -290,14 +291,14 @@ namespace ChamadosTi.Controllers
                 model.EhTecnico = usuarioLocal.DadoTecnicoId != null;
             }
 
-            ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
+            model.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
 
             var dadosTecnicosLista = await _dadoTecnicoService.ListarAtivosParaPerfilAsync();
 
-            ViewBag.DadosTecnicos = dadosTecnicosLista.Select(d => new {
+            model.DadosTecnicos = dadosTecnicosLista.Select(d => new DadoTecnicoOpcaoDTO {
                 Id = d.Id, 
                 DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
-            }).ToList().OrderBy(d => d.DescricaoFormatada);
+            }).OrderBy(d => d.DescricaoFormatada).ToList();
 
             return View(model);
         }
@@ -333,11 +334,11 @@ namespace ChamadosTi.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
+                model.Setores = await _setorService.ListarOrdenadosPorNomeAsync();
 
                 var dadosTecnicosLista = await _dadoTecnicoService.ListarAtivosParaPerfilAsync();
 
-                ViewBag.DadosTecnicos = dadosTecnicosLista.Select(d => new { 
+                model.DadosTecnicos = dadosTecnicosLista.Select(d => new DadoTecnicoOpcaoDTO { 
                     Id = d.Id, 
                     DescricaoFormatada = (d.Especialidades != null ? d.Especialidades.Nome : "") + " - " + d.Nivel 
                 }).ToList();

@@ -62,11 +62,13 @@ namespace ChamadosTi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            ViewBag.Categorias = await GetListaCategoriasAsync();
-            ViewBag.Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
             ViewBag.OrigemId = origemId;
 
-            return View(new TicketCreateViewModel());
+            return View(new TicketCreateViewModel
+            {
+                Categorias = await GetListaCategoriasAsync(),
+                Itens = _usuarioService.EhTecnico(User) ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId)
+            });
         }
 
         [HttpPost]
@@ -88,8 +90,8 @@ namespace ChamadosTi.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                model.Categorias = await GetListaCategoriasAsync();
+                model.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -97,8 +99,8 @@ namespace ChamadosTi.Controllers
             if (prioridadePadrao == null)
             {
                 ModelState.AddModelError("", _localizer["Error_SemPrioridade"]);
-                ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                model.Categorias = await GetListaCategoriasAsync();
+                model.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 
@@ -106,8 +108,8 @@ namespace ChamadosTi.Controllers
             if (statusInicial == null)
             {
                 ModelState.AddModelError("", _localizer["Error_SemStatusInicial"]);
-                ViewBag.Categorias = await GetListaCategoriasAsync();
-                ViewBag.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
+                model.Categorias = await GetListaCategoriasAsync();
+                model.Itens = ehTecnico ? await GetListaItensAsync() : await GetListaItensAsync(usuarioLogado.SetorId);
                 return View(model);
             }
 

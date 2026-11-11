@@ -32,8 +32,7 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
-            return View(new CategoriaViewModel());
+            return View(new CategoriaViewModel { Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync() });
         }
 
         [HttpPost]
@@ -42,7 +41,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
+                model.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
                 return View(model);
             }
 
@@ -64,10 +63,11 @@ namespace ChamadosTi.Controllers
             var categoria = await _categoriaService.ObterPorIdAsync(id);
             if (categoria == null) return NotFound();
 
-            ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
+            var especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
 
             var model = new CategoriaViewModel
             {
+                Especialidades = especialidades,
                 Id = categoria.Id,
                 EspecialidadeId = categoria.EspecialidadeId,
                 Nome = categoria.Nome,
@@ -83,7 +83,7 @@ namespace ChamadosTi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
+                model.Especialidades = await _especialidadeService.ListarOrdenadosPorNomeAsync();
                 return View(model);
             }
 

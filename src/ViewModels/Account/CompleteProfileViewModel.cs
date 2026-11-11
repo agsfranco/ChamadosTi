@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ChamadosTi.ViewModels.DadoTecnico;
 
 namespace ChamadosTi.ViewModels.Account
 {
@@ -17,5 +18,9 @@ namespace ChamadosTi.ViewModels.Account
 
         [Display(Name = "DadoTecnico")]
         public int? DadoTecnicoId { get; set; }
+        // Opções dos dropdowns (preenchidas pela controller)
+        public IEnumerable<ChamadosTi.Models.Setor> Setores { get; set; } = new List<ChamadosTi.Models.Setor>();
+
+        public IEnumerable<DadoTecnicoOpcaoDTO> DadosTecnicos { get; set; } = new List<DadoTecnicoOpcaoDTO>();
     }
 }

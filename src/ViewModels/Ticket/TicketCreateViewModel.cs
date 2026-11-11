@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using ChamadosTi.ViewModels.Categoria;
+using ChamadosTi.ViewModels.Item;
 
 namespace ChamadosTi.ViewModels.Ticket
 {
@@ -21,5 +23,9 @@ namespace ChamadosTi.ViewModels.Ticket
         // Lista de IDs dos itens de hardware/software selecionados pelo usuário na abertura
         [Display(Name = "ItensAfetados")]
         public List<int> ItensIdsSelecionados { get; set; } = new List<int>();
+        // Opções dos dropdowns (preenchidas pela controller)
+        public List<CategoriaDTO> Categorias { get; set; } = new List<CategoriaDTO>();
+
+        public List<ItemDTO> Itens { get; set; } = new List<ItemDTO>();
     }
 }

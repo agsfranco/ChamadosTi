@@ -24,7 +24,7 @@
 
                 <div class="mb-3">
                     <label asp-for="SetorId" class="form-label text-muted small px-2">@Localizer["Setor_Label"]</label>
-                    <select asp-for="SetorId" class="form-select" asp-items="@(new SelectList(ViewBag.Setores, "Id", "Nome"))">
+                    <select asp-for="SetorId" class="form-select" asp-items="@(new SelectList(Model.Setores, "Id", "Nome"))">
                         <option value="">@Localizer["Select_Setor_Placeholder"]</option>
                     </select>
                     <span asp-validation-for="SetorId" class="text-danger small"></span>
@@ -40,7 +40,7 @@
                 <div id="divDadoTecnico" class="mb-4 d-none">
                     <label asp-for="DadoTecnicoId" class="form-label text-muted small px-2">@Localizer["Label_DadoTecnico"]</label>
                     <select id="selectDadoTecnico" asp-for="DadoTecnicoId" class="form-select" 
-                            asp-items="@(new SelectList(ViewBag.DadosTecnicos, "Id", "DescricaoFormatada"))">
+                            asp-items="@(new SelectList(Model.DadosTecnicos, "Id", "DescricaoFormatada"))">
                         <option value="">@Localizer["Select_DadoTecnico_Placeholder"]</option>
                     </select>
                     <span asp-validation-for="DadoTecnicoId" class="text-danger small"></span>

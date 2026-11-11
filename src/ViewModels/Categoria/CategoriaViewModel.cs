@@ -20,5 +20,7 @@ namespace ChamadosTi.ViewModels.Categoria
         public string? Descricao { get; set; }
 
         public bool Ativo { get; set; } = true;
+        // Opções do dropdown de especialidade (preenchidas pela controller)
+        public IEnumerable<ChamadosTi.Models.Especialidade> Especialidades { get; set; } = new List<ChamadosTi.Models.Especialidade>();
     }
 }
