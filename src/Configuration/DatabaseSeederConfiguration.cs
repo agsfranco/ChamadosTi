@@ -17,7 +17,7 @@ namespace ChamadosTi.Configuration
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 
                 await DbInitializer.SeedAsync(context, userManager, roleManager);
-                await CatalogDataSeeder.SeedCatalogAsync(context);
+                await CatalogDataSeeder.SeedDemonstracaoAsync(context, userManager);
             }
             catch (Exception ex)
             {
