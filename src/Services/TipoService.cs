@@ -4,7 +4,7 @@ using ChamadosTi.Services.Interfaces;
 
 namespace ChamadosTi.Services
 {
-    public class TipoService : CatalogoService<Tipo>, ITipoService
+    public class TipoService : CatalogoNomeadoService<Tipo>, ITipoService
     {
         public TipoService(AppDbContext context) : base(context)
         {

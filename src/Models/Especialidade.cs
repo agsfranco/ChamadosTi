@@ -2,7 +2,7 @@ using ChamadosTi.Models.Interfaces;
 
 namespace ChamadosTi.Models
 {
-    public class Especialidade: ISoftDelete
+    public class Especialidade: ISoftDelete, INomeado
     {
         public int Id { get; set; }
         public string Nome { get; set; } = null!;

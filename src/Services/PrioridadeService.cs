@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChamadosTi.Services
 {
-    public class PrioridadeService : CatalogoService<Prioridade>, IPrioridadeService
+    public class PrioridadeService : CatalogoNomeadoService<Prioridade>, IPrioridadeService
     {
         public PrioridadeService(AppDbContext context) : base(context)
         {

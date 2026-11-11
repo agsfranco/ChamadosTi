@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChamadosTi.Services
 {
-    public class SetorService : CatalogoService<Setor>, ISetorService
+    public class SetorService : CatalogoNomeadoService<Setor>, ISetorService
     {
         public SetorService(AppDbContext context) : base(context)
         {

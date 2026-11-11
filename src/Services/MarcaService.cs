@@ -4,7 +4,7 @@ using ChamadosTi.Services.Interfaces;
 
 namespace ChamadosTi.Services
 {
-    public class MarcaService : CatalogoService<Marca>, IMarcaService
+    public class MarcaService : CatalogoNomeadoService<Marca>, IMarcaService
     {
         public MarcaService(AppDbContext context) : base(context)
         {

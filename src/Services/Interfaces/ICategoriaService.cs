@@ -2,7 +2,7 @@ using ChamadosTi.Models;
 
 namespace ChamadosTi.Services.Interfaces
 {
-    public interface ICategoriaService : ICatalogoService<Categoria>
+    public interface ICategoriaService : ICatalogoNomeadoService<Categoria>
     {
     }
 }

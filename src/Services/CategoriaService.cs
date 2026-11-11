@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChamadosTi.Services
 {
-    public class CategoriaService : CatalogoService<Categoria>, ICategoriaService
+    public class CategoriaService : CatalogoNomeadoService<Categoria>, ICategoriaService
     {
         public CategoriaService(AppDbContext context) : base(context)
         {

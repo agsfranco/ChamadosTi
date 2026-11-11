@@ -5,7 +5,6 @@ namespace ChamadosTi.Services.Interfaces
     public interface ICatalogoService<T> where T : class, ISoftDelete
     {
         Task<List<T>> ListarAsync(bool exibirInativos);
-        Task<List<T>> ListarOrdenadosPorNomeAsync();
         Task<T?> ObterPorIdAsync(int id, bool ignorarFiltros = false, bool incluirRelacionamentos = false);
         Task CriarAsync(T entidade);
         Task AtualizarAsync(T entidade);

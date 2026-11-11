@@ -2,7 +2,7 @@ using ChamadosTi.Models.Interfaces;
 
 namespace ChamadosTi.Models
 {
-    public class Setor: ISoftDelete
+    public class Setor: ISoftDelete, INomeado
     {
         public int Id { get; set; }
         public string Nome { get; set; } = null!;

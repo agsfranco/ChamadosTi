@@ -4,7 +4,7 @@ using ChamadosTi.Services.Interfaces;
 
 namespace ChamadosTi.Services
 {
-    public class EspecialidadeService : CatalogoService<Especialidade>, IEspecialidadeService
+    public class EspecialidadeService : CatalogoNomeadoService<Especialidade>, IEspecialidadeService
     {
         public EspecialidadeService(AppDbContext context) : base(context)
         {

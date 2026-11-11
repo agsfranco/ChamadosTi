@@ -16,10 +16,10 @@ namespace ChamadosTi.Services
 
         protected DbSet<T> Conjunto => _context.Set<T>();
 
-        // Ordenação padrão da listagem: por Nome. Cadastros que não ordenam sobrescrevem.
+        // Ordenação padrão da listagem: nenhuma. Cadastros com Nome sobrescrevem por CatalogoNomeadoService.
         protected virtual IQueryable<T> OrdenarListagem(IQueryable<T> query)
         {
-            return query.OrderBy(e => EF.Property<string>(e, "Nome"));
+            return query;
         }
 
         // Relacionamentos carregados na listagem e, quando solicitado, na busca por id.
@@ -36,11 +36,6 @@ namespace ChamadosTi.Services
 
             query = OrdenarListagem(IncluirRelacionamentos(query));
             return await query.ToListAsync();
-        }
-
-        public virtual async Task<List<T>> ListarOrdenadosPorNomeAsync()
-        {
-            return await Conjunto.OrderBy(e => EF.Property<string>(e, "Nome")).ToListAsync();
         }
 
         public virtual async Task<T?> ObterPorIdAsync(int id, bool ignorarFiltros = false, bool incluirRelacionamentos = false)

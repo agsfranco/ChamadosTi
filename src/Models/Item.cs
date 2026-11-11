@@ -2,7 +2,7 @@ using ChamadosTi.Models.Interfaces;
 
 namespace ChamadosTi.Models
 {
-    public class Item: ISoftDelete 
+    public class Item: ISoftDelete, INomeado 
     {
         public int Id { get; set; }
         public int TipoId { get; set; }
