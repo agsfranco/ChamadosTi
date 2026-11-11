@@ -6,7 +6,6 @@ using ChamadosTi.ViewModels.Categoria;
 using ChamadosTi.ViewModels.Item;
 using ChamadosTi.ViewModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Text.Json;
@@ -17,7 +16,6 @@ namespace ChamadosTi.Controllers
     public class TicketsController : Controller
     {
         private readonly ITicketService _ticketService;
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly IStringLocalizer<TicketsController> _localizer;
         private readonly IUsuarioService _usuarioService;
         private readonly IPrioridadeService _prioridadeService;
@@ -25,10 +23,9 @@ namespace ChamadosTi.Controllers
         private readonly IItemService _itemService;
         private readonly TimeProvider _timeProvider;
 
-        public TicketsController(ITicketService ticketService, UserManager<IdentityUser> userManager, IStringLocalizer<TicketsController> localizer, IUsuarioService usuarioService, IPrioridadeService prioridadeService, ICategoriaService categoriaService, IItemService itemService, TimeProvider timeProvider)
+        public TicketsController(ITicketService ticketService, IStringLocalizer<TicketsController> localizer, IUsuarioService usuarioService, IPrioridadeService prioridadeService, ICategoriaService categoriaService, IItemService itemService, TimeProvider timeProvider)
         {
             _ticketService = ticketService;
-            _userManager = userManager;
             _localizer = localizer;
             _usuarioService = usuarioService;
             _prioridadeService = prioridadeService;
@@ -39,7 +36,7 @@ namespace ChamadosTi.Controllers
 
         public async Task<IActionResult> Index(bool exibirTodos = false)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -59,7 +56,7 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(int? origemId)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -76,7 +73,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TicketCreateViewModel model, int? origemId)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -154,7 +151,7 @@ namespace ChamadosTi.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -229,7 +226,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assumir(int id)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -275,7 +272,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AdicionarComentario(int ticketId, string mensagemTexto)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null)
             {
                 return RedirectToAction("Login", "Account");
@@ -310,7 +307,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaPendente(int id)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(id);
@@ -344,7 +341,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RetomarAtendimento(int id)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(id);
@@ -398,7 +395,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MoverParaResolvido(int id, string justificativaTexto)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             if (string.IsNullOrWhiteSpace(justificativaTexto))
@@ -441,7 +438,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancelar(int id, string justificativaTexto)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             if (string.IsNullOrWhiteSpace(justificativaTexto))
@@ -487,7 +484,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AlterarPrioridade(int ticketId, [FromForm(Name = "PrioridadeId")] int prioridadeId)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(ticketId);
@@ -534,7 +531,7 @@ namespace ChamadosTi.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AlterarItens(int ticketId, List<int> itensIdsSelecionados)
         {
-            var usuarioLogado = await GetUsuarioAsync();
+            var usuarioLogado = await _usuarioService.ObterLogadoAsync(User);
             if (usuarioLogado is null) return RedirectToAction("Login", "Account");
 
             var ticket = await GetTicketStatusAsync(ticketId);
@@ -560,17 +557,6 @@ namespace ChamadosTi.Controllers
 
             TempData["SuccessMessage"] = _localizer["Success_ItensAlterados"].Value;
             return RedirectToAction(nameof(Details), new { id = ticket.Id });
-        }
-
-        private async Task<Usuario?> GetUsuarioAsync()
-        {
-            var identityUserId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(identityUserId))
-            {
-                return null;
-            }
-
-            return await _usuarioService.ObterPorAspNetIdAsync(identityUserId);
         }
 
         private async Task<Status?> GetStatusAsync(int codigoStatus)

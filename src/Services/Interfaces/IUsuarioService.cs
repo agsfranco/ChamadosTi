@@ -11,6 +11,7 @@ namespace ChamadosTi.Services.Interfaces
         // Consultas
         Task<Usuario?> ObterPorIdAsync(int id);
         Task<Usuario?> ObterPorAspNetIdAsync(string aspNetUserId);
+        Task<Usuario?> ObterLogadoAsync(ClaimsPrincipal user);
         Task<Usuario?> ObterCompletoPorAspNetIdAsync(string aspNetUserId);
         Task<IdentityUser?> ObterIdentityUserPorIdAsync(int id);
         Task<bool> PossuiPerfilAsync(string aspNetUserId);

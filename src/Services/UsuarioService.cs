@@ -30,6 +30,15 @@ namespace ChamadosTi.Services
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == aspNetUserId);
         }
 
+        // Usuário local correspondente ao usuário autenticado; null se não houver identidade.
+        public async Task<Usuario?> ObterLogadoAsync(ClaimsPrincipal user)
+        {
+            var aspNetUserId = _userManager.GetUserId(user);
+            if (string.IsNullOrEmpty(aspNetUserId)) return null;
+
+            return await ObterPorAspNetIdAsync(aspNetUserId);
+        }
+
         public async Task<Usuario?> ObterCompletoPorAspNetIdAsync(string aspNetUserId)
         {
             return await _context.Usuarios

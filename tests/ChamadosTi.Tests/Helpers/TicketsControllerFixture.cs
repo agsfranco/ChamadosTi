@@ -32,7 +32,6 @@ namespace ChamadosTi.Tests.Helpers
         public FakeTimeProvider Relogio { get; }
         public DadosDeTeste Dados { get; }
         public Mock<IUsuarioService> UsuarioService { get; } = new();
-        public Mock<UserManager<IdentityUser>> UserManager { get; }
         public Mock<IStringLocalizer<TicketsController>> Localizer { get; } = new();
 
         public TicketsControllerFixture()
@@ -50,21 +49,19 @@ namespace ChamadosTi.Tests.Helpers
             Relogio = new FakeTimeProvider(InstanteInicial);
             Dados = SeedData.Popular(Contexto);
 
-            // GetUserId é lido do claim NameIdentifier, igual ao comportamento real do UserManager.
-            UserManager = new Mock<UserManager<IdentityUser>>(
-                Mock.Of<IUserStore<IdentityUser>>(), null!, null!, null!, null!, null!, null!, null!, null!);
-            UserManager
-                .Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>()))
-                .Returns<ClaimsPrincipal>(p => p.FindFirstValue(ClaimTypes.NameIdentifier));
-
             // Localizer devolve a própria chave, assim os testes verificam as chaves de mensagem.
             Localizer
                 .Setup(l => l[It.IsAny<string>()])
                 .Returns<string>(chave => new LocalizedString(chave, chave));
 
+            // Usuário logado é lido do claim NameIdentifier, como o UsuarioService real faz via UserManager.
             UsuarioService
-                .Setup(s => s.ObterPorAspNetIdAsync(It.IsAny<string>()))
-                .Returns<string>(aspNetId => Contexto.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == aspNetId));
+                .Setup(s => s.ObterLogadoAsync(It.IsAny<ClaimsPrincipal>()))
+                .Returns<ClaimsPrincipal>(p =>
+                {
+                    var aspNetId = p.FindFirstValue(ClaimTypes.NameIdentifier);
+                    return Contexto.Usuarios.FirstOrDefaultAsync(u => u.AspNetUserId == aspNetId);
+                });
         }
 
         /// <summary>
@@ -101,7 +98,6 @@ namespace ChamadosTi.Tests.Helpers
 
             var controller = new TicketsController(
                 ticketService,
-                UserManager.Object,
                 Localizer.Object,
                 UsuarioService.Object,
                 prioridadeService,
